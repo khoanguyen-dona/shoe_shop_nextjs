@@ -4,16 +4,16 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 const Navbar = () => {
   return (
-    <div className= 'bg-gray-300 flex space-x-10 h-16 justify-around  text-center py-4' >
+    <div className= 'bg-gray-300 flex space-x-10 h-16 justify-around  text-center py-5' >
       <div className='' >
-        <a href='/' > <strong> ShoeShop </strong>  </a>
+        <a href='/' className='text-3xl'  > <strong> ShoeShop </strong>  </a>
 
       </div>
 
-      <div className='space-x-10 ' >  
-        <a href='/shoe' >Giày</a>
-        <a href='/clothes' >Quần áo</a>
-        <a href='/accessories' >Phụ kiện</a>      
+      <div className='space-x-10' >  
+        <a href='/shoe' className='  hover:border-b-black hover:border-b-4'  >Giày</a>
+        <a href='/clothes' className='  hover:border-b-black hover:border-b-4' >Quần áo</a>
+        <a href='/accessories' className='  hover:border-b-black hover:border-b-4'>Phụ kiện</a>      
       </div>
 
       <div className='space-x-10  ' >  

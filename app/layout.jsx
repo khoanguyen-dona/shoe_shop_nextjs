@@ -14,7 +14,7 @@ const layout = ({ children }) => {
     <html lang="en">
       <body className={inter.className}>  
           <Navbar/>
-          <main className='mx-auto px-4 py-6 sm:px-6'  >{children}</main>    
+          <main className='mx-auto   '  >{children}</main>    
       </body>
     </html>
   );
