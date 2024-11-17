@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const ProductCarousel = ({data}) => {
-    const router = useRouter();
+   
     return (
         <div>
         <Swiper
@@ -22,16 +22,14 @@ const ProductCarousel = ({data}) => {
             modules={[Navigation, Pagination,Scrollbar]}
         >
             {data.map((d)=>(
-                <SwiperSlide key={d.id} onClick={()=>{
-                    router.push(`/product-detail/${d.id}`);
-                }} >
-                    
+                <SwiperSlide key={d.id} >
+                    <a href={`/product-detail/${d.id}`}>
                         <img className='flex object-cover  items-center justify-center' src={d.thumbnail} alt="Slide 1" />
                         <div className='text-center' >
                             <p>{d.productName}</p>
                             <p>{d.price} đ</p>
                         </div>
-                    
+                    </a>               
                 </SwiperSlide>
             ))}
             
