@@ -4,7 +4,7 @@ import { FormatCurrency } from '@/utils/FormatCurrency';
 const ProductCard = ({data}) => {
   return (
     <div className=' flex flex-col relative ml-2' >
-      <a href={`/product-detail/${data.id}`}>
+      <a className='flex flex-col' href={`/product-detail/${data.id}`}>
 
         <div className='absolute top-4 right-4 z-10' >
             <FavoriteBorderIcon />
