@@ -24,13 +24,13 @@ const CheckoutSuccess = () => {
           Mã đơn hàng: <span className='font-bold' >2221</span>
         </div>
         <div>
-          Ngày <span className='font-bold' >Tháng 11 ngày 17 năm 2024</span>
+          Ngày: <span className='font-bold' >Tháng 11 ngày 17 năm 2024</span>
         </div>
         <div>
-          Tổng cộng <span className='font-bold' >{FormatCurrency(5200000)} đ</span>
+          Tổng cộng: <span className='font-bold' >{FormatCurrency(5200000)} đ</span>
         </div>
         <div>
-          Phương thức thanh toán : <span className='font-bold' >Cash on Delivery </span>
+          Phương thức thanh toán: <span className='font-bold' >Cash on Delivery </span>
         </div>
       </div>
 
