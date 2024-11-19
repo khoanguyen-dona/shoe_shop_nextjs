@@ -11,7 +11,7 @@ const Cart = () => {
       {/* left col */}
       <div className=' sm:w-full lg:w-3/5 p-4 flex   flex-col ' >
         <h1 className='font-bold text-4xl' >GIỎ HÀNG CỦA BẠN</h1>
-        <p className=' text-xl mt-3' >TỔNG CỘNG (2 sản phẩm) <span className='font-bold' > {FormatCurrency(7500000)} đ  </span>   </p>
+        <p className=' text-xl mt-3' >TỔNG CỘNG (2 sản phẩm) <span className='font-bold' > {FormatCurrency(5200000)} đ  </span>   </p>
         {/* product card */}
         <div className='w-full h-2/9 sm:h-3/9  md:h-5/9  border-[1px] border-gray-500 flex ' >
           <div className='w-2/5  ' >
@@ -69,7 +69,7 @@ const Cart = () => {
       <div className='sm:w-full lg:w-2/5  p-2  flex flex-col ' >
 
           <div className='flex bg-black text-white hover:text-gray-500 ' >
-            <button  className='  font-bold p-4 w-full flex  justify-start hover:text-gray-500 transition ' >THANH TOÁN</button>
+            <a  href='/checkout' className='  font-bold p-4 w-full flex  justify-start hover:text-gray-500 transition ' >THANH TOÁN</a>
             <span  className=' ' > <ArrowRightAltIcon sx={{fontSize:50 }} /> </span>
           </div>
 
