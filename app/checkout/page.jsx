@@ -137,7 +137,7 @@ const Checkout = () => {
       <div className='sticky top-0 w-full h-full mt-20 lg:w-1/3 p-2 border-gray-300 border-[1px] flex flex-col ' >
           <div className='font-bold text-center mb-5' >Tóm tắt đơn hàng</div>
 
-          <div className='flex flex-row mb-5 ' >
+          <div className='flex  mb-5 justify-between ' >
             <div className='w-1/5 mr-1 ' >
               <img className='object-cover' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/ADIZERO_SL_trang_IG5941_HM3_hover.avif" alt="" />
             </div> 
@@ -148,7 +148,7 @@ const Checkout = () => {
               <p>Số lượng : 1</p>
             </div>
             <div className='font-bold' >
-              {FormatCurrency(2600000)} đ
+              <span> {FormatCurrency(2600000)}đ </span>
             </div>
           </div>
 
@@ -163,7 +163,7 @@ const Checkout = () => {
               <p>Số lượng : 1</p>
             </div>
             <div className='font-bold' >
-              {FormatCurrency(2600000)} đ
+              {FormatCurrency(2600000)}đ
             </div>
           </div>
           
