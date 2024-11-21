@@ -197,3 +197,28 @@ export const phuKienData = [
     },
     
 ]
+
+export const orderData = [
+    {
+        id:'1',
+        clientName:'robert abc',
+        date:'22/11/2024 4:47pm',
+        status:'processing',
+        total:9200000,
+    },
+    {
+        id:'2',
+        clientName:'alex',
+        date:'27/11/2024 4:47pm',
+        status:'processing',
+        total:4700000,
+    },
+    {
+        id:'3',
+        clientName:'Sereen',
+        date:'2/11/2024 4:47pm',
+        status:'processing',
+        total:5500000,
+    }
+
+]

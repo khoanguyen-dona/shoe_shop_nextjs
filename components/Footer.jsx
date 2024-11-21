@@ -10,10 +10,15 @@ import PinterestIcon from '@mui/icons-material/Pinterest';
 const Footer = () => {
   return (
     <>
-        <div className='flex flex-col bg-yellow-300 text-black text-center py-7 mt-40 '>
+        <div className='flex flex-col bg-yellow-300 text-black text-center py-7  '>
             <h1  className='text-4xl font-bold' >TRỞ THÀNH HỘI VIÊN HƯỞNG ƯU ĐÃI 20 % </h1>
             <span>        
-            <button className='bg-black text-white text-3xl p-3 mt-3 hover:text-gray-600 transition' >ĐĂNG KÝ NGAY</button>
+            <a href='/login'  >
+            <button className='bg-black text-white text-3xl p-3 mt-3 hover:text-gray-600 transition' >
+                ĐĂNG KÝ NGAY
+
+            </button>
+            </a>
             </span>
         </div>
         <div className='grid grid-cols-6 px-40  space-x-5 mt-10' >

@@ -14,7 +14,7 @@ const layout = ({ children }) => {
     <html lang="en">
       <body className={inter.className}>  
           <Navbar/>
-          <main className='mx-auto   '  >{children}</main> 
+          <main className='mx-auto  mb-10'  >{children}</main> 
           <Footer  />   
       </body>
     </html>
