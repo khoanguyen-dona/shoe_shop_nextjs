@@ -12,7 +12,7 @@ const Search = () => {
   return (
     <div className='px-4 md:px-24 2xl:px-48  ' >
       <div className='flex flex-col mt-20 ' >
-        <p className='font-bold text-3xl text-center mb-20' >  Kết quả tìm kiếm cho {search_keyword} </p>
+        <p className='font-bold text-3xl text-center mb-20' >  Kết quả tìm kiếm cho <span className='text-red-500' > {search_keyword} </span> </p>
 
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-center' >
 

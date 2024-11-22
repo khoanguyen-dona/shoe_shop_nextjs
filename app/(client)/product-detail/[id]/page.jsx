@@ -23,7 +23,7 @@ const ProductDetail = () => {
     const [color,setColor]=useState('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM1.avif')
 
   return (
-    <div className='px-32  ' >
+    <div className='px-32  mb-20' >
       {/* <div>produc_id là : {productId} </div> */}
       <div className='flex  mt-20  ' >
         {/* product image gallery */}

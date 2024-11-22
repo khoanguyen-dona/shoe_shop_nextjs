@@ -16,10 +16,10 @@ const Login = () => {
   }
   return (
     <div       
-      className="px-4 sm:px-24 lg:px-48  py-32  flex justify-center
+      className="px-4 sm:px-24 lg:px-48  py-16   flex justify-center
       h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')]" 
     >
-      <div className='w-full 2xl:w-3/6  h-[700px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white'>
+      <div className='w-full 2xl:w-3/6  h-[500px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white'>
         <p className='font-extrabold text-2xl text-center mt-4' >Đăng nhập</p>
         <form action="" onSubmit={handleSubmit} className='space-y-4 mt-8 ' >
           <input className='w-full p-4 flex justify-center border-2  '  type="email" value={email} required

@@ -5,7 +5,7 @@ import ProductCard from '@/components/ProductCard'
 import { giayData } from '@/Data/data'
 import { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
-
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const Shoe = () => {
   const size_data = ['5 US','5.5 US','6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
@@ -39,13 +39,14 @@ const Shoe = () => {
         <div className='flex justify-end'>
           <button  
             onClick={handleFilterClick}
-            className='mr-2 mt-2 p-2 border-2 transition border-black text-xl w-48 font-bold flex-end hover:bg-black
+            className='mr-2 mt-2 p-2 border-2 transition border-black text-xl w-32 font-bold flex-end hover:bg-black
             hover:text-white' >
               Bộ lọc
+              <FilterAltIcon fontSize='large' />
           </button>
         </div>
         {/* product list */}
-        <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-10  mx-2' >
+        <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-2  mx-2' >
           {giayData.map((d,index)=>(
 
             <ProductCard key={index} data={d} />
@@ -68,7 +69,7 @@ const Shoe = () => {
       </div>
       
       {/* filter popup */}
-      <div className={`shadow-2xl   fixed  bg-white w-1/4 h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
+      <div className={`shadow-2xl   fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
           duration-300  ${filter ? 'translate-x-0' : 'translate-x-full'}  `} >
         <div className='flex flex-row justify-between ' >
           <div>Lọc sản phẩm</div>
