@@ -1,15 +1,58 @@
 'use client'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules'
-import { giayData,quanAoData, phuKienData } from '@/Data/data';
+import axios from 'axios';
+// import { giayData,quanAoData, phuKienData } from '@/Data/data';
 import ProductCarousel from '@/components/ProductCarousel';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { publicRequest } from '@/requestMethod';
+import { useState } from 'react';
 
 
 const Home = () => {
+  const [giayData,setGiayData] = useState([])
+  const [aoData,setAoData] = useState([])
+  const [phukienData,setPhukienData] = useState([])
+
+  useEffect(() => {
+    const getGiayData = async () => {
+      try{
+        const res = await publicRequest.get('/product?category=Giày')
+        setGiayData(res.data);
+      } catch {     
+      }
+    }
+    getGiayData();
+  }, [])
+
+  useEffect(() => {
+    const getAoData = async () => {
+      try{
+        const res = await publicRequest.get('/product?category=Áo')
+        setAoData(res.data)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    getAoData();
+  }, [])
+
+  useEffect(() => {
+    const getPhukienData = async () => {
+      try{
+        const res = await publicRequest.get('/product?category=Phụ kiện')
+        setPhukienData(res.data)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    getPhukienData();
+  }, [])
+
+
   return (
     <>
       {/* Banner  */}
@@ -48,7 +91,7 @@ const Home = () => {
         <h1>Quần áo</h1>
       </div>
       <div className='mb-10'>
-        <ProductCarousel data={quanAoData} />
+        <ProductCarousel data={aoData} />
       </div>
 
       {/* Phụ kiện carousel */}
@@ -56,7 +99,7 @@ const Home = () => {
         <h1>Phụ kiện</h1>
       </div>
       <div>
-        <ProductCarousel data={phuKienData} />
+        <ProductCarousel data={phukienData} />
       </div>
 
    

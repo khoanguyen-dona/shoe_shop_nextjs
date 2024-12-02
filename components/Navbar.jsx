@@ -9,10 +9,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import  { useRouter } from 'next/navigation';
-
+import {useSelector} from "react-redux" 
 
 
 const Navbar = () => {
+  const user = useSelector((state) => state.user.currentUser)
+  const wishlist = useSelector((state) => state.wishlist.userWishlist)
   const[searchMobile,setSearchMobile]=useState(false)
   const[menu,setMenu]=useState(false)
   const router = useRouter()
@@ -65,15 +67,23 @@ const Navbar = () => {
           </span>  
           <a href='/wishlist' className='relative  ' >
             <FavoriteBorderIcon sx={{fontSize: '30px'}} />
-            <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 1 </span>
+            {wishlist.wishlist.products.length===0 ? '' :
+            <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
+              {wishlist.wishlist.products.length } </span>
+            }
           </a>    
           <a href='/cart' className='relative' > 
             <ShoppingCartOutlinedIcon sx={{fontSize: '30px'}}/> 
             <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 2 </span>
           </a>
+          { user!== null ?
+          <a href={`/profile/${user._id}`} >
+          <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
+          </a> :
           <a href='/login' >
             <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
           </a>
+          }
         </div>
       </div>
     </div>
@@ -90,7 +100,7 @@ const Navbar = () => {
         <span className='relative' >
           <a href="/wishlist">
             <FavoriteBorderIcon fontSize='large' />
-            <span className='absolute bottom-5 left-5 px-2  rounded-full text-white bg-red-500 ' >2</span>
+            <span className='absolute bottom-5 left-5 px-2  rounded-full text-white bg-red-500 ' >3</span>
           </a>
         </span>
         <span className='relative' >
@@ -100,9 +110,14 @@ const Navbar = () => {
           </a>
         </span>
         <span>
-          <a href="/login">
-            <AccountCircleOutlinedIcon fontSize='large' />
+        { user!== null ?
+          <a href={`/profile/${user._id}`} >
+          <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
+          </a> :
+          <a href='/login' >
+            <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
           </a>
+          }
         </span>
       </div>     
     </div>

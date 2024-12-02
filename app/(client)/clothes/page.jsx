@@ -4,16 +4,33 @@ import React from 'react'
 
 
 import ProductCard from '@/components/ProductCard'
-import { quanAoData } from '@/Data/data'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { publicRequest } from '@/requestMethod';
+import { userRequest } from '@/requestMethod';
+import { useSelector } from 'react-redux';
 
 const Clothes = () => {
+  const user =useSelector((state)=>state.user.currentUser)
+  const wishlist = useSelector((state)=> state.wishlist.userWishlist)
+  const wishlistArray = []
+  wishlist.wishlist.products.map((item)=> wishlistArray.push(item._id))
+
   const size_data = ['S','M','L','XL']
   const [size,setSize]=useState([]);
-
   const[filter,setFilter]=useState(false)
+  const[products,setProducts]=useState([])
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {    
+        const res = await publicRequest.get(`/product?category=Áo`)
+        setProducts(res.data)
+      } catch {}
+    }
+    getProducts();
+  },[])
 
   const handleFilterClick = () => {
     setFilter((prev) => !prev) ;
@@ -48,9 +65,9 @@ const Clothes = () => {
         </div>
         {/* product list */}
         <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-2  mx-2' >
-          {quanAoData.map((d,index)=>(
+          {products?.map((d,index)=>(
 
-            <ProductCard key={index} data={d} />
+            <ProductCard key={index} data={d}   user={user}  wishlistArray={wishlistArray} />
 
           ))}  
         </div>

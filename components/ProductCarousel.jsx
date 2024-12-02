@@ -1,7 +1,5 @@
 import React from 'react'
-import { useRouter } from 'next/navigation';
 import { FormatCurrency } from '@/utils/FormatCurrency';
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination ,Scrollbar} from 'swiper/modules';
 import 'swiper/css';
@@ -27,12 +25,12 @@ const ProductCarousel = ({data}) => {
             scrollbar = {false}
             modules={[Navigation, Pagination,Scrollbar]}
         >
-            {data.map((d)=>(
-                <SwiperSlide key={d.id} >
-                    <a href={`/product-detail/${d.id}`}>
+            {data.map((d,index) => (
+                <SwiperSlide key={index} >
+                    <a href={`/product-detail/${d._id}`}>
                         <img className='flex object-cover  items-center justify-center' src={d.thumbnail} alt="Slide 1" />
                         <div className='text-center' >
-                            <p className='font-semibold'>{d.productName}</p>
+                            <p className='font-semibold'>{d.name}</p>
                             <p>{FormatCurrency(d.price)} đ</p>
                         </div>
                     </a>               

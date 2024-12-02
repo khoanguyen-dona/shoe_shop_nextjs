@@ -1,21 +1,30 @@
+"use client"
+
 import "./globals.css"
 import {Inter} from 'next/font/google';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-const inter = Inter({subsets: ['latin']});
+import { Provider } from "react-redux";
+import {store, persistor} from '../../redux/store'
+import { PersistGate } from "redux-persist/integration/react";
 
-export const metadata = {
-  title: "Shoe shop",
-  description: "Giày thời trang",
-};
+const inter = Inter({subsets: ['latin']});
+// export const metadata = {
+//   title: "Shoe shop",
+//   description: "Giày thời trang",
+// };
 
 const layout = ({ children }) => {
   return (
     <html lang="en">
       <body className={inter.className}>  
-          <Navbar/>
-          <main className='mx-auto  mb'  >{children}</main> 
-          <Footer  />   
+        <Provider store={store}>
+          <PersistGate loading={null}  persistor={persistor}>
+            <Navbar/>
+            <main className='mx-auto  mb'  >{children}</main> 
+            <Footer  />   
+          </PersistGate>
+        </Provider>
       </body>
     </html>
   );

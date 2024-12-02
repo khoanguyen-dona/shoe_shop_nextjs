@@ -4,17 +4,34 @@ import React from 'react'
 
 
 import ProductCard from '@/components/ProductCard'
-import { phuKienData } from '@/Data/data'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { publicRequest } from '@/requestMethod'
+import { useSelector } from 'react-redux';
+
 
 const Accessories = () => {
+  const user =useSelector((state)=>state.user.currentUser)
+  const wishlist = useSelector((state)=> state.wishlist.userWishlist)
+  const wishlistArray = []
+  wishlist.wishlist.products.map((item)=> wishlistArray.push(item._id))
+
   const size_data = ['5 US','5.5 US','6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
     '11 US']
   const [size,setSize]=useState([]);
-
   const[filter,setFilter]=useState(false)
+  const[products,setProducts]=useState([])
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {    
+        const res = await publicRequest.get(`/product?category=Phụ kiện`)
+        setProducts(res.data)
+      } catch {}
+    }
+    getProducts();
+  },[])
 
   const handleFilterClick = () => {
     setFilter((prev) => !prev) ;
@@ -49,9 +66,9 @@ const Accessories = () => {
         </div>
         {/* product list */}
         <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-2  mx-2' >
-          {phuKienData.map((d,index)=>(
+          {products?.map((d,index)=>(
 
-            <ProductCard key={index} data={d} />
+            <ProductCard key={index} data={d} user={user} wishlistArray={wishlistArray} />
 
           ))}  
         </div>
