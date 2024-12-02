@@ -1,67 +1,110 @@
+'use client'
+
 import React from 'react'
 import { FormatCurrency } from '@/utils/FormatCurrency'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useSelector, useDispatch } from 'react-redux';
+import { userRequest } from '@/requestMethod';
+import { setCart } from '@/redux/cartRedux';
 
 const Cart = () => {
+  const dispatch = useDispatch()
+  const user = useSelector((state)=>state.user.currentUser)
+  const cart = useSelector((state)=>state.cart.userCart)
+  const products = cart?.cart?.products
+  
+
+  // calculate total price
+  const totalPrice = products?.reduce((total, item) => {
+    const { price, quantity } = item;
+    
+    return total + price * quantity;
+  }, 0);
+ 
+
+
+  const decreaseItem = async (product) => {
+    try{
+      const res = await userRequest.post(`/cart/${user._id}/decrease-item`,{
+        productId: product.productId,
+        color: product.color,
+        size: product.size
+      })
+      if(res.data){
+        dispatch(setCart(res.data))
+      }
+    }catch(err){}
+  }
+
+  const addItem = async (product) => {
+    try{
+      const res = await userRequest.post(`/cart/${user._id}`,{
+        productId: product.productId,
+        name: product.name,
+        quantity: 1,
+        color: product.color,
+        size: product.size
+      })
+      if(res.data){
+        dispatch(setCart(res.data))
+      }
+    }catch(err){}
+  }
+
+  const removeItem = async (product) => {
+    try{
+      const res = await userRequest.post(`/cart/${user._id}/delete-item`,{
+        productId: product.productId,
+        color: product.color,
+        size: product.size
+      })
+      if(res.data){
+        dispatch(setCart(res.data))
+      }
+    }catch(err){}
+  }
+
+
+  console.log('cart--->',cart)
   return (
     <div className='flex flex-col sm:flex-col md:flex-row   sm:px-4 lg:px-24 2xl:px-96   mt-20  ' >
       {/* left col */}
       <div className=' sm:w-full lg:w-3/5 p-4 flex   flex-col ' >
         <h1 className='font-bold text-4xl' >GIỎ HÀNG CỦA BẠN</h1>
-        <p className=' text-xl mt-3' >TỔNG CỘNG (2 sản phẩm) <span className='font-bold' > {FormatCurrency(5200000)} đ  </span>   </p>
+        <p className=' text-xl mt-3' >TỔNG CỘNG ({products?.length} SẢN PHẨM)  :<span className='font-bold' >
+           {FormatCurrency(totalPrice)} đ  </span>   </p>
         {/* product card */}
-        <div className='w-full h-2/9 sm:h-3/9  md:h-5/9  border-[1px] border-gray-500 flex ' >
+        { products?.map((product, index)=> 
+        <div className='w-full h-2/9 sm:h-3/9  md:h-5/9  border-[1px] border-gray-500 flex ' key={index} >
           <div className='w-2/5  ' >
-            <img  className='object-cover w-full p-4' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/ADIZERO_SL_trang_IG5941_HM3_hover.avif" alt="" />
+            <img  className='object-cover w-full p-4' src={product.thumbnail} alt="" />
           </div>
 
           <div className='w-2/3 p-5 relative' >
-            <p>ADIZERO SL</p>
-            <p className='font-bold' >{FormatCurrency(2600000)} đ </p>
-            <p>SIZE : 8 US</p>
+            <p className='font-extrabold text-xl ' >{product.name}</p>
+            <p className='font-semibold' >{FormatCurrency(product.price)} đ </p>
+            <p>SIZE : <span className='font-bold' > {product.size} </span>  </p>
+            <p>COLOR : <span className='font-bold' > {product.color} </span>  </p>
             <div className='flex mt-0  sm:mt-10  ' >
               <div className='hover:bg-black hover:text-white transition  ' >
-                <RemoveIcon sx={{fontSize:40}} />
+                <RemoveIcon onClick={() => decreaseItem(product)}  sx={{fontSize:40}} />
               </div> 
-              <p className='font-bold text-4xl border-[1px] w-12 text-center border-black ' >1</p>
+              <p className='font-bold text-4xl border-[1px] w-12 text-center border-black ' >{product.quantity}</p>
               <div className='hover:bg-black hover:text-white transition ' >
-                <AddIcon sx={{fontSize:40}} />
+                <AddIcon  onClick={() => addItem(product)} sx={{fontSize:40}} />
               </div>
             </div>
 
             <div className='absolute top-0 right-0 hover:bg-black hover:text-white transition ' >
-              <ClearIcon/>
+              <ClearIcon  onClick={()=> removeItem(product)}  />
             </div>
           </div>
         </div>
-
-         <div className='w-full h-5/9 border-[1px] border-gray-500 flex mt-1' >
-          <div className='w-2/5  ' >
-            <img  className='object-cover w-full p-4' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/ADIZERO_SL_trang_IG5941_HM3_hover.avif" alt="" />
-          </div>
-
-          <div className='w-2/3 p-5 relative' >
-            <p>ADIZERO SL</p>
-            <p className='font-bold' >{FormatCurrency(2600000)} đ </p>
-            <p>SIZE : 8 US</p>
-            <div className='flex mt-0 sm:mt-10  ' >
-              <div className='hover:bg-black hover:text-white transition ' >
-                <RemoveIcon sx={{fontSize:40}} />
-              </div> 
-              <p className='font-bold text-4xl border-[1px] w-12 text-center border-black ' >1</p>
-              <div className='hover:bg-black hover:text-white transition ' >
-                <AddIcon sx={{fontSize:40}} />
-              </div>
-            </div>
-
-            <div className='absolute top-0 right-0 hover:bg-black hover:text-white transition ' >
-              <ClearIcon/>
-            </div>
-          </div>
-        </div>
+        )}
+       
 
       </div>
 
@@ -80,10 +123,10 @@ const Cart = () => {
 
             <div className='flex justify-between mt-5 ' >
               <div  >
-                2 sản phẩm
+                {products?.length} sản phẩm
               </div>
               <div>
-                {FormatCurrency(5200000) } đ
+                {FormatCurrency(totalPrice) } đ
               </div>
             </div>
 
@@ -101,7 +144,7 @@ const Cart = () => {
                 Tổng
               </div>
               <div>
-                {FormatCurrency(5200000) } đ
+                {FormatCurrency(totalPrice) } đ
               </div>
             </div>
 

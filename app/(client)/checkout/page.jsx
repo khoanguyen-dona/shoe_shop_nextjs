@@ -8,30 +8,64 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useRouter } from 'next/navigation';
+import { useSelector,useDispatch } from 'react-redux';
+import { userRequest } from '@/requestMethod';
+import { setCart } from '@/redux/cartRedux';
 
 
 const Checkout = () => {
+  const dispatch = useDispatch()
+  const user = useSelector((state)=>state.user.currentUser)
+  const cart = useSelector((state)=>state.cart.userCart)
+  const products = cart?.cart?.products
   const router = useRouter()
+  const [error, setError]=useState('')
+  const [messageOption, setMessageOption]= useState(false)
+  // calculate total price
+  const totalPrice = products?.reduce((total, item) => {
+    const { price, quantity } = item;
+    
+    return total + price * quantity;
+  }, 0);
 
-  const[firstName,setFirstName]=useState('')
-  const[lastName,setLastName]=useState('')
-  const[email,setEmail]=useState('')
-  const[address,setAddress]=useState('')
-  const[phoneNumber,setPhoneNumber]=useState('')
-  const[paymentMethod,setPaymentMethod]=useState('')
+  const[firstName, setFirstName]=useState('')
+  const[lastName, setLastName]=useState('')
+  const[email, setEmail]=useState('')
+  const[address, setAddress]=useState('')
+  const[phoneNumber, setPhoneNumber]=useState('')
+  const[paymentMethod, setPaymentMethod]=useState('')
+  const[message,setMessage]=useState('')
 
-  const handleSubmit = (e) => { 
+  const handleSubmit = async (e) => { 
       e.preventDefault()
-      router.push('/checkout-success/123'); 
+      try{
+        const res = await userRequest.post(`/order/${user._id}`, {
+          clientName: firstName+' '+ lastName,
+          products: products,
+          phoneNumber: phoneNumber,
+          address: address,
+          email: email,
+          paymentMethod: paymentMethod,
+          message: message
+        })
+        if(res.data){
+          router.push(`/checkout-success/${res.data.order._id}`); 
+          dispatch(setCart(null))
+        } else {
+          setError('please try again')
+        }
+
+      }catch(err){}
+      
   }
 
-  const[message,setMessage]=useState(false)
+ 
   const handleClickMessage = () => {
-    setMessage(prev=>!prev)
+    setMessageOption(prev=>!prev)
   }
 
   return (
-    <div  className='px-4 sm:px-4  xl:px-48 flex flex-col sm:flex-col lg:flex-row mt-20' >
+    <div  className='px-4 sm:px-4  xl:px-48 flex flex-col sm:flex-col lg:flex-row mt-20 mb-30 ' >
       {/* left col */}
       <div className=' w-full  lg:w-2/3  flex flex-col p-2 sm:p-20  ' >
         <p className='text-center font-bold text-3xl  ' >CHECKOUT</p>
@@ -109,9 +143,9 @@ const Checkout = () => {
           </div>
 
           <input onClick={handleClickMessage}  className='mr-1' type="checkbox"  />Thêm ghi chú
-          {message && 
+          {messageOption && 
             <textarea  
-              className='border-2 border-gray500 w-full h-1/6'   
+              className='border-2 border-gray500 w-full h-[200px]'   
               name="message" id=""
               placeholder='  Nhập ghi chú'
               onChange={(e)=>setMessage(e.target.value)}
@@ -129,43 +163,30 @@ const Checkout = () => {
           >                   
                 Đặt hàng                                     
           </button>
-         
+         {error ? error: '' }
         </form>
 
       </div>
       {/* right col */}
       <div className='sticky top-0 w-full h-full mt-20 lg:w-1/3 p-2 border-gray-300 border-[1px] flex flex-col ' >
           <div className='font-bold text-center mb-5' >Tóm tắt đơn hàng</div>
-
-          <div className='flex  mb-5 justify-between ' >
+          { products?.map((product, index) => 
+          <div className='flex  mb-5 justify-between ' key={index} >
             <div className='w-1/5 mr-1 ' >
-              <img className='object-cover' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/ADIZERO_SL_trang_IG5941_HM3_hover.avif" alt="" />
+              <img className='object-cover' src={product.thumbnail} alt="" />
             </div> 
             <div className='w-3/5 flex flex-col ' >
-              <p>Adizero SL</p>
-              <p>{FormatCurrency(2600000)} đ</p>
-              <p>Size : 8 US </p>
-              <p>Số lượng : 1</p>
+              <p>{product.name}</p>
+              <p>{FormatCurrency(product.price)} đ</p>
+              <p>Size : {product.size} </p>
+              <p>Số lượng :{product.quantity}</p>
             </div>
             <div className='font-bold' >
-              <span> {FormatCurrency(2600000)}đ </span>
+              <span> {FormatCurrency(product.quantity*product.price)}đ </span>
             </div>
           </div>
-
-          <div className='flex flex-row' >
-            <div className='w-1/5 mr-1 ' >
-              <img className='object-cover' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/ADIZERO_SL_trang_IG5941_HM3_hover.avif" alt="" />
-            </div> 
-            <div className='w-3/5 flex flex-col ' >
-              <p>Adizero SL</p>
-              <p>{FormatCurrency(2600000)} đ</p>
-              <p>Size : 8 US </p>
-              <p>Số lượng : 1</p>
-            </div>
-            <div className='font-bold' >
-              {FormatCurrency(2600000)}đ
-            </div>
-          </div>
+          )}
+          
           
           <Accordion className='mt-5' sx={{boxShadow:'none'}}  >
             <AccordionSummary
@@ -192,7 +213,7 @@ const Checkout = () => {
               Tổng
             </div>           
             <div className='font-bold' >
-              {FormatCurrency(5200000)} đ
+              {FormatCurrency(totalPrice)} đ
             </div>
           </div>
          

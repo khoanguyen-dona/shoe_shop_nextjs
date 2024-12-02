@@ -13,6 +13,7 @@ import {useSelector} from "react-redux"
 
 
 const Navbar = () => {
+  const cart = useSelector((state) =>state.cart.userCart)
   const user = useSelector((state) => state.user.currentUser)
   const wishlist = useSelector((state) => state.wishlist.userWishlist)
   const[searchMobile,setSearchMobile]=useState(false)
@@ -67,14 +68,17 @@ const Navbar = () => {
           </span>  
           <a href='/wishlist' className='relative  ' >
             <FavoriteBorderIcon sx={{fontSize: '30px'}} />
-            {wishlist.wishlist.products.length===0 ? '' :
+            { wishlist === null ||  wishlist?.wishlist?.products?.length===0 ? '' :
             <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
-              {wishlist.wishlist.products.length } </span>
+              { wishlist.wishlist?.products?.length } </span>
             }
           </a>    
           <a href='/cart' className='relative' > 
             <ShoppingCartOutlinedIcon sx={{fontSize: '30px'}}/> 
-            <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 2 </span>
+            {cart===null ||  cart?.cart?.products?.length === 0 ? '' : 
+            <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 
+              { cart.cart?.products?.length } </span>
+            }
           </a>
           { user!== null ?
           <a href={`/profile/${user._id}`} >
@@ -100,13 +104,19 @@ const Navbar = () => {
         <span className='relative' >
           <a href="/wishlist">
             <FavoriteBorderIcon fontSize='large' />
-            <span className='absolute bottom-5 left-5 px-2  rounded-full text-white bg-red-500 ' >3</span>
+            {wishlist === null ||  wishlist.wishlist.products.length === 0 ? '' :
+            <span className='absolute bottom-5 left-5 px-2  rounded-full text-white bg-red-500 ' >
+              {wishlist.wishlist.products.length}</span>
+            }
           </a>
         </span>
         <span className='relative' >
           <a href="/cart">
             <ShoppingCartOutlinedIcon fontSize='large' />
-            <span className='absolute bottom-5 left-5 px-2 rounded-full text-white bg-red-500 ' >1</span>
+            { cart === null || cart.cart.products.length === 0 ? '' :
+            <span className='absolute bottom-5 left-5 px-2 rounded-full text-white bg-red-500 ' >
+              {cart.cart.products?.length}</span>
+            }
           </a>
         </span>
         <span>

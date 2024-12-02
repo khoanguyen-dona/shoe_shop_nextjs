@@ -5,7 +5,7 @@ import { useSelector,useDispatch } from 'react-redux'
 import { setLogout } from '@/redux/userRedux'
 import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation'
-
+import { persistor } from '@/redux/store'
 
 const Profile  = () => {
     const user_id = useParams().id
@@ -13,9 +13,9 @@ const Profile  = () => {
     const user = useSelector((state) => state.user.currentUser)
     const dispatch = useDispatch()
 
-    const handleLogoutClick = (e) => {
+    const handleLogoutClick = async (e) => {
         e.preventDefault();
-        dispatch(setLogout())
+        await persistor.purge()
         router.push('/')
     }
   return (

@@ -12,19 +12,24 @@ const Wishlist = () => {
   const wishlist = useSelector((state)=>state.wishlist.userWishlist)
   const wishlistArray = []
 
-  wishlist.wishlist.products.map((item)=> wishlistArray.push(item._id)) 
-  const data=wishlist.wishlist.products
+  wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
+  const data=wishlist?.wishlist?.products
  
 
 
   return (
     <div className='flex flex-col mt-20 '  >
+      {data?.length===0 ?
+      <p className='font-bold text-4xl text-center mb-5' > Wishlist của  bạn trống</p>
+        :
       <p className='font-bold text-4xl text-center mb-5' >
         Wishlist
       </p>
+      }
+     
       <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4' >
         {
-          data.map((d,index) => (
+          data?.map((d,index) => (
             <div  className='hover:border border-black transition' >
               <ProductCard  key={index}   data={d} wishlistArray={wishlistArray} user={user}  />
             </div>

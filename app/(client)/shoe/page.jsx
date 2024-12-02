@@ -13,7 +13,7 @@ const Shoe = () => {
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
-  wishlist.wishlist.products.map((item)=> wishlistArray.push(item._id))
+  wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id))
 
 
   console.log('wishl--->',wishlist)

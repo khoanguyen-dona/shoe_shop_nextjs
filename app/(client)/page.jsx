@@ -10,12 +10,14 @@ import 'swiper/css/pagination'
 import React, { useEffect } from 'react'
 import { publicRequest } from '@/requestMethod';
 import { useState } from 'react';
-
+import { useSelector } from 'react-redux';
 
 const Home = () => {
   const [giayData,setGiayData] = useState([])
   const [aoData,setAoData] = useState([])
   const [phukienData,setPhukienData] = useState([])
+
+
 
   useEffect(() => {
     const getGiayData = async () => {

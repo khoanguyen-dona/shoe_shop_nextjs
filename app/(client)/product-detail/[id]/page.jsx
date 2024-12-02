@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setWishlist } from '@/redux/wishlistRedux';
 import { userRequest } from '@/requestMethod';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-
+import { setCart } from '@/redux/cartRedux';
 
 const ProductDetail = () => {
     const dispatch = useDispatch()
@@ -26,7 +26,7 @@ const ProductDetail = () => {
     const [product, setProduct]=useState({})
 
     //  add to wishlistArray
-    wishlist.wishlist.products.map((item)=> wishlistArray.push(item._id)) 
+    wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
    console.log('wishlist --->',wishlist)
 
   const addToWishlist = async (e) => {
@@ -44,7 +44,24 @@ const ProductDetail = () => {
     }
 
   }
+  const addToCart = async (e) => {
+    e.preventDefault()
+    try{
+      const res = await userRequest.post(`/cart/${user._id}`, {
+        productId: productId,
+        name: product.name,
+        quantity: 1,
+        color: color, 
+        size: size
+      }) 
+      if(res.data){
+        dispatch(setCart(res.data))
+      }
 
+    }catch(err){
+      
+    }
+  }
 
     useEffect(()=> {
       const getProduct = async () => {
@@ -107,11 +124,20 @@ const ProductDetail = () => {
           <hr className='border-2 border-gray-300 '/>
           <div className='flex  ' >
             <div className='border-gray-400 border-4 mr-1 flex p-1 ' >
-              <span className='hover:bg-black hover:text-white transition  ' ><RemoveIcon sx={{fontSize:50}} /></span>
-              <span className='text-4xl py-1 font-bold ' >2</span>
-              <span className='hover:bg-black hover:text-white transition ' ><AddIcon sx={{fontSize:50}} /></span>
+              <span className='hover:bg-black hover:text-white transition  ' >
+                <RemoveIcon   sx={{fontSize:50}} />
+              </span>
+              <span className='text-4xl py-1 font-bold ' >1</span>
+              <span className='hover:bg-black hover:text-white transition ' >
+                <AddIcon sx={{fontSize:50}} />
+              </span>
             </div>
-            <button className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >Thêm vào giỏ hàng</button>
+            <button 
+                onClick={addToCart}
+                className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >
+                  Thêm vào giỏ hàng
+            </button>
+
           </div>
           
          
