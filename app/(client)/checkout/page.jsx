@@ -11,15 +11,18 @@ import { useRouter } from 'next/navigation';
 import { useSelector,useDispatch } from 'react-redux';
 import { userRequest } from '@/requestMethod';
 import { setCart } from '@/redux/cartRedux';
-
+import Loader from '@/components/Loader';
 
 const Checkout = () => {
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
-  const products = cart?.cart?.products
+  const [loading, setLoading]=useState(false)
+ 
+  const products = cart?.products
   const router = useRouter()
   const [error, setError]=useState('')
+  const errorMessage = ' Please try again'
   const [messageOption, setMessageOption]= useState(false)
   // calculate total price
   const totalPrice = products?.reduce((total, item) => {
@@ -38,6 +41,7 @@ const Checkout = () => {
 
   const handleSubmit = async (e) => { 
       e.preventDefault()
+      setLoading(true)
       try{
         const res = await userRequest.post(`/order/${user._id}`, {
           clientName: firstName+' '+ lastName,
@@ -49,12 +53,15 @@ const Checkout = () => {
           message: message
         })
         if(res.data){
+          userRequest.post(`/cart/${user._id}/reset-cart`,{});
+
           router.push(`/checkout-success/${res.data.order._id}`); 
+          
           dispatch(setCart(null))
         } else {
           setError('please try again')
         }
-
+        setLoading(false)
       }catch(err){}
       
   }
@@ -159,10 +166,12 @@ const Checkout = () => {
           <button 
             type='submit'
             
-            className='p-4 w-full bg-black text-white font-bold hover:text-gray-400 transition mt-2 ' 
+            className={`  p-4  w-full bg-black text-white font-bold hover:text-gray-400 transition mt-2 
+              ${loading ? 'cursor-not-allowed' : '' }`} 
           >                   
-                Đặt hàng                                     
+                Đặt hàng     {loading ? <Loader color={'inherit'}  /> : '' }                                
           </button>
+          {error ? errorMessage : '' }
          {error ? error: '' }
         </form>
 

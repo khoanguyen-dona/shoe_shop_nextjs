@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { CircularProgress } from '@mui/material'
-const Loader = () => {
+const Loader = ({color}) => {
   return (
-    <div className='m-auto mb-20 ' >
-        <CircularProgress  />
+    <div className='text-center ' >
+        <CircularProgress color={color}  />
     </div>
   )
 }

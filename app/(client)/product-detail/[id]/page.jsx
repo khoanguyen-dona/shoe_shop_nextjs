@@ -36,7 +36,7 @@ const ProductDetail = () => {
         productId: productId
       })
       if(res.data){
-        dispatch(setWishlist(res.data))
+        dispatch(setWishlist(res.data.wishlist))
       }
 
     } catch(err) {
@@ -55,7 +55,7 @@ const ProductDetail = () => {
         size: size
       }) 
       if(res.data){
-        dispatch(setCart(res.data))
+        dispatch(setCart(res.data.cart))
       }
 
     }catch(err){

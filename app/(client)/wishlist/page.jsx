@@ -12,9 +12,10 @@ const Wishlist = () => {
   const wishlist = useSelector((state)=>state.wishlist.userWishlist)
   const wishlistArray = []
 
-  wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
+  wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
   const data = wishlist?.products
 
+  console.log('wlA --->',wishlist)
 
   return (
     <div className='flex flex-col mt-20 '  >

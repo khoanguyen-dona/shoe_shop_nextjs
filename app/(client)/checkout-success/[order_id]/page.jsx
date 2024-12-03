@@ -6,25 +6,31 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { userRequest } from '@/requestMethod';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns' 
 
 const CheckoutSuccess = () => {
 
   const order_id = useParams().order_id
   const [order, setOrder] = useState({})
-  const products = order.products
+
+ 
+
+
+  const products = order?.products
   useEffect (()=> {
     const getOrder = async () => {
       try{
-        const res = await userRequest.get(`/order/${order_id}`)   
+        const res = await userRequest.get(`/order/${order_id}`) 
+        
         if(res.data) {
+        
           setOrder(res.data)   
         }
       }catch(err){}  
     }
     getOrder();
   }, [])
-
-  console.log('product --->',order)
+  
   return (
     <div className='px-4 lg:px-24 2xl:px-96 flex flex-col mt-20 ' >
       <div className='font-extrabold text-3xl text-center' >
@@ -40,7 +46,8 @@ const CheckoutSuccess = () => {
           Mã đơn hàng: <span className='font-bold' >{order_id}</span>
         </div>
         <div>
-          Ngày: <span className='font-bold' >{order.createdAt}</span>
+          Ngày: <span className='font-bold' > 
+         {format(Date(), "yyyy-MMMM-do-eeee-hh:mm:ss a")};</span> 
         </div>
         <div>
           Tổng cộng: <span className='font-bold' >{FormatCurrency(order.total)} đ</span>

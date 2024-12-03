@@ -16,6 +16,7 @@ const Cart = () => {
   const cart = useSelector((state)=>state.cart.userCart)
   const products = cart?.products
   
+
   // calculate total price
   const totalPrice = products?.reduce((total, item) => {
     const { price, quantity } = item;
@@ -31,7 +32,7 @@ const Cart = () => {
         size: product.size
       })
       if(res.data){
-        dispatch(setCart(res.data))
+        dispatch(setCart(res.data.cart))
       }
     }catch(err){}
   }
@@ -46,7 +47,7 @@ const Cart = () => {
         size: product.size
       })
       if(res.data){
-        dispatch(setCart(res.data))
+        dispatch(setCart(res.data.cart))
       }
     }catch(err){}
   }
@@ -59,7 +60,7 @@ const Cart = () => {
         size: product.size
       })
       if(res.data){
-        dispatch(setCart(res.data))
+        dispatch(setCart(res.data.cart))
       }
     }catch(err){}
   }

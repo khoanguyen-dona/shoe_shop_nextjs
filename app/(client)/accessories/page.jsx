@@ -15,7 +15,7 @@ const Accessories = () => {
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
-  wishlist.wishlist.products.map((item)=> wishlistArray.push(item._id))
+  wishlist?.products?.map((item)=> wishlistArray.push(item._id))
 
   const size_data = ['5 US','5.5 US','6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
     '11 US']

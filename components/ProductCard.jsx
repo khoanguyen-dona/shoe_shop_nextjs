@@ -17,7 +17,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
         productId: data._id
       })
       if(res.data){
-        dispatch(setWishlist(res.data))
+        dispatch(setWishlist(res.data.wishlist))
       }
 
     } catch(err) {

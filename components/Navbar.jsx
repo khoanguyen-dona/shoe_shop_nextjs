@@ -21,8 +21,7 @@ const Navbar = () => {
   const router = useRouter()
   const[searchTerm,setSearchTerm]=useState('')
  
-  console.log('cart-->',cart)
-  console.log('wishl-->',wishlist)
+
 
 
   const handleToggle = () => {

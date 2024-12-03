@@ -15,7 +15,7 @@ const Clothes = () => {
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
-  wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id))
+  wishlist?.products?.map((item)=> wishlistArray.push(item._id))
 
   const size_data = ['S','M','L','XL']
   const [size,setSize]=useState([]);
