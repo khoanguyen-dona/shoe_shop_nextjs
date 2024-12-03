@@ -13,8 +13,7 @@ const Wishlist = () => {
   const wishlistArray = []
 
   wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
-  const data=wishlist?.wishlist?.products
- 
+  const data = wishlist?.products
 
 
   return (

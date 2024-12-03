@@ -14,9 +14,8 @@ const Cart = () => {
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
-  const products = cart?.cart?.products
+  const products = cart?.products
   
-
   // calculate total price
   const totalPrice = products?.reduce((total, item) => {
     const { price, quantity } = item;
@@ -24,8 +23,6 @@ const Cart = () => {
     return total + price * quantity;
   }, 0);
  
-
-
   const decreaseItem = async (product) => {
     try{
       const res = await userRequest.post(`/cart/${user._id}/decrease-item`,{
@@ -68,7 +65,7 @@ const Cart = () => {
   }
 
 
-  console.log('cart--->',cart)
+  
   return (
     <div className='flex flex-col sm:flex-col md:flex-row   sm:px-4 lg:px-24 2xl:px-96   mt-20  ' >
       {/* left col */}

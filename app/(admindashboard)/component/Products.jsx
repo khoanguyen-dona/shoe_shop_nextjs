@@ -25,7 +25,7 @@ const Products = ({setCurrentPage}) => {
             </tr>
           </thead>  
           <tbody>
-            {giayData.map((d,index) => (                        
+            {giayData?.map((d,index) => (                        
               <tr key={index} className='border border-solid' >
                 <td className='border-2  ' ><img className='w-16' src={d.thumbnail} alt="" /></td>
                 <td className='border-2 p-1  ' >{d.productName}</td>

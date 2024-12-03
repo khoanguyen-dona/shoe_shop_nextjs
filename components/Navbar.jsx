@@ -20,6 +20,10 @@ const Navbar = () => {
   const[menu,setMenu]=useState(false)
   const router = useRouter()
   const[searchTerm,setSearchTerm]=useState('')
+ 
+  console.log('cart-->',cart)
+  console.log('wishl-->',wishlist)
+
 
   const handleToggle = () => {
     setMenu((prev) => !prev)
@@ -68,16 +72,16 @@ const Navbar = () => {
           </span>  
           <a href='/wishlist' className='relative  ' >
             <FavoriteBorderIcon sx={{fontSize: '30px'}} />
-            { wishlist === null ||  wishlist?.wishlist?.products?.length===0 ? '' :
+            { wishlist === null ||  wishlist?.products?.length === 0 ? '' :
             <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
-              { wishlist.wishlist?.products?.length } </span>
+              { wishlist?.products?.length } </span>
             }
           </a>    
           <a href='/cart' className='relative' > 
             <ShoppingCartOutlinedIcon sx={{fontSize: '30px'}}/> 
-            {cart===null ||  cart?.cart?.products?.length === 0 ? '' : 
+            {cart===null ||  cart?.products?.length === 0 ? '' : 
             <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 
-              { cart.cart?.products?.length } </span>
+              { cart?.products?.length } </span>
             }
           </a>
           { user!== null ?
@@ -104,21 +108,22 @@ const Navbar = () => {
         <span className='relative' >
           <a href="/wishlist">
             <FavoriteBorderIcon fontSize='large' />
-            {wishlist === null ||  wishlist.wishlist.products.length === 0 ? '' :
+            {wishlist === null ||  wishlist?.products?.length === 0 ? '' :
             <span className='absolute bottom-5 left-5 px-2  rounded-full text-white bg-red-500 ' >
-              {wishlist.wishlist.products.length}</span>
+              {wishlist?.products?.length}</span>
             }
           </a>
         </span>
         <span className='relative' >
           <a href="/cart">
             <ShoppingCartOutlinedIcon fontSize='large' />
-            { cart === null || cart.cart.products.length === 0 ? '' :
+            {cart===''|| cart === null || cart?.products?.length === 0 ? '' :
             <span className='absolute bottom-5 left-5 px-2 rounded-full text-white bg-red-500 ' >
-              {cart.cart.products?.length}</span>
+              {cart?.products?.length}</span>
             }
           </a>
         </span>
+        
         <span>
         { user!== null ?
           <a href={`/profile/${user._id}`} >

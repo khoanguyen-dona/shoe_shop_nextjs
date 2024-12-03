@@ -7,6 +7,8 @@ import { publicRequest } from '@/requestMethod';
 import { useDispatch }  from 'react-redux'
 import { setLogin } from '@/redux/userRedux';
 import Loader from '@/components/Loader';
+import { setCart } from '@/redux/cartRedux';
+import { setWishlist } from '@/redux/wishlistRedux';
 
 const Login = () => { 
   const router = useRouter()
@@ -26,7 +28,10 @@ const Login = () => {
       })
 
       if (res.data) {
-        dispatch(setLogin(res.data)) 
+        dispatch(setLogin(res.data))
+        dispatch(setCart(res.data.cart))
+        dispatch(setWishlist(res.data.wishlist)) 
+        console.log('-->res.data',res.data)
         router.push('/')
       }
     
