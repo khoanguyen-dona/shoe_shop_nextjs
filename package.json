@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
+    "firebase": "^11.0.2",
     "next": "15.0.3",
     "nextjs_shoe_shop": "file:",
     "numeral": "^2.0.6",

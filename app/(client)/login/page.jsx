@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { publicRequest } from '@/requestMethod';
 import { useDispatch }  from 'react-redux'
-import { setLogin } from '@/redux/userRedux';
+import { setUser } from '@/redux/userRedux';
 import Loader from '@/components/Loader';
 import { setCart } from '@/redux/cartRedux';
 import { setWishlist } from '@/redux/wishlistRedux';
@@ -17,7 +17,8 @@ const Login = () => {
   const [err, setError] = useState(false)
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
-  
+  console.log('-->',email,password)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -28,18 +29,19 @@ const Login = () => {
       })
 
       if (res.data) {
-        dispatch(setLogin(res.data))
+        dispatch(setUser(res.data))
         dispatch(setCart(res.data.cart))
         dispatch(setWishlist(res.data.wishlist)) 
         console.log('-->res.data',res.data)
         router.push('/')
+        setLoading(false)
       }
     
     } catch(err){
       console.log(err)
       setError(true)
     }   
-    setLoading(false)
+    
   }
 
   return (
@@ -48,6 +50,9 @@ const Login = () => {
       className="px-4 sm:px-24 lg:px-48  py-16   flex justify-center  
       h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')]" 
     >
+      {loading ? 
+         <div className='flex justify-center' >  <Loader  color={'inherit'} />  </div> 
+         : ''}
       <div className='w-full 2xl:w-3/6  h-[550px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white  '>
         <p className='font-extrabold text-2xl text-center mt-4' >Đăng nhập</p>
         <form action="" onSubmit={handleSubmit} className='space-y-4 mt-8 ' >
@@ -58,7 +63,7 @@ const Login = () => {
         
             <button className={`bg-black p-4 text-center text-white font-bold hover:text-gray-500 w-full transition 
                 '  type='submit'  ${loading ?"cursor-not-allowed":""}  `}>
-              Đăng nhập 
+              Đăng nhập  
             </button>
         
         </form>
@@ -78,7 +83,7 @@ const Login = () => {
           </span>
         
         </div>
-        { loading ? (<Loader   className='fixed top-0  p-8 text-secondary z-20 ' />) :''  }
+  
       </div>
     </div>
    

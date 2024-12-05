@@ -4,7 +4,7 @@ import React from 'react'
 import { CircularProgress } from '@mui/material'
 const Loader = ({color}) => {
   return (
-    <div className='text-center ' >
+    <div className=' fixed  top-40  ' >
         <CircularProgress color={color}  />
     </div>
   )
