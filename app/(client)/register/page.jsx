@@ -47,7 +47,8 @@ const Register = () => {
     >
       <div className='w-full 2xl:w-3/6  h-[600px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white'>
         {loading ?  <div className='flex justify-center ' >  <Loader  color={'inherit'} />  </div> : ''}
-        <p className='font-extrabold text-2xl text-center mt-4' >Đăng kí</p>
+        
+        <p className='font-extrabold text-2xl text-center mt-4' >Đăng kí  </p>
         <form action="" onSubmit={handleSubmit} className='space-y-4 mt-8 ' >
           <input className='w-full p-4 flex justify-center border-2  '  type="text" value={username} required
                   placeholder='Username' name='username' onChange={(e)=>setUsername(e.target.value)} />
