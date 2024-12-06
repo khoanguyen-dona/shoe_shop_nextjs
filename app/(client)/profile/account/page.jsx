@@ -171,7 +171,7 @@ const profileAccount = () => {
 
         <p className='font-bold text-4xl' > Account</p>
     
-        <form action="" className='flex flex-col space-y-4 mt-8  '   >
+        <form action="" className='flex flex-col  space-y-4 mt-8  '   >
 
             <div>
                 <p className='text-sm text-gray-500' >Username</p>
@@ -191,7 +191,7 @@ const profileAccount = () => {
     
            
             <div>
-                <p className='font-bold  mt-4 mb-2' >Ảnh thumbnail </p>
+                <p className='text-sm text-gray-500  mt-4 mb-2' >Ảnh đại diện </p>
                     <label className='hover:text-white  border-[1px] font-semibold hover:bg-black p-2 transition border-black ' 
                             htmlFor="thumbnail">
                         Chọn ảnh
@@ -216,51 +216,53 @@ const profileAccount = () => {
 
 
         </form>
+
         <div className='flex justify-center' >
-                <p  className='w-1/3   p-4  text-black font-bold hover:text-gray-500 transition  cursor-pointer'
+                <p  className='w-full lg:w-1/3   p-4  text-black font-bold hover:text-gray-500 transition  cursor-pointer'
                     onClick={handleExpandPasswordChange} >
                         Đổi mật khẩu 
                         <ExpandLessIcon fontSize='large' className={`transform-gpu  ${passwordButton?'':'rotate-180'} `} /> 
                 </p>
-            </div>
-            { passwordButton &&
-            <div className='space-y-4' >
-                <div>
-                <p className='text-sm text-gray-500  ' >Password cũ </p>
-                    <input  className='border-2 p-2 w-full md:w-2/3 ' type={`${seePassword ? 'text':'password'}`}  
-                        onChange={(e)=>setPassword(e.target.value)}   />
-                </div>
-                
-                <div className='' >
-                <p className='text-sm text-gray-500' >Password mới</p>
-                    <input  className='border-2 p-2 w-full md:w-2/3 ' type={`${seePassword ? 'text':'password'}`}
-                        onChange={(e)=>setNewPassword1(e.target.value)}   />
-                </div>
+        </div>
 
-                <div>
-                <p className='text-sm text-gray-500' >Nhập lại password mới</p>
-                    <input  className='border-2 p-2 w-full md:w-2/3 ' type={`${seePassword ? 'text':'password'}`}
-                        onChange={(e)=>setNewPassword2(e.target.value)}   />
-                </div>
-                { newPassword1 !== newPassword2 ?
-
-                    <div className='text-red-500' >Password nhập lại phải giống Password mới ! </div> : ''
-                }
-                <div className='w-full p-4 font-bold  cursor-pointer ' onClick={handleSeePassword} >
-                    See password
-                    <span className=' text-center p-4' >
-                    {seePassword ? <VisibilityOffIcon fontSize='large' /> : <VisibilityIcon fontSize='large' /> }
-                    </span>
-                    </div>
-                <div className='flex justify-center' >
-                    <p  className='w-1/3   p-4 bg-black text-white font-bold hover:text-gray-500 transition  cursor-pointer'
-                        onClick={handleUpdatePassword}  >Update mật khẩu</p>
-                </div>
-                <div>
-                    {error ? <div className='text-red-500 font-bold' >Sai password!</div> : ''   }
-                </div>
+        { passwordButton &&
+        <div className='space-y-4' >
+            <div>
+            <p className='text-sm text-gray-500  ' >Password cũ </p>
+                <input  className='border-2 p-2 w-full md:w-2/3 ' type={`${seePassword ? 'text':'password'}`}  
+                    onChange={(e)=>setPassword(e.target.value)}   />
             </div>
+            
+            <div className='' >
+            <p className='text-sm text-gray-500' >Password mới</p>
+                <input  className='border-2 p-2 w-full md:w-2/3 ' type={`${seePassword ? 'text':'password'}`}
+                    onChange={(e)=>setNewPassword1(e.target.value)}   />
+            </div>
+
+            <div>
+            <p className='text-sm text-gray-500' >Nhập lại password mới</p>
+                <input  className='border-2 p-2 w-full md:w-2/3 ' type={`${seePassword ? 'text':'password'}`}
+                    onChange={(e)=>setNewPassword2(e.target.value)}   />
+            </div>
+            { newPassword1 !== newPassword2 ?
+
+                <div className='text-red-500' >Password nhập lại phải giống Password mới ! </div> : ''
             }
+            <div className='w-full p-4 font-bold  cursor-pointer ' onClick={handleSeePassword} >
+                See password
+                <span className=' text-center p-4' >
+                {seePassword ? <VisibilityOffIcon fontSize='large' /> : <VisibilityIcon fontSize='large' /> }
+                </span>
+                </div>
+            <div className='flex justify-center' >
+                <p  className='w-1/3   p-4 bg-black text-white font-bold hover:text-gray-500 transition  cursor-pointer'
+                    onClick={handleUpdatePassword}  >Update mật khẩu</p>
+            </div>
+            <div>
+                {error ? <div className='text-red-500 font-bold' >Sai password!</div> : ''   }
+            </div>
+        </div>
+        }
 
             
     </div>
