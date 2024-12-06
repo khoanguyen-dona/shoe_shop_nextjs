@@ -25,7 +25,7 @@ const Orders = ({setCurrentPage}) => {
             </tr>
           </thead>  
           <tbody>
-            {orderData.map((d,index) => (                        
+            {orderData?.map((d,index) => (                        
               <tr key={index} className='border border-solid' >
                 <td className='border-2 px-1 ' > {d.id} </td>
                 <td className='border-2 px-1 ' >{d.clientName}</td>

@@ -20,6 +20,10 @@ const AddProduct = () => {
             setThumbnail(imageURL)
         }
     }
+    const handleRemoveThumbnail = (e) => {
+        setThumbnail('')
+    }
+
     const handleImageGallery = (e) => {
         const files = Array.from(e.target.files)
         const imgUrls = files.map(f=>URL.createObjectURL(f))
@@ -83,7 +87,10 @@ const AddProduct = () => {
                 </label>
                 
                 {thumbnail.length>0 &&        
-                    <img  className='w-32 mt-3 border-2' src={thumbnail}  />                                                                  
+                <div className='relative ' >
+                    <img  className='w-32 mt-3 border-2' src={thumbnail}  />   
+                    <DeleteIcon className='absolute  text-gray-400 hover:text-black  top-0 'onClick={handleRemoveThumbnail} />
+                </div>                                                              
                 } 
                 
                 

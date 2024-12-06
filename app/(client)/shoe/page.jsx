@@ -2,17 +2,39 @@
 import React from 'react'
 
 import ProductCard from '@/components/ProductCard'
-import { giayData } from '@/Data/data'
-import { useState } from 'react'
+import { useState ,useEffect} from 'react'
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { useSelector } from 'react-redux';
+import { publicRequest } from '@/requestMethod';
+
 
 const Shoe = () => {
+  const user =useSelector((state)=>state.user.currentUser)
+  const wishlist = useSelector((state)=> state.wishlist.userWishlist)
+  const wishlistArray = []
+  wishlist?.products?.map((item)=> wishlistArray.push(item._id))
+
+
+  console.log('wishl--->',wishlist)
+
   const size_data = ['5 US','5.5 US','6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
     '11 US']
   const [size,setSize]=useState([]);
-
   const[filter,setFilter]=useState(false)
+  const[products,setProducts]=useState([])
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {    
+        const res = await publicRequest.get('/product?category=Giày')
+        setProducts(res.data)
+      } catch {}
+    }
+    getProducts();
+  },[])
+
+console.log('products--->',products)
 
   const handleFilterClick = () => {
     setFilter((prev) => !prev) ;
@@ -47,10 +69,8 @@ const Shoe = () => {
         </div>
         {/* product list */}
         <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-2  mx-2' >
-          {giayData.map((d,index)=>(
-
-            <ProductCard key={index} data={d} />
-
+          {products?.map((d,index)=>(
+            <ProductCard key={index} data={d} user={user}  wishlistArray={wishlistArray} />         
           ))}  
         </div>
 
