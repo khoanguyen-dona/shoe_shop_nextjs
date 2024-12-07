@@ -123,7 +123,7 @@ const ProductDetail = () => {
           {/* add to cart */}
           <hr className='border-2 border-gray-300 '/>
           <div className='flex  ' >
-            <div className='border-gray-400 border-4 mr-1 flex p-1 ' >
+            {/* <div className='border-gray-400 border-4 mr-1 flex p-1 ' >
               <span className='hover:bg-black hover:text-white transition  ' >
                 <RemoveIcon   sx={{fontSize:50}} />
               </span>
@@ -131,7 +131,7 @@ const ProductDetail = () => {
               <span className='hover:bg-black hover:text-white transition ' >
                 <AddIcon sx={{fontSize:50}} />
               </span>
-            </div>
+            </div> */}
             <button 
                 onClick={addToCart}
                 className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >

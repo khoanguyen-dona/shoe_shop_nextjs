@@ -27,7 +27,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
   }
 
   return (
-    <div className=' flex flex-col relative  ' >
+    <div className=' flex flex-col relative p-1 ' >
       <a className='flex flex-col' href={`/product-detail/${data._id}`}>
 
         <div className='absolute top-4 right-4 z-10' >

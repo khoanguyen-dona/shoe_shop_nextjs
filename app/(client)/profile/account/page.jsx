@@ -24,14 +24,14 @@ import SuccessPopup from '@/components/Popup/SuccessPopup'
 
 const profileAccount = () => {
     const dispatch= useDispatch()
-    const user = useSelector((state)=>state.user.currentUser)
+    const user = useSelector((state)=>state.user?.currentUser)
 
-    const [username, setUsername]= useState(user.username)
-    const [email, setEmail]= useState(user.email)
+    const [username, setUsername]= useState(user?.username)
+    const [email, setEmail]= useState(user?.email)
     const [password, setPassword]= useState('')
     const [newPassword1, setNewPassword1] = useState('')
     const [newPassword2, setNewPassword2] = useState('')
-    const [previewImage, setPreviewImage]= useState(user.img)
+    const [previewImage, setPreviewImage]= useState(user?.img)
     const [file, setFile] = useState('')
     
     const [loading, setLoading]= useState(false)
@@ -199,8 +199,8 @@ const profileAccount = () => {
                     </label>
                     
                     {previewImage  && 
-                    <div className='relative flex justify-center' >       
-                        <img  className='w-32 mt-3 border-2  ' src={previewImage}  />                                
+                    <div className='relative flex justify-center  ' >       
+                        <img  className='w-32 mt-3 border-2 rounded-full ' src={previewImage}  />                                
                     </div>                                                      
                     } 
             </div>

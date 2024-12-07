@@ -30,4 +30,8 @@ body {
     background-color:black;
     
   }
+  .MuiDataGrid-columnHeaderTitle{
+   color:gray;
+   font-weight:700 ;
+  }
 }
