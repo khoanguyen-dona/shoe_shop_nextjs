@@ -98,7 +98,7 @@ const profileAccount = () => {
         const storageRef = ref(storage, `upload/avatar/${fileName}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
     
-         uploadTask.on(
+        uploadTask.on(
           "state_changed",
           (snapshot) => {
             const progress =

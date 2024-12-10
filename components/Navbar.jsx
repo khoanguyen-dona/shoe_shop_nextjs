@@ -85,9 +85,9 @@ const Navbar = () => {
           </div>
 
           <div className='space-x-10' >  
-            <a href='/shoe' className='  hover:border-b-black hover:border-b-4'  >Giày</a>
-            <a href='/clothes' className='  hover:border-b-black hover:border-b-4' >Quần áo</a>
-            <a href='/accessories' className='  hover:border-b-black hover:border-b-4'>Phụ kiện</a>      
+            <a href='/shoe' onClick={()=>setLoading(true)} className='  hover:border-b-black hover:border-b-4'  >Giày</a>
+            <a href='/clothes' onClick={()=>setLoading(true)}  className='  hover:border-b-black hover:border-b-4' >Quần áo</a>
+            <a href='/accessories' onClick={()=>setLoading(true)}  className='  hover:border-b-black hover:border-b-4'>Phụ kiện</a>      
           </div>
 
           <div className='space-x-10  ' >
@@ -100,14 +100,14 @@ const Navbar = () => {
                 <SearchIcon sx={{color:'white'}} />
               </span>          
             </span>  
-            <a href='/wishlist' className='relative  ' >
+            <a href='/wishlist' onClick={()=>setLoading(true)} className='relative  ' >
               <FavoriteBorderIcon sx={{fontSize: '30px'}} />
               { wishlist === null ||  wishlist?.products?.length === 0 ? '' :
               <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
                 { wishlist?.products?.length } </span>
               }
             </a>    
-            <a href='/cart' className='relative' > 
+            <a href='/cart'  onClick={()=>setLoading(true)}  className='relative' > 
               <ShoppingCartOutlinedIcon sx={{fontSize: '30px'}}/> 
               {cart===null ||  cart?.products?.length === 0 ? '' : 
               <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 
@@ -119,10 +119,10 @@ const Navbar = () => {
               <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}  className='hover:cursor-pointer' onClick={handleUserMenu}/>
               { userMenu &&
                 <div className='  flex flex-col text-left p-2 w-32 bg-white h-48 rounded shadow-2xl absolute right-10 top-12 z-40 ' >
-                <a href="/profile/account">
+                <a href="/profile/account" onClick={()=>setLoading(true)} >
                   <div className='hover:text-white hover:bg-black font-bold  p-2 rounded transition ' >Account</div>
                 </a>
-                <a href="/profile/order">
+                <a href="/profile/order" onClick={()=>setLoading(true)} >
                   <div className='hover:text-white hover:bg-black font-bold p-2 rounded transition ' >Order</div>
                 </a>
                 <hr />
@@ -134,7 +134,7 @@ const Navbar = () => {
                 }   
 
             </span> :
-            <a href='/login' >
+            <a href='/login' onClick={()=>setLoading(true)} >
               <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
             </a>
             }
@@ -164,10 +164,10 @@ const Navbar = () => {
             <SearchIcon fontSize='large'  className='hover:cursor-pointer' onClick={handleSearchMobileClick} />
           </span>
           <span className='font-bold text-xl' >
-            <a href="/">ShoeShop </a>  
+            <a href="/" onClick={()=>setLoading(true)}   >ShoeShop </a>  
             </span>
           <span className='relative' >
-            <a href="/wishlist">
+            <a href="/wishlist" onClick={()=>setLoading(true)}   >
               <FavoriteBorderIcon fontSize='large' />
               {wishlist === null ||  wishlist?.products?.length === 0 ? '' :
               <span className='absolute bottom-5 left-5 px-2  rounded-full text-white bg-red-500 ' >
@@ -176,7 +176,7 @@ const Navbar = () => {
             </a>
           </span>
           <span className='relative' >
-            <a href="/cart">
+            <a href="/cart" onClick={()=>setLoading(true)}  >
               <ShoppingCartOutlinedIcon fontSize='large' />
               {cart===''|| cart === null || cart?.products?.length === 0 ? '' :
               <span className='absolute bottom-5 left-5 px-2 rounded-full text-white bg-red-500 ' >
@@ -187,10 +187,10 @@ const Navbar = () => {
           
           <span>
           { user!== null ?
-            <a href={`/profile/${user._id}`} >
+            <a href={`/profile/${user._id}`} onClick={()=>setLoading(true)}   >
             <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
             </a> :
-            <a href='/login' >
+            <a href='/login'   onClick={()=>setLoading(true)} >
               <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}/>
             </a>
             }
@@ -201,23 +201,23 @@ const Navbar = () => {
       <div className={`w-screen h-screen transform duration-300  transition-transform bg-white top-0 z-50 fixed flex flex-col p-4
         ${menu?'translate-x-0':'-translate-x-full'} `} >
         <div className='flex transition mb-5 justify-between '   >
-          <p className='font-extrabold text-4xl  ' > <a href="/"> ShoeShop </a> </p>
+          <p className='font-extrabold text-4xl  ' > <a href="/" onClick={()=>setLoading(true)}  > ShoeShop </a> </p>
           <CloseIcon  className='hover:cursor-pointer' onClick={handleToggle} fontSize='large' />
         </div>
         <hr />
         <div className=' mt-4 space-y-4 text-2xl font-bold' >
           <p> 
-            <a href="/shoe">
+            <a href="/shoe" onClick={()=>setLoading(true)}  >
               Giày
             </a>
           </p>
           <p>
-            <a href="/clothes">
+            <a href="/clothes" onClick={()=>setLoading(true)}  >
             Quần áo
             </a>
           </p> 
           <p>
-            <a href="/accessories">
+            <a href="/accessories" onClick={()=>setLoading(true)}  >
               Phụ kiện
             </a>
           </p>

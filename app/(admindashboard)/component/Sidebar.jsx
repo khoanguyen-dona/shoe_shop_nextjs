@@ -1,21 +1,27 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 
+const SideBar = () => {
+  const pathname = usePathname()
+  const currentPage = pathname.split('/')[2]
+  const menu = ['products','orders','categories','users']
 
-const SideBar = ({currentPage,setCurrentPage}) => {
-
-  const menu = ['Products','Orders','Categories','Users']
   return (
-    <div className='flex flex-col space-y-2 mt-20 text-white '>
+    <div className='flex flex-col space-y-2  text-white p-4 '>
       {menu.map((m,index) => (
-        <button key={index}
-          value={m} 
-          onClick={(e)=>setCurrentPage(e.target.value)}
-          className={`border-2 hover:bg-black  transition p-4 font-bold 
-          ${currentPage===m ? 'bg-black text-white':''  }`} 
+        <a href={`/admin/${m}`} key={index}  >
+           <button 
+                  onClick={(m)=>setCurrentPage(m)}
+                  value={m}    
+                  className={`border-2 hover:bg-black  transition p-4 font-bold w-full
+                  ${currentPage===m ? 'bg-black text-white ':''  }`} 
         >
             {m}          
-        </button>
+          </button>
+        </a>
+       
         
       ))}    
     </div>
