@@ -12,7 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const Users = () => {
 
-const [users, setUsers]= useState('')
+  const [loading, setLoading] = useState(true)
+  const [users, setUsers]= useState('')
 
 
   const handleSeeDetail = () => {
@@ -25,6 +26,7 @@ const [users, setUsers]= useState('')
         const res = await userRequest.get(`/user`) 
         if(res.data){
           setUsers(res.data.users)
+          setLoading(false)
         }
       }catch(err) {
         console.log(err)
@@ -104,7 +106,8 @@ const [users, setUsers]= useState('')
 
 
   return (
-    <div className='flex flex-col' >
+    <div className={`flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
+      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
       <p className='font-bold text-3xl mt-20' >Users</p>
       <div className='flex flex-col' >
       <DataGrid

@@ -35,26 +35,28 @@ const AddProduct = () => {
     
     const [thumbnail, setThumbnail] = useState('')
     const [thumbnailFile, setThumbnailFile] = useState('')
-    const [thumbnailUrl, setThumbnailUrl] = useState('')
-
+   
     const [imageGallery, setImageGallery] = useState([])
     const [imageGalleryFile, setImageGalleryFile] = useState([])
     var imageGalleryUrl = []
 
+    // console.log('img gal file ->',imageGalleryFile)
+    // console.log('img gal',imageGallery)
+
     const [desc, setDesc] = useState('')
 
     // handle from string to array
-    formCategory.split('|').map((item)=> {
+    formCategory.split(',').map((item)=> {
         item = item.trim()
         category.push(item)
     })
 
-    formSize.split('|').map((item)=> {
+    formSize.split(',').map((item)=> {
         item = item.trim()
         size.push(item)
     })
 
-    formColor.split('|').map((item)=> {
+    formColor.split(',').map((item)=> {
         item = item.trim()
         color.push(item)
     })
@@ -83,7 +85,9 @@ const AddProduct = () => {
     
     const handleRemoveImageGallery = (index) => {
         const imgs=imageGallery.filter((_, i) => i !== index)
+        const files = imageGalleryFile.filter((_, i)=> i !==index)
         setImageGallery(imgs)
+        setImageGalleryFile(files)
     }
     // close the popup
     const handleClosePopup = () => {
@@ -130,10 +134,7 @@ const AddProduct = () => {
         await handleUploadImageGallery()
         await handleUploadThumbnail()
         setLoading(false)
-        setNotifySuccess(true)
-        setTimeout(()=>{
-            setNotifySuccess(false)
-        }, 3000)
+        
     }
 
     // create product .
@@ -152,7 +153,11 @@ const AddProduct = () => {
                 price: price
             })
             if(res.data){
-                console.log('-->create product success',res.data)
+                setNotifySuccess(true)
+                setTimeout(()=>{
+                    setNotifySuccess(false)
+                }, 3000)
+                console.log('-->create product success',res.data.product)
                 
             }
         }catch(err) {
@@ -202,14 +207,14 @@ const AddProduct = () => {
                 <p className='text-sm text-gray-500' >Size sản phẩm</p>
                 <textarea  className='border-2 p-2 w-2/3 ' type="text" 
                     onChange={(e)=>setFormSize(e.target.value)}  value={formSize} />
-                <p className='text-red-500 text-sm' >Lưu ý mỗi Size cách nhau một dấu '|' Ví dụ : 6 US|7 US ...</p>
+                <p className='text-red-500 text-sm' >Lưu ý mỗi Size cách nhau một dấu ',' Ví dụ : 6 US,7 US ...</p>
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Màu sản phẩm</p>
                 <textarea  className='border-2 p-2 w-2/3 ' type="text" 
                     onChange={(e)=>setFormColor(e.target.value)}  value={formColor} />
-                <p className='text-red-500 text-sm' >Lưu ý mỗi Color cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>
+                <p className='text-red-500 text-sm' >Lưu ý mỗi Color cách nhau một dấu ',' Ví dụ : black,white,blue ...</p>
             </div>
 
             <div>

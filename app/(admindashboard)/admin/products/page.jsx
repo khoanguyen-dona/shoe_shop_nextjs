@@ -123,7 +123,7 @@ const [products, setProducts]= useState('')
       <a  
           onClick={()=>setLoading(true)}
           href="/admin/add-product" className='my-2 p-4 text-center text-xl rounded hover:bg-green-800 transition  w-[200px] bg-green-500
-           text-white font-bold' >Thêm sản phẩm</a>
+           text-white font-bold' disabled={loading}>Thêm sản phẩm</a>
       <div className='flex flex-col' >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
       <DataGrid
