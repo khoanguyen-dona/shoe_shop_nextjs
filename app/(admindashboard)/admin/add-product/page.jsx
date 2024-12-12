@@ -170,7 +170,7 @@ const AddProduct = () => {
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
          {notifySuccess ? 
             <div  className='flex justify-center p-4' > 
-                <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+                <SuccessPopup  message={'Add product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
             </div>  : '' }
         <p className='text-3xl font-bold' >
             Thêm sản phẩm 

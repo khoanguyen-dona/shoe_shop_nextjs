@@ -48,11 +48,8 @@ const ProductDetail = () => {
     const [imageGalleryFile, setImageGalleryFile] = useState([])
     var imageGalleryUrl = []
 
-    // console.log('img gal file-->',imageGalleryFile)
-    console.log('thumbnail ------------>',thumbnail)
-    console.log('thumbnail file->',thumbnailFile)
-    console.log('img gallery->',imageGallery)    
-    console.log('img gallery file->',imageGalleryFile)
+    const [inStock, setInStock] = useState('')
+    console.log('instock ',inStock)
     const [desc, setDesc] = useState('')
 
      // handle from string to array
@@ -86,7 +83,7 @@ const ProductDetail = () => {
                 setFormSize(res.data.size)
                 setFormColor(res.data.color)
                 setPrice(res.data.price)
-
+                setInStock(res.data.inStock)
                 setLoading(false)
                 }
              } catch {}
@@ -127,6 +124,10 @@ const ProductDetail = () => {
             })
             if(res.data){
                 setLoading(false)
+                setNotifySuccess(true)
+                setTimeout(()=> {
+                    setNotifySuccess(false)
+                },3000)
                 console.log(res.data)
             }
         } catch (err) {
@@ -168,6 +169,10 @@ const ProductDetail = () => {
             })
             if(res.data){
                 setLoading(false)
+                setNotifySuccess(true)
+                setTimeout(()=> {
+                    setNotifySuccess(false)
+                },3000)
                 console.log(res.data)
             }
         } catch (err) {
@@ -235,7 +240,8 @@ const ProductDetail = () => {
                     categories: category ,
                     size: size,
                     color: color,
-                    price: price 
+                    price: price ,
+                    inStock: inStock
                     
                 })
                 if(res.data){
@@ -251,7 +257,8 @@ const ProductDetail = () => {
                     categories: category ,
                     size: size,
                     color: color,
-                    price: price 
+                    price: price,
+                    inStock: inStock
                     
                 })
                 if(res.data){
@@ -337,6 +344,32 @@ const ProductDetail = () => {
                     onChange={(e)=>setDesc(e.target.value)}  value={desc} />
          
             </div>
+            
+            {/* <div className='space-y-2 flex flex-col ' >
+            <p className='font-bold' >Trạng thái sản phẩm</p>
+            <label>
+              <input    
+                type='radio' checked value="true" name='inStock' onChange={(e)=>setPaymentMethod(e.target.value)} 
+              />
+              <span className='ml-3' >Còn hàng</span>
+            </label>
+            <label>
+              <input  
+                type='radio' value="false" name='inStock' onChange={(e)=>setPaymentMethod(e.target.value)} 
+              />
+              <span className='ml-3' >Hết hàng  </span>
+            </label>
+          </div> */}
+
+          <div className='space-y-2 flex flex-col ' >
+            <p className='font-bold' >Trạng thái sản phẩm</p>
+            <select value={inStock} className={`rounded-lg p-2 border-2 w-32 ${String(inStock)==='true'?'text-green-500':'text-red-500'} `} 
+                    name="inStock" id="inStock" 
+                    onChange={(e)=>setInStock(e.target.value)} >
+                <option   className='text-green-500' value="true">Còn hàng</option>
+                <option  className='text-red-500'  value="false">Hết hàng</option>
+            </select>
+          </div>
 
             <div>
                 <p className='font-bold  mt-4 mb-2' >Ảnh thumbnail </p>
