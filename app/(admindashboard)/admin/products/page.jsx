@@ -9,15 +9,70 @@ import moment from 'moment';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SuccessPopup from '@/components/Popup/SuccessPopup'
+ import {
+    getStorage,
+    ref,
+    deleteObject,
+    uploadBytesResumable,
+    uploadBytes,
+    getDownloadURL,
+  } from "firebase/storage";
+import app from '@/firebase'
 
 const Products = () => {
 
-const [loading, setLoading] = useState(true)
-const [products, setProducts]= useState('')
+  const storage = getStorage(app)
+  const [loading, setLoading] = useState(true)
+  const [products, setProducts]= useState('')
+
+  const [productId, setProductId] = useState()
 
 
-  const handleSeeDetail = () => {
 
+  const handleDeleteProduct = async (product_id) => {
+    setLoading(true)
+   
+    //get thumbnail_url and imageGallery_url then delete it in firebase
+    try{
+      const res = await userRequest.get(`/product/${product_id}`)
+      if(res.data){
+        // delete thumbnail in firebase
+          try {
+            let imageRef = ref(storage, res.data.thumbnail);
+            await deleteObject(imageRef);
+            console.log('delete thumbnail in firebase successfully')
+          } catch (error) {
+              console.error("Error deleting image in firebase:", error);           
+          }
+           //delete imgGallery in firebase
+          for ( let imageUrl of res.data.imgGallery){   
+            try {
+              let imageRef = ref(storage, imageUrl);
+              await deleteObject(imageRef);
+              console.log('delete imgGallery in firebase successfully')
+            } catch (error) {
+                console.error("Error deleting image in firebase:", error);           
+            }
+          }
+        
+      }
+    } catch(err){
+      console.log('get product error',err)
+    }
+   
+    //delete product data in mongo db
+    try{
+      const res = await userRequest.delete(`/product/${product_id}`)
+      if (res.status===200){
+        console.log('deleted product in mongo successfuly -->')
+       
+      }
+    } catch(err){
+      console.log('delete product error',err)
+    }
+    setLoading(false)
+    setProductId(product_id)
   }
 
   useEffect(() => {
@@ -34,7 +89,7 @@ const [products, setProducts]= useState('')
     }
 
   getOrders();
-}, [])
+}, [productId])
   
   const columns = [
     { field: "_id", headerName: 'Mã sản phẩm', width:120 },
@@ -59,12 +114,19 @@ const [products, setProducts]= useState('')
             <span className='p-2 rounded   '  >
             
               <span >
-                <a onClick={()=>setLoading(true)}  href={`/admin/product-detail/${params.row._id}`}>
+                <a  href={`/admin/product-detail/${params.row._id}`}>
                     <span title='Edit' >
-                        <EditIcon fontSize='large' className='text-blue-500 hover:text-blue-800  '  />  
+                        <EditIcon 
+                            onClick={()=>setLoading(true)}
+                            
+                            fontSize='large' className='text-blue-500 hover:text-blue-800  '  />  
                     </span>
+                </a>
+                <a>
                     <span  title='Xóa'  >
-                        <DeleteIcon  fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                        <DeleteIcon 
+                            onClick={()=>handleDeleteProduct(params.row._id)} 
+                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
                     </span>
                 </a>
               </span> 
