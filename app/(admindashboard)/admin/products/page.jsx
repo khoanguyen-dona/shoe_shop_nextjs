@@ -23,12 +23,16 @@ import app from '@/firebase'
 const Products = () => {
 
   const storage = getStorage(app)
+  const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [products, setProducts]= useState('')
 
   const [productId, setProductId] = useState()
 
-
+   // close the popup
+   const handleClosePopup = () => {
+    setNotifySuccess(false)
+}
 
   const handleDeleteProduct = async (product_id) => {
     setLoading(true)
@@ -73,10 +77,14 @@ const Products = () => {
     }
     setLoading(false)
     setProductId(product_id)
+    setNotifySuccess(true)
+    setTimeout(()=> {
+      setNotifySuccess(false)
+    }, 3000)
   }
 
   useEffect(() => {
-    const getOrders = async () =>{
+    const getProducts = async () =>{
       try{
         const res = await userRequest.get(`/product`) 
         if(res.data){
@@ -88,7 +96,7 @@ const Products = () => {
       }
     }
 
-  getOrders();
+  getProducts();
 }, [productId])
   
   const columns = [
@@ -188,6 +196,10 @@ const Products = () => {
            text-white font-bold' disabled={loading}>Thêm sản phẩm</a>
       <div className='flex flex-col' >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+      {notifySuccess ? 
+            <div  className='flex justify-center p-4' > 
+                <SuccessPopup  message={'Delete product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            </div>  : '' }
       <DataGrid
         
         rows={products}

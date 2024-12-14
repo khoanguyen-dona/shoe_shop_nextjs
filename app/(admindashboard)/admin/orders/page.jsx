@@ -7,18 +7,16 @@ import { DataGrid } from '@mui/x-data-grid';
 import Loader from '@/components/Loader';
 import { FormatCurrency } from '@/utils/FormatCurrency';
 import moment from 'moment';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 const Orders = () => {
 
-const [loading, setLoading] = useState(true)
-const [orders, setOrders]= useState('')
-
-
-  const handleSeeDetail = () => {
-
-  }
+  const [notifySuccess, setNotifySuccess] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [orders, setOrders]= useState('')
+  const [orderId, setOrderId] = useState('')
 
   useEffect(() => {
     const getOrders = async () =>{
@@ -34,7 +32,31 @@ const [orders, setOrders]= useState('')
     }
 
   getOrders();
-}, [])
+}, [orderId])
+
+  const handleDeleteOrder = async (order_id) => {
+    setLoading(true)
+    try {
+      const res = await userRequest.delete(`/admin/order/${order_id}`)
+      if(res.status===200){
+        console.log('delete order successfully ')   
+        setOrderId(order_id)
+        setLoading(false)
+        setNotifySuccess(true)
+        setTimeout(()=> {
+          setNotifySuccess(false)
+        }, 3000)
+      }
+    } catch(err) {
+      console.log('err while delete order',err)
+    }
+    
+  }
+
+  // close the popup
+  const handleClosePopup = () => {
+    setNotifySuccess(false)
+}
   
   const columns = [
     { field: "_id", headerName: 'Mã order', width:120 },
@@ -73,15 +95,27 @@ const [orders, setOrders]= useState('')
         )
       }
     },
-    { field: "action", headerName: 'Xem chi tiết', width:150 ,
+    { field: "action", headerName: 'Hành động', width:150 ,
       renderCell: (params)=>{
         return(
           <span>
-            <span className='p-2 rounded hover:cursor-pointer text-gray-500 hover:text-black' title='xem chi tiết' >
+            <span className='p-2 rounded   '  >
             
               <span >
-                <a onClick={()=>setLoading(true)}  href={`/admin/order-detail/${params.row._id}`}>
-                  <VisibilityIcon  />  
+                <a  href={`/admin/order-detail/${params.row._id}`}>
+                    <span title='Edit' >
+                        <EditIcon 
+                            onClick={()=>setLoading(true)}
+                            
+                            fontSize='large' className='text-blue-500 hover:text-blue-800  '  />  
+                    </span>
+                </a>
+                <a>
+                    <span  title='Xóa'  >
+                        <DeleteIcon 
+                            onClick={()=>handleDeleteOrder(params.row._id)} 
+                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                    </span>
                 </a>
               </span> 
               
@@ -102,6 +136,10 @@ const [orders, setOrders]= useState('')
   return (
     <div className={` flex flex-col  ${loading?'bg-white opacity-50':''}   `} >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+      {notifySuccess ? 
+            <div  className='flex justify-center p-4' > 
+                <SuccessPopup  message={'Delete order Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            </div>  : '' }
       <p className='font-bold text-3xl mt-20' >Orders</p>
       <div className='flex flex-col' >
       <DataGrid

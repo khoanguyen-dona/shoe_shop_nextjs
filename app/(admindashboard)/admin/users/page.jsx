@@ -6,19 +6,21 @@ import { DataGrid } from '@mui/x-data-grid';
 import Loader from '@/components/Loader';
 import { FormatCurrency } from '@/utils/FormatCurrency';
 import moment from 'moment';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const Users = () => {
 
+  const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [users, setUsers]= useState('')
+  const [userId, setUserId] = useState('')
 
-
-  const handleSeeDetail = () => {
-
-  }
+  const handleClosePopup = () => {
+    setNotifySuccess(false)
+}
 
   useEffect(() => {
     const getUsers = async () =>{
@@ -34,7 +36,24 @@ const Users = () => {
     }
 
   getUsers();
-}, [])
+}, [userId])
+
+  const handleDeleteUser = async (userId) => {
+    setLoading(true)
+    try {
+        const res = await userRequest.delete(`/user/${userId}`)
+        if(res.data){
+          console.log(res.data)
+          setUserId(userId)
+          setNotifySuccess(true)
+          setTimeout(()=> {
+            setNotifySuccess(false)
+          }, 3000)
+        }
+    } catch(err) {
+      console.log('err deleting user', err)
+    }
+  }
   
   const columns = [
     { field: "_id", headerName: 'Mã user', width:250 },
@@ -43,7 +62,7 @@ const Users = () => {
     { field: "img", headerName: 'avatar', width:110 ,height:400 ,
       renderCell: (params)=>{
         return(
-        <div className='w-[50px]  '>
+        <div className='w-[50px] p-[2px]  '>
 
           <img src={params.row.img} className=' object-cover rounded-full '  alt="" />
         </div>
@@ -58,14 +77,17 @@ const Users = () => {
             <span className='p-2 rounded   '  >
             
               <span >
-                <a onClick={()=>setLoading(true)}  href={`/admin/product-detail/${params.row._id}`}>
+                <a onClick={()=>setLoading(true)}  href={`/admin/user-detail/${params.row._id}`}>
                     <span title='Edit' >
                         <EditIcon fontSize='large' className='text-blue-500 hover:text-black  '  />  
                     </span>
-                    <span  title='Xóa'  >
-                        <DeleteIcon  fontSize='large'  className='text-red-500 hover:text-red-800'   />
-                    </span>
                 </a>
+                    <span  title='Xóa'  >
+                        <DeleteIcon  
+                            onClick={()=>handleDeleteUser(params.row._id)}
+                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                    </span>
+                
               </span> 
               
             </span>  
@@ -107,7 +129,13 @@ const Users = () => {
 
   return (
     <div className={`flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
+    
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+      {notifySuccess ? 
+            <div  className='flex justify-center p-4' > 
+                <SuccessPopup  message={'Delete user Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            </div>  : '' }
+
       <p className='font-bold text-3xl mt-20' >Users</p>
       <div className='flex flex-col' >
       <DataGrid

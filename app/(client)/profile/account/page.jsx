@@ -14,6 +14,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {
     getStorage,
     ref,
+    uploadBytes,
     uploadBytesResumable,
     getDownloadURL,
   } from "firebase/storage";
@@ -23,6 +24,7 @@ import SuccessPopup from '@/components/Popup/SuccessPopup'
 
 
 const profileAccount = () => {
+    const storage = getStorage(app);
     const dispatch= useDispatch()
     const user = useSelector((state)=>state.user?.currentUser)
 
@@ -47,7 +49,7 @@ const profileAccount = () => {
     const handleAvatar =  (e) => {
         const file = e.target.files[0]
         setFile(file)
-        console.log('file-->',file)
+      
         if(file){
             const imageURL = URL.createObjectURL(file)
             setPreviewImage(imageURL)
@@ -61,9 +63,6 @@ const profileAccount = () => {
     const handleClosePopup = () => {
         setNotifySuccess(false)
     }
-
-    console.log('file-->',file)
-        console.log('prev image-->',previewImage)
 
     const handleUpdatePassword = async (e) => {
         e.preventDefault()
@@ -93,51 +92,35 @@ const profileAccount = () => {
 
     const uploadAvatar = async () =>{
         
-        const fileName = new Date().getTime() + file.name;
-        const storage = getStorage(app);
-        const storageRef = ref(storage, `upload/avatar/${fileName}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
-    
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
-              default:
-            }
-          },
-          (error) => {
-            console.log('err-->',error)
-          },
-          async () => {
-            await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => { 
-                console.log('firebase url-->',downloadURL)
+        if(file !==''){
+            let imageName = new Date().getTime() + file.name
+            let imageRef = ref(storage, `upload/avatar/${imageName}`)
+            try{
+                await uploadBytes(imageRef, file)
+                const downloadURL = await getDownloadURL(imageRef)
                 handleUpdateUser(downloadURL)
-                setNotifySuccess(true)
-                setTimeout(() => {
-                    setNotifySuccess(false)
-                  }, 3000);
-                setLoading(false)
-            });
-            
+            } catch (err){
+                console.log('error uploading avatar to firebase', err)
+            }
+          } 
+          else {
+            try{
+              handleUpdateUser(previewImage)
+            } catch(err){
+              console.log('error uploading avatar to firebase', err)
+            }
           }
-          
-        );
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
         await uploadAvatar()    
-        
+        setLoading(false)
+        setNotifySuccess(true)
+        setTimeout(()=> {
+            setNotifySuccess(false)
+        }, 3000)
     }
 
     const handleUpdateUser = async (downloadURL) => {
@@ -151,7 +134,7 @@ const profileAccount = () => {
                 
                 if(res.data){
                     dispatch(setUser(res.data.user))
-                
+                    
                 }
             }catch(err){
                 console.log(err)

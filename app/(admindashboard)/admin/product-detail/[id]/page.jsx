@@ -345,21 +345,7 @@ const ProductDetail = () => {
          
             </div>
             
-            {/* <div className='space-y-2 flex flex-col ' >
-            <p className='font-bold' >Trạng thái sản phẩm</p>
-            <label>
-              <input    
-                type='radio' checked value="true" name='inStock' onChange={(e)=>setPaymentMethod(e.target.value)} 
-              />
-              <span className='ml-3' >Còn hàng</span>
-            </label>
-            <label>
-              <input  
-                type='radio' value="false" name='inStock' onChange={(e)=>setPaymentMethod(e.target.value)} 
-              />
-              <span className='ml-3' >Hết hàng  </span>
-            </label>
-          </div> */}
+           
 
           <div className='space-y-2 flex flex-col ' >
             <p className='font-bold' >Trạng thái sản phẩm</p>
