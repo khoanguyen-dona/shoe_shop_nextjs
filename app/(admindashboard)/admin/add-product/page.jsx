@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
  import {
@@ -198,7 +199,7 @@ const AddProduct = () => {
             </div>
 
             <div>
-                <p className='text-sm text-gray-500' >Giá sản phẩm</p>
+                <p className='text-sm text-gray-500' >Giá sản phẩm (vnđ)</p>
                 <input  className='border-2 p-2 w-2/3 ' type="number" 
                     onChange={(e)=>setPrice(e.target.value)}  value={price} />
             </div>

@@ -8,6 +8,7 @@ import { FormatCurrency } from '@/utils/FormatCurrency';
 import moment from 'moment';
 
 import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SuccessPopup from '@/components/Popup/SuccessPopup'
  import {
@@ -28,7 +29,8 @@ const Products = () => {
   const [products, setProducts]= useState('')
 
   const [productId, setProductId] = useState()
-
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(9999)
    // close the popup
    const handleClosePopup = () => {
     setNotifySuccess(false)
@@ -86,9 +88,9 @@ const Products = () => {
   useEffect(() => {
     const getProducts = async () =>{
       try{
-        const res = await userRequest.get(`/product`) 
+        const res = await userRequest.get(`/product?category=&page=${page}&limit=${limit}`) 
         if(res.data){
-          setProducts(res.data)
+          setProducts(res.data.products)
           setLoading(false)
         }
       }catch(err) {
@@ -192,8 +194,11 @@ const Products = () => {
       <p className='font-bold text-3xl mt-20' >Products</p>
       <a  
           onClick={()=>setLoading(true)}
-          href="/admin/add-product" className='my-2 p-4 text-center text-xl rounded hover:bg-green-800 transition  w-[200px] bg-green-500
-           text-white font-bold' disabled={loading}>Thêm sản phẩm</a>
+          href="/admin/add-product" className='my-2 p-2  text-center text-xl rounded hover:bg-green-800 transition w-[220px]  bg-green-500
+           text-white font-bold' disabled={loading}>
+            <AddIcon fontSize='large' className='mb-1' />
+            Thêm sản phẩm
+      </a>
       <div className='flex flex-col' >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
       {notifySuccess ? 

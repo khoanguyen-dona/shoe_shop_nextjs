@@ -9,9 +9,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { publicRequest } from '@/requestMethod'
 import { useSelector } from 'react-redux';
-
+import Loader from '@/components/Loader';
 
 const Accessories = () => {
+
+  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState()
+  const [limit, setLimit] = useState(16)
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
@@ -24,14 +29,17 @@ const Accessories = () => {
   const[products,setProducts]=useState([])
 
   useEffect(() => {
+    setLoading(true)
     const getProducts = async () => {
       try {    
-        const res = await publicRequest.get(`/product?category=Phụ kiện`)
-        setProducts(res.data)
+        const res = await publicRequest.get(`/product?category=Phụ kiện&page=${page}&limit=${limit}`)
+        setProducts(res.data.products)
+        setTotalPage(res.data.totalPage)
+        setLoading(false)
       } catch {}
     }
     getProducts();
-  },[])
+  },[page])
 
   const handleFilterClick = () => {
     setFilter((prev) => !prev) ;
@@ -47,6 +55,13 @@ const Accessories = () => {
     }
     
   };
+
+  const handlePrev =() => {
+    setPage((prev)=>prev-1)
+}
+const handleNext =() => {
+    setPage((prev)=>prev+1)
+}
 
   return (
     <div className='' >
@@ -66,7 +81,7 @@ const Accessories = () => {
         </div>
         {/* product list */}
         <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-2  mx-2' >
-          {products?.map((d,index)=>(
+          {products.length>0 && products?.map((d,index)=>(
 
             <ProductCard key={index} data={d} user={user} wishlistArray={wishlistArray} />
 
@@ -76,16 +91,35 @@ const Accessories = () => {
         {/* pagination */}
         <div className='flex justify-around mt-24' >
           <div>
-            <button className='font-bold hover:bg-black hover:text-white transition p-3' >PREVIOUS</button>
+            <button  
+                onClick={handlePrev} disabled = {page===1}
+                className={`font-bold  transition p-3  
+                  ${page===1?' text-gray-400 hover:cursor-not-allowed':' text-black hover:text-white hover:bg-black'} `} >
+                    PREVIOUS</button>
           </div>
+
           <div className='p-3' >
-            Page 1 of 5
+            Page 
+            <span className='mx-2  transition   ' > 
+              <select value={page} onChange={(e)=>setPage(e.target.value)}
+                  className='border-gray-300 hover:border-black hover:cursor-pointer transition border-2 p-2  '  >
+               {Array.from({length: totalPage}, (_, i)=> (
+                  <option value={i+1}>{i+1}</option>
+               ))}
+              </select> 
+            </span> 
+            of {totalPage}
           </div>
+
           <div>
-            <button className='font-bold hover:bg-black hover:text-white transition p-3'  >NEXT</button>
+            <button
+                onClick={handleNext} disabled ={page===totalPage}
+                className={`font-bold transition p-3  ${page===totalPage?' text-gray-400 hover:cursor-not-allowed':' text-black hover:text-white hover:bg-black'} `}  >NEXT</button>
           </div>
         </div>
+
       </div>
+    
       
       {/* filter popup */}
       <div className={`shadow-2xl   fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 

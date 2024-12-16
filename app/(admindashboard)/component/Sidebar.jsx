@@ -13,7 +13,6 @@ const SideBar = () => {
       {menu.map((m,index) => (
         <a href={`/admin/${m}`} key={index}  >
            <button 
-                  onClick={(m)=>setCurrentPage(m)}
                   value={m}    
                   className={`border-2 hover:bg-black  transition p-4 font-bold w-full
                   ${currentPage===m ? 'bg-black text-white ':''  }`} 

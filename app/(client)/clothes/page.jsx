@@ -10,8 +10,16 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { publicRequest } from '@/requestMethod';
 import { userRequest } from '@/requestMethod';
 import { useSelector } from 'react-redux';
+import Loader from '@/components/Loader';
+
 
 const Clothes = () => {
+
+  const [loading, setLoading] = useState(true)
+
+  const [page, setPage] = useState(1)
+  const [totalPage, setTotalPage] = useState()
+  const [limit, setLimit] = useState(16)
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
@@ -25,12 +33,15 @@ const Clothes = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {    
-        const res = await publicRequest.get(`/product?category=Áo`)
-        setProducts(res.data)
+        const res = await publicRequest.get(`/product?category=Quần,Áo&page=${page}&limit=${limit}`)
+        setProducts(res.data.products)
+        setTotalPage(res.data.totalPage)
+        console.log(res.data)
+        setLoading(false)
       } catch {}
     }
     getProducts();
-  },[])
+  },[page])
 
   const handleFilterClick = () => {
     setFilter((prev) => !prev) ;
@@ -47,13 +58,22 @@ const Clothes = () => {
     
   };
 
+  
+  const handlePrev =() => {
+    setPage((prev)=>prev-1)
+}
+const handleNext =() => {
+    setPage((prev)=>prev+1)
+}
+
   return (
-    <div className='' >
+    <div className={` ${loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
          src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Ao_Thun_adidas_Basketball_trang_JE3762_21_model.avif" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  QUẦN ÁO </h1>
+        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         <div className='flex justify-end'>
           <button  
             onClick={handleFilterClick}
@@ -65,7 +85,7 @@ const Clothes = () => {
         </div>
         {/* product list */}
         <div className=' grid lg:grid-cols-4 md:grid-cols-2 xs:grid-cols-2   mt-2  mx-2' >
-          {products?.map((d,index)=>(
+          {products.length>0 && products?.map((d,index)=>(
 
             <ProductCard key={index} data={d}   user={user}  wishlistArray={wishlistArray} />
 
@@ -75,13 +95,29 @@ const Clothes = () => {
         {/* pagination */}
         <div className='flex justify-around mt-24' >
           <div>
-            <button className='font-bold hover:bg-black hover:text-white transition p-3' >PREVIOUS</button>
+            <button  
+                onClick={handlePrev} disabled = {page===1}
+                className={`font-bold  transition p-3  
+                  ${page===1?' text-gray-400 hover:cursor-not-allowed':' text-black hover:text-white hover:bg-black'} `} >
+                    PREVIOUS</button>
           </div>
           <div className='p-3' >
-            Page 1 of 5
+            Page 
+            <span className='mx-2  transition   ' > 
+              <select value={page} onChange={(e)=>setPage(e.target.value)}
+                  className='border-gray-300 hover:border-black hover:cursor-pointer transition border-2 p-2  '  >
+               {Array.from({length: totalPage}, (_, i)=> (
+                  <option value={i+1}>{i+1}</option>
+               ))}
+              </select> 
+             
+            </span> 
+            of {totalPage}
           </div>
           <div>
-            <button className='font-bold hover:bg-black hover:text-white transition p-3'  >NEXT</button>
+            <button
+                onClick={handleNext} disabled ={page===totalPage}
+                className={`font-bold transition p-3  ${page===totalPage?' text-gray-400 hover:cursor-not-allowed':' text-black hover:text-white hover:bg-black'} `}  >NEXT</button>
           </div>
         </div>
       </div>

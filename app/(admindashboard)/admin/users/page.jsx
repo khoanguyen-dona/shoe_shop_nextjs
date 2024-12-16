@@ -56,9 +56,9 @@ const Users = () => {
   }
   
   const columns = [
-    { field: "_id", headerName: 'Mã user', width:250 },
+    { field: "_id", headerName: 'Mã user', width:100 },
    
-    { field: "username", headerName: 'Tên user', width:300 },
+    { field: "username", headerName: 'Tên user', width:200 },
     { field: "img", headerName: 'avatar', width:110 ,height:400 ,
       renderCell: (params)=>{
         return(
