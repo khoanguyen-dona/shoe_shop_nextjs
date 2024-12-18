@@ -7,8 +7,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { useSelector } from 'react-redux';
 import { publicRequest } from '@/requestMethod';
+import Slider from '@mui/material/Slider';
 import Loader from '@/components/Loader';
-
+import DoneIcon from '@mui/icons-material/Done';
+import { FormatCurrency } from '@/utils/FormatCurrency';
 const Shoe = () => {
 
   const [loading, setLoading] = useState(true)
@@ -19,26 +21,37 @@ const Shoe = () => {
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
   wishlist?.products?.map((item)=> wishlistArray.push(item._id))
+  
 
-  const size_data = ['5 US','5.5 US','6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
+  const size_data = ['6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
     '11 US']
-  const [size,setSize]=useState([]);
+  const [size,setSize]=useState('');
+  const [color, setColor] = useState('')
+  const [price, setPrice] = useState([0,20000000])
+ 
+    
   const[filter,setFilter]=useState(false)
   const[products, setProducts]=useState([])
 
+  const handlePrice = (e) => {
+        setPrice(e.target.value)
+  }
+
   useEffect(() => {
-    setLoading(true)
-    const getProducts = async () => {
-      try {    
-        const res = await publicRequest.get(`/product?category=Giày&page=${page}&limit=${limit}`)
-        setProducts(res.data.products)
-        setTotalPage(res.data.totalPage)
-        console.log('res data--->',res.data)
-        setLoading(false)
-      } catch {}
-    }
-    getProducts();
-  },[page])
+   
+      setLoading(true)
+      const getProducts = async () => {
+        try {    
+          const res = await publicRequest.get(`/product?category=Giày&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
+          setProducts(res.data.products)
+          setTotalPage(res.data.totalPage)
+          console.log('res data--->',res.data)
+          setLoading(false)
+        } catch {}
+      }
+      getProducts();
+
+  },[page,price,size,color])
 
 
 
@@ -46,16 +59,16 @@ const Shoe = () => {
     setFilter((prev) => !prev) ;
   };
 
-  const handleSizeClick = (d) => {
+  // const handleSizeClick = (d) => {
 
-    if(size.includes(d)) {
-      const updatedSize = size.filter((s) => s !== d );
-      setSize(updatedSize)
-    } else {
-      setSize((prev) => [...prev,d] );
-    }
+  //   if(size.includes(d)) {
+  //     const updatedSize = size.filter((s) => s !== d );
+  //     setSize(updatedSize)
+  //   } else {
+  //     setSize((prev) => [...prev,d] );
+  //   }
     
-  };
+  // };
 
   const handlePrev =() => {
       setPage((prev)=>prev-1)
@@ -64,6 +77,26 @@ const Shoe = () => {
       setPage((prev)=>prev+1)
   }
 
+  const handleReset = () => {
+      setColor('')
+      setSize('')
+      setPrice([0,20000000])
+  }
+  const handleColor = (c) => {
+      if(color === c){
+        setColor('')
+      } else {
+        setColor(c)
+      }
+  }
+
+  const handleSize = (s) => {
+    if(size===s){
+      setSize('')
+    } else {
+      setSize(s)
+    }
+  }
   return (
     <div className={` ${loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
@@ -122,51 +155,136 @@ const Shoe = () => {
       <div className={`shadow-2xl   fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
           duration-300  ${filter ? 'translate-x-0' : 'translate-x-full'}  `} >
         <div className='flex flex-row justify-between ' >
-          <div>Lọc sản phẩm</div>
+          <div className='font-bold'  >Lọc sản phẩm</div>
 
           <div>
-            <CloseIcon onClick={handleFilterClick}  />
+            <CloseIcon className='hover:cursor-pointer'  onClick={handleFilterClick}  />
           </div>
         </div>
 
         <hr  className='mt-2' />
- 
-        <div className='font-bold text-2xl mt-3' >GIÁ </div>
-
-        <div className='flex flex-col' >
-          <label htmlFor="">
-            <input type='radio' value="1" name='gia' />
-            <span className='ml-3' >0 - 1.000.000 đ</span>
-          </label>
-          <label htmlFor="">
-            <input type='radio' value="2" name='gia' />
-            <span className='ml-3' >1.000.000 - 2.000.000 đ </span>
-          </label>
-          <label htmlFor="">
-            <input type='radio' value="3" name='gia' />
-            <span className='ml-3' >2.000.000 - 4.000.000 đ</span>
-          </label>
-          <label htmlFor="">
-            <input type='radio' value="4" name='gia' />
-            <span className='ml-3' >Trên 4.000.000 đ</span>
-          </label>
+        {/* Price filter */}
+        <div className='font-bold text-2xl mt-3' >Giá </div>
+        <div className='p-4' >
+          <Slider
+            getAriaLabel={() => 'Price range'}
+            value={price}
+            min={0}
+            max={20000000}
+            step={2000000}
+            marks={true}
+            onChange={handlePrice}
+          />
         </div>
-        
+        <div className='text-center font-bold' >
+          {FormatCurrency(price[0])} - {FormatCurrency(price[1])} vnđ
+        </div>
+     
         <hr className='mt-2'/>
+        {/* Size filter  */}
         <div className='font-bold text-2xl mt-2' >
           Size
         </div>
         <div className='flex flex-wrap' >
         {size_data.map((d,index)=>(
           <span 
-            onClick={()=>handleSizeClick(d)}
+            onClick={()=>handleSize(d)}
             key={index} 
             className={`w-16 border-gray-300 border-[2px] ml-[1px] mt-[1px] text-center hover:border-gray-600 
-            ${size.includes(d) ? 'bg-black text-white':'' }  `} >
+            ${size===d ? 'bg-black text-white':'' }  `} >
               {d}
           </span>
         ))}
         </div>
+        {/* color filter */}
+        <div className='font-bold text-2xl mt-4' >Color </div>
+        <div className='flex flex-wrap   ' >
+  
+            <span 
+              onClick={()=>handleColor('black')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-black
+              `} 
+            >     
+              {color==='black' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-white'/>}
+            </span>
+                
+            <span 
+              onClick={()=>handleColor('red')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-red-500
+              `} 
+            >   
+              {color==='red' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+                
+            <span 
+              onClick={()=>handleColor('blue')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-blue-500
+              `} 
+            >   
+              {color==='blue' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('green')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-green-500
+              `} 
+            >   
+              {color==='green' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('yellow')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-yellow-500
+              `} 
+            >   
+              {color==='yellow' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('gray')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-gray-500
+              `} 
+            >   
+              {color==='gray' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('pink')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-pink-500
+              `} 
+            >   
+              {color==='pink' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('orange')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-orange-500
+              `} 
+            >   
+              {color==='orange' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('violet')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-violet-500
+              `} 
+            >   
+              {color==='violet' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('white')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300 border-2 ml-[1px] mt-[1px] text-center hover:border-black bg-white-500
+              `} 
+            >   
+              {color==='white' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+      
+        </div>
+        <button  className='text-2xl p-3 border-2 border-gray-300 hover:bg-black hover:text-white transition p-4 font-bold mt-4 rounded-md' onClick={handleReset} >
+          Reset filter
+        </button>
+
        
 
       </div>

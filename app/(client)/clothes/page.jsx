@@ -10,8 +10,11 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { publicRequest } from '@/requestMethod';
 import { userRequest } from '@/requestMethod';
 import { useSelector } from 'react-redux';
+import Slider from '@mui/material/Slider';
 import Loader from '@/components/Loader';
+import DoneIcon from '@mui/icons-material/Done';
 
+import { FormatCurrency } from '@/utils/FormatCurrency';
 
 const Clothes = () => {
 
@@ -26,14 +29,18 @@ const Clothes = () => {
   wishlist?.products?.map((item)=> wishlistArray.push(item._id))
 
   const size_data = ['S','M','L','XL']
-  const [size,setSize]=useState([]);
+  const [size,setSize]=useState('');
+  const [color, setColor] = useState('')
+  const [price, setPrice] = useState([0,20000000])
+
   const[filter,setFilter]=useState(false)
   const[products,setProducts]=useState([])
+
 
   useEffect(() => {
     const getProducts = async () => {
       try {    
-        const res = await publicRequest.get(`/product?category=Quần,Áo&page=${page}&limit=${limit}`)
+        const res = await publicRequest.get(`/product?category=Quần,Áo&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
         setProducts(res.data.products)
         setTotalPage(res.data.totalPage)
         console.log(res.data)
@@ -41,29 +48,56 @@ const Clothes = () => {
       } catch {}
     }
     getProducts();
-  },[page])
+  },[page,price,size,color])
+
+  const handlePrice = (e) => {
+    setPrice(e.target.value)
+  }
 
   const handleFilterClick = () => {
     setFilter((prev) => !prev) ;
   };
 
-  const handleSizeClick = (d) => {
+  // const handleSizeClick = (d) => {
 
-    if(size.includes(d)) {
-      const updatedSize = size.filter((s) => s !== d );
-      setSize(updatedSize)
-    } else {
-      setSize((prev) => [...prev,d] );
-    }
+  //   if(size.includes(d)) {
+  //     const updatedSize = size.filter((s) => s !== d );
+  //     setSize(updatedSize)
+  //   } else {
+  //     setSize((prev) => [...prev,d] );
+  //   }
     
-  };
+  // };
 
   
   const handlePrev =() => {
     setPage((prev)=>prev-1)
+  }
+
+  const handleNext =() => {
+      setPage((prev)=>prev+1)
+  }
+
+  const handleReset = () => {
+    setColor('')
+    setSize('')
+    setPrice([0,20000000])
+  }
+
+  const handleColor = (c) => {
+    if(color === c){
+      setColor('')
+    } else {
+      setColor(c)
+    }
+  }
+
+const handleSize = (s) => {
+if(size===s){
+  setSize('')
+} else {
+  setSize(s)
 }
-const handleNext =() => {
-    setPage((prev)=>prev+1)
 }
 
   return (
@@ -129,32 +163,30 @@ const handleNext =() => {
           <div>Lọc sản phẩm</div>
 
           <div>
-            <CloseIcon onClick={handleFilterClick}  />
+            <CloseIcon className='hover:cursor-pointer'  onClick={handleFilterClick}  />
           </div>
         </div>
 
         <hr  className='mt-2' />
  
-        <div className='font-bold text-2xl mt-3' >GIÁ </div>
-
-        <div className='flex flex-col' >
-          <label htmlFor="">
-            <input type='radio' value="1" name='gia' />
-            <span className='ml-3' >0 - 1.000.000 đ</span>
-          </label>
-          <label htmlFor="">
-            <input type='radio' value="2" name='gia' />
-            <span className='ml-3' >1.000.000 - 2.000.000 đ </span>
-          </label>
-          <label htmlFor="">
-            <input type='radio' value="3" name='gia' />
-            <span className='ml-3' >2.000.000 - 4.000.000 đ</span>
-          </label>
-          <label htmlFor="">
-            <input type='radio' value="4" name='gia' />
-            <span className='ml-3' >Trên 4.000.000 đ</span>
-          </label>
+        {/* Price filter */}
+        <div className='font-bold text-2xl mt-3' >Giá </div>
+        <div className='p-4' >
+          <Slider
+            getAriaLabel={() => 'Price range'}
+            value={price}
+            min={0}
+            max={20000000}
+            step={2000000}
+            marks={true}
+            onChange={handlePrice}
+          />
         </div>
+        <div className='text-center font-bold' >
+          {FormatCurrency(price[0])} - {FormatCurrency(price[1])} vnđ
+        </div>
+
+       
         
         <hr className='mt-2'/>
         <div className='font-bold text-2xl mt-2' >
@@ -163,14 +195,103 @@ const handleNext =() => {
         <div className='flex flex-wrap' >
         {size_data.map((d,index)=>(
           <span 
-            onClick={()=>handleSizeClick(d)}
+            onClick={()=>handleSize(d)}
             key={index} 
-            className={`w-16 border-gray-300 border-[2px] ml-[1px] mt-[1px] text-center hover:border-gray-600 
+            className={`w-16 rounded-md border-gray-300 border-[2px] ml-[1px] mt-[1px] p-2 text-center font-bold hover:border-gray-600 
             ${size.includes(d) ? 'bg-black text-white':'' }  `} >
               {d}
           </span>
         ))}
         </div>
+
+        {/* color filter */}
+        <div className='font-bold text-2xl mt-4' >Color </div>
+        <div className='flex flex-wrap   ' >
+  
+            <span 
+              onClick={()=>handleColor('black')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-black
+              `} 
+            >     
+              {color==='black' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-white'/>}
+            </span>
+                
+            <span 
+              onClick={()=>handleColor('red')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-red-500
+              `} 
+            >   
+              {color==='red' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+                
+            <span 
+              onClick={()=>handleColor('blue')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-blue-500
+              `} 
+            >   
+              {color==='blue' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('green')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-green-500
+              `} 
+            >   
+              {color==='green' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('yellow')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-yellow-500
+              `} 
+            >   
+              {color==='yellow' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('gray')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-gray-500
+              `} 
+            >   
+              {color==='gray' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('pink')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-pink-500
+              `} 
+            >   
+              {color==='pink' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('orange')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-orange-500
+              `} 
+            >   
+              {color==='orange' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('violet')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-violet-500
+              `} 
+            >   
+              {color==='violet' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+
+            <span 
+              onClick={()=>handleColor('white')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300 border-2 ml-[1px] mt-[1px] text-center hover:border-black bg-white-500
+              `} 
+            >   
+              {color==='white' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
+      
+        </div>
+        <button  className='text-2xl border-2 border-gray-300 hover:bg-black hover:text-white transition p-3 font-bold mt-4 rounded-md' onClick={handleReset} >
+          Reset filter
+        </button>
        
 
       </div>
