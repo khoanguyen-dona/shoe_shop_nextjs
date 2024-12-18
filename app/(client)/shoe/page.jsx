@@ -190,7 +190,7 @@ const Shoe = () => {
           <span 
             onClick={()=>handleSize(d)}
             key={index} 
-            className={`w-16 border-gray-300 border-[2px] ml-[1px] mt-[1px] text-center hover:border-gray-600 
+            className={`w-16 rounded-sm border-gray-300 border-[2px] ml-[1px] mt-[1px] text-center hover:border-gray-600 
             ${size===d ? 'bg-black text-white':'' }  `} >
               {d}
           </span>
@@ -281,7 +281,7 @@ const Shoe = () => {
             </span>
       
         </div>
-        <button  className='text-2xl p-3 border-2 border-gray-300 hover:bg-black hover:text-white transition p-4 font-bold mt-4 rounded-md' onClick={handleReset} >
+        <button  className='text-2xl p-3 border-2 border-gray-300 hover:bg-black hover:text-white transition  font-bold mt-4 rounded-md' onClick={handleReset} >
           Reset filter
         </button>
 
