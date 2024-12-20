@@ -120,9 +120,8 @@ const Categories = () => {
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
-            <div  className='flex justify-center p-4' > 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+             : '' }
         <div className='text-3xl font-bold' >Categories</div>
         <div className='flex mt-4' >
           <input 

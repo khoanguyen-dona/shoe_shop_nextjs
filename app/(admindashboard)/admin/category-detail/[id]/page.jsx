@@ -21,10 +21,12 @@ const CategoryDetail = () => {
     const [subCategory, setSubCategory] = useState('')
     const [input, setInput] = useState('')
     const [reload, setReload] = useState(false)
+
     const [editSubCatWindow, setEditSubCatWindow] = useState(false)
     const [newSubCategory, setNewSubCategory] = useState('')
     const [subCategoryId, setSubCategoryId] = useState('')
-    const [editCatWindow, setEditCatWindow] = useState(true)
+
+    const [editCatWindow, setEditCatWindow] = useState(false)
     const [newCategory, setNewCategory] = useState('')
     //get category
     useEffect(()=> {
@@ -80,7 +82,7 @@ const CategoryDetail = () => {
                 name: input
             })
             if(res.data) {
-                // setLoading(false)
+          
                 setReload(!reload)
                 setNotifySuccess(true)
                 setTimeout(()=>{
@@ -99,7 +101,6 @@ const CategoryDetail = () => {
             const res = await userRequest.delete(`/sub-category/${categoryId}`)
             if(res.data) {
                 setReload(!reload)
-                // setLoading(false)
                 setNotifySuccess(true)
                 setTimeout(()=>{
                     setNotifySuccess(false)
@@ -118,6 +119,7 @@ const CategoryDetail = () => {
             })
             if(res.data){
                 setReload(!reload)
+                setEditCatWindow(false)
                 setNotifySuccess(true)
                 setTimeout(()=> {
                     setNotifySuccess(false)
@@ -133,6 +135,12 @@ const CategoryDetail = () => {
         setSubCategoryId(subCatId)
         setNewSubCategory(subCat_name)
     }
+
+    const handleEditCategoryClick = () => {
+        setEditCatWindow(true)
+        setNewCategory(category)
+    }
+
     console.log('subCatId:',subCategoryId)
     console.log('subcat name:', newSubCategory)
     console.log('new category', newCategory)
@@ -145,7 +153,7 @@ const CategoryDetail = () => {
             })
             if (res.data){
                 setReload(!reload)
-                // setLoading(false)
+               
                 setEditSubCatWindow(false)
                 setNotifySuccess(true)
                 setTimeout(()=> {
@@ -238,12 +246,11 @@ const CategoryDetail = () => {
         }
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
-            <div  className='flex justify-center p-4' > 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+           : '' }
         <div className='text-3xl font-bold' >
             Category : {category} 
-            <EditIcon fontSize='large' onClick={()=>setEditCatWindow(true)} className='text-blue-500 ml-2 hover:text-blue-800 hover:cursor-pointer' />
+            <EditIcon fontSize='large' onClick={handleEditCategoryClick} className='text-blue-500 ml-2 hover:text-blue-800 hover:cursor-pointer' />
         </div>
         <div className='text-xl font-semibold mt-10' >Thêm sub-category</div>
         <div className='flex mt-2' >
