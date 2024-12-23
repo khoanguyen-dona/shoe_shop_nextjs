@@ -1,17 +1,18 @@
 'use client'
 
 import { publicRequest, userRequest } from '@/requestMethod'
-import { useParams } from 'next/navigation'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
+import SelectPopup from '../../component/SelectPopup'
+import DoneIcon from '@mui/icons-material/Done';
+
+
  import {
     getStorage,
     ref,
-    uploadBytesResumable,
     uploadBytes,
     getDownloadURL,
   } from "firebase/storage";
@@ -23,6 +24,7 @@ const AddProduct = () => {
     const [productName, setProductName] = useState('')
     const [productLine, setProductLine] = useState('')
     const [price, setPrice] = useState('')
+    const [desc, setDesc] = useState('')
 
     const [formCategory, setFormCategory] = useState('')
     var category = []
@@ -41,10 +43,107 @@ const AddProduct = () => {
     const [imageGalleryFile, setImageGalleryFile] = useState([])
     var imageGalleryUrl = []
 
-    // console.log('img gal file ->',imageGalleryFile)
-    // console.log('img gal',imageGallery)
+    const [productLinesSuggest, setProductLinesSuggest] = useState([])
+    const [productLinesPopup, setProductLinesPopup] = useState(false)
+    var productLines = []
+    
+    const [sizePopup, setSizePopup] = useState(false)
+    const [attribute_Size, setAttribute_Size] = useState('')
+    const [attributes, setAttributes] = useState([])
 
-    const [desc, setDesc] = useState('')
+    const [attributesName, setAttributesName] = useState([])
+    var attrsName = []
+
+    const [colorsPopup, setColorsPopup] = useState(false)
+    const [attribute_Color, setAttribute_Color] = useState('')
+  
+    const [categoriesPopup, setCategoriesPopup] = useState(false)
+    const [categoryList, setCategoryList] = useState([])
+   
+    const [categoryChoose, setCategoryChoose] = useState([])
+    var categories = []
+    const [subCategories, setSubCategories] = useState([])
+    var subCatArray = []
+
+    // fetching productLines
+    useEffect(() => {
+        setLoading(true)
+        const getProductLines = async () => {
+            try {
+                const res = await publicRequest.get('/product-line')
+                if(res.data){
+                    
+                    res.data.productLines.map((item)=> {
+                        productLines.push(item.name)
+                    })
+                    setProductLinesSuggest(productLines)
+               
+                                             
+                    setLoading(false)
+                }
+            } catch(err){
+                console.log('err while fetching product lines', err)
+            }
+        }
+        getProductLines()
+    }, [])
+  
+    // fetching categories
+    useEffect(() => {
+        setLoading(true)
+        const getCategories = async () => {
+            try {
+                const res = await publicRequest.get('/category')
+                if(res.data){
+                    res.data.categories.map((item) =>  {
+                        categories.push(item.name)
+                        const getSubCategories = async () => {    
+                            const res2 = await publicRequest.get(`/sub-category/${item._id}`)
+                            if(res2.data){
+                                res2.data.subCategory.map((subCat)=> {
+                                    categories.push(subCat.name)
+                                    subCatArray.push(subCat.name)
+                                })
+                            }
+                        }
+                        getSubCategories()
+                    })
+                }
+                setSubCategories(subCatArray)
+                setCategoryList(categories)
+                setLoading(false)
+            
+            } catch(err){
+                console.log('err while fetching categories', err)
+            }
+        }
+        getCategories()
+    }, [])
+    console.log('subcat',subCategories)
+    // fetching attrs
+    useEffect(() => {
+        setLoading(true)
+        const getAttributes = async () => {
+            try {
+                
+                const res = await publicRequest.get('/attribute')
+                if(res.data){
+                   setAttributes(res.data.attributes)
+                    res.data.attributes.map((item)=> {
+                        attrsName.push(item.name)
+                        setAttributesName(attrsName)
+                    })
+                }
+                setLoading(false)
+            
+            } catch(err){
+                console.log('err while fetching attributes', err)
+            }
+        }
+        getAttributes()
+    }, [])
+
+    
 
     // handle from string to array
     formCategory.split(',').map((item)=> {
@@ -52,16 +151,16 @@ const AddProduct = () => {
         category.push(item)
     })
 
-    formSize.split(',').map((item)=> {
+    formSize.split('|').map((item)=> {
         item = item.trim()
         size.push(item)
     })
 
-    formColor.split(',').map((item)=> {
+    formColor.split('|').map((item)=> {
         item = item.trim()
         color.push(item)
     })
-
+   
     // handle choose thumbnail 
     const handleThumbnail = (e) => {
         const file = e.target.files[0]
@@ -166,8 +265,61 @@ const AddProduct = () => {
         }
     }
 
+    // Handle click outside the popup
+    const handleClickOutside = (e) => {      
+        if(e.target.value===undefined ){  
+            setSizePopup(false)
+            setColorsPopup(false)     
+            setProductLinesPopup(false); // Close the popup
+            setCategoriesPopup(false)
+        }         
+    };
+
+    const handleChooseProductLine = (productLine) => {
+        setProductLinesPopup(false)
+        setProductLine(productLine)
+    }
+ 
+    const handleChooseSize = (attributeName) => {
+        let size =''
+        let att =[]
+        setSizePopup(true)
+        setAttribute_Size(attributeName)
+        att = attributes.filter((item)=> item.name === attributeName)
+        size = String(att[0].item).split(',').join('|')
+        console.log(size)
+        setFormSize(size)
+    }
+
+    const handleChooseColor = (attributeName) => {
+        let color =''
+        let att =[]
+        setColorsPopup(true)
+        setAttribute_Color(attributeName)
+        att = attributes.filter((item)=> item.name === attributeName)
+        color = String(att[0].item).split(',').join('|')
+        console.log(color)
+        setFormColor(color)
+    }
+
+    const handleChooseCategory = async (category) => {
+        
+        if(categoryChoose.includes(category)){
+              setCategoryChoose( categoryChoose.filter((cat) => cat !== category) )
+              let catArray = String(categoryChoose.filter((cat) => cat !== category))
+              setFormCategory(catArray)
+        } else {
+            categoryChoose.push(category)
+            let catArray = String(categoryChoose)
+            setFormCategory(catArray)
+        }   
+    }
+
+        console.log('cat choose',categoryChoose)
+        console.log('form cat',formCategory)
+        console.log('cat list',categoryList)
   return (
-    <div className={`mt-20  flex flex-col  ${loading?'bg-white opacity-50':''} `} >
+    <div className={`mt-20  flex flex-col  ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
          {notifySuccess ? 
             <div  className='flex justify-center p-4' > 
@@ -186,16 +338,50 @@ const AddProduct = () => {
             </div>
             
 
-            <div>
+            <div className='relative' >
                 <p className='text-sm text-gray-500' >Dòng sản phẩm</p>
-                <input  className='border-2 p-2 w-2/3 ' type="text" 
-                    onChange={(e)=>setProductLine(e.target.value)} value={productLine}  />
+                <input  className='border-2 p-2 w-2/3 overflow-auto ' type="text" 
+                        onClick={()=>setProductLinesPopup(true)}
+                        onChange={(e)=>setProductLine(e.target.value)} value={productLine}  />
+                {productLinesPopup &&
+                    <SelectPopup data={productLinesSuggest} handleClick={handleChooseProductLine} itemChoose={productLine} />
+                }
+            
+        
             </div>
 
-            <div>
+            <div className='relative' >
                 <p className='text-sm text-gray-500' >Category sản phẩm</p>
-                <input  className='border-2 p-2 w-1/3 ' type="text" 
+                <input  className='border-2 p-2 w-2/3 ' type="text" onClick={()=>setCategoriesPopup(true)} spellCheck='false'
                     onChange={(e)=>setFormCategory(e.target.value)} value={formCategory}  />
+
+                    {categoriesPopup &&
+                        <div className={` absolute top-18 left-0 z-40 bg-white text-left p-2 w-auto  overflow-auto  shadow-2xl rounded-md border-2 border-gray-300 
+                            ${ categoryList.length>20 ? 'h-[500px]':'h-auto'} `}   >
+                            {categoryList.sort()?.map((item, index)=> 
+                            <div key={index} className='space-x-2' >
+                                {subCategories.includes(item)?
+                                <span className='ml-4' >-</span>
+                                :''}
+                                <input type='checkbox' 
+                                    defaultChecked={categoryChoose.includes(item)}
+                                    onClick = {()=>handleChooseCategory(item)} 
+                                    key={index} 
+                                    className={`hover:bg-gray-300 p-1 hover:cursor-pointer rounded-md 
+                                        `} 
+                                    
+                                />
+                                <span className='ml-2' >
+                                    {item}
+                                </span>
+
+                                                           
+                            </div>
+                            )
+                    
+                            }
+                        </div>
+                }
             </div>
 
             <div>
@@ -204,24 +390,30 @@ const AddProduct = () => {
                     onChange={(e)=>setPrice(e.target.value)}  value={price} />
             </div>
 
-            <div>
+            <div className='relative' >
                 <p className='text-sm text-gray-500' >Size sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' type="text" 
-                    onChange={(e)=>setFormSize(e.target.value)}  value={formSize} />
-                <p className='text-red-500 text-sm' >Lưu ý mỗi Size cách nhau một dấu ',' Ví dụ : 6 US,7 US ...</p>
+                <textarea  className='border-2 p-2 w-2/3 ' type="text" onClick={()=>setSizePopup(true)}
+                    onChange={(e)=>setFormSize(e.target.value)}  value={formSize} spellCheck="false" />
+                {sizePopup &&
+                    <SelectPopup data={attributesName} handleClick={handleChooseSize} itemChoose={attribute_Size}  />
+                }
+                <p className='text-red-500 text-sm' >Lưu ý mỗi Size cách nhau một dấu ',' Ví dụ : 6 US|7 US|8 US ...</p>
             </div>
 
-            <div>
+            <div  className='relative' >  
                 <p className='text-sm text-gray-500' >Màu sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' type="text" 
-                    onChange={(e)=>setFormColor(e.target.value)}  value={formColor} />
-                <p className='text-red-500 text-sm' >Lưu ý mỗi Color cách nhau một dấu ',' Ví dụ : black,white,blue ...</p>
+                <textarea  className='border-2 p-2 w-2/3 ' type="text" onClick={()=>setColorsPopup(true)}
+                    onChange={(e)=>setFormColor(e.target.value)}  value={formColor} spellCheck="false" />
+                {colorsPopup &&
+                    <SelectPopup data={attributesName} handleClick={handleChooseColor} itemChoose={attribute_Color}  />
+                }
+                <p className='text-red-500 text-sm' >Lưu ý mỗi Color cách nhau một dấu ',' Ví dụ : black|white|blue ...</p>
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Mô tả sản phẩm</p>
                 <textarea  className='border-2 p-2 w-2/3 ' rows='9' type="text" 
-                    onChange={(e)=>setDesc(e.target.value)}  value={desc} />
+                    onChange={(e)=>setDesc(e.target.value)}  value={desc} spellCheck="false" />
                 
             </div>
 
