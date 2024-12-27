@@ -40,8 +40,8 @@ const Checkout = () => {
   const[message,setMessage]=useState('')
 
   const handleSubmit = async (e) => { 
-      e.preventDefault()
       setLoading(true)
+      e.preventDefault()
       try{
         const res = await userRequest.post(`/order/${user._id}`, {
           clientName: firstName+' '+ lastName,
@@ -54,14 +54,14 @@ const Checkout = () => {
         })
         if(res.data){
           userRequest.post(`/cart/${user._id}/reset-cart`,{});
-
-          router.push(`/checkout-success/${res.data.order._id}`); 
-          
+          router.push(`/checkout-success/${res.data.order._id}`);      
           dispatch(setCart(null))
-        } else {
-          setError('please try again')
+          setLoading(false)
+        } 
+        else {
+          setError(true)
         }
-        setLoading(false)
+        
       }catch(err){}
       
   }
@@ -72,7 +72,10 @@ const Checkout = () => {
   }
 
   return (
-    <div  className='px-4 sm:px-4  xl:px-48 flex flex-col sm:flex-col lg:flex-row mt-20 mb-30 ' >
+    <>
+    {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+    <div  className={` px-4 sm:px-4  xl:px-48 flex flex-col sm:flex-col lg:flex-row mt-20 mb-30 
+      ${loading?'bg-white opacity-50':''}  `} >  
       {/* left col */}
       <div className=' w-full  lg:w-2/3  flex flex-col p-2 sm:p-20  ' >
         <p className='text-center font-bold text-3xl  ' >CHECKOUT</p>
@@ -169,10 +172,14 @@ const Checkout = () => {
             className={`  p-4  w-full bg-black text-white font-bold hover:text-gray-400 transition mt-2 
               ${loading ? 'cursor-not-allowed' : '' }`} 
           >                   
-                Đặt hàng     {loading ? <Loader color={'inherit'}  /> : '' }                                
+                Đặt hàng                             
           </button>
-          {error ? errorMessage : '' }
-         {error ? error: '' }
+          {error ? 
+          <span className='text-red-500'  >
+          {errorMessage}  
+          </span>
+          : '' }
+       
         </form>
 
       </div>
@@ -229,6 +236,7 @@ const Checkout = () => {
 
       </div>
     </div>
+  </>
   )
 }
  

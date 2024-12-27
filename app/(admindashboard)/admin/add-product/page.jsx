@@ -276,7 +276,7 @@ const AddProduct = () => {
     };
 
     const handleChooseProductLine = (productLine) => {
-        setProductLinesPopup(false)
+        setProductLinesPopup(!productLinesPopup)
         setProductLine(productLine)
     }
  

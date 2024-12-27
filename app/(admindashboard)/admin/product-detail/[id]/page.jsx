@@ -32,7 +32,7 @@ const ProductDetail = () => {
     const [productLine, setProductLine] = useState('')
     const [price, setPrice] = useState('')
 
-    const [formCategory, setFormCategory] = useState('')
+    const [formCategory, setFormCategory] = useState('')  
     var category = []
 
     const [formSize, setFormSize] = useState('')
@@ -49,42 +49,49 @@ const ProductDetail = () => {
     var imageGalleryUrl = []
 
     const [inStock, setInStock] = useState('')
-    console.log('instock ',inStock)
+
     const [desc, setDesc] = useState('')
 
      // handle from string to array
-    String(formCategory).split(',').map((item)=> {
+    String(formCategory).split('|').map((item)=> {
         item = item.trim()
         category.push(item)
     })
 
-    String(formSize).split(',').map((item)=> {
+    String(formSize).split('|').map((item)=> {
         item = item.trim()
         size.push(item)
     })
 
-    String(formColor).split(',').map((item)=> {
+    String(formColor).split('|').map((item)=> {
         item = item.trim()
         color.push(item)
     })
 
     useEffect (() => {
+        var cat =''
+        var size =''
+        var color = ''
         const getProduct = async () => {
              try {
                  const res = await publicRequest.get(`/product/${product_id}`)
                 if(res.data){       
-                setProduct(res.data)
-                setProductName(res.data.name)
-                setProductLine(res.data.productLine)
-                setDesc(res.data.desc)
-                setThumbnail(res.data.thumbnail)
-                setImageGallery(res.data.imgGallery)
-                setFormCategory(res.data.categories)
-                setFormSize(res.data.size)
-                setFormColor(res.data.color)
-                setPrice(res.data.price)
-                setInStock(res.data.inStock)
-                setLoading(false)
+                    cat = String(res.data.categories).split(',').join('|')
+                    size = String(res.data.size).split(',').join('|')
+                    color = String(res.data.color).split(',').join('|')
+                    setProduct(res.data)
+                    setProductName(res.data.name)
+                    setProductLine(res.data.productLine)
+                    setDesc(res.data.desc)
+                    setThumbnail(res.data.thumbnail)
+                    setImageGallery(res.data.imgGallery)
+                    setFormCategory(cat)
+                    setFormSize(size)
+                    setFormColor(color)
+                    setPrice(res.data.price)
+                    setInStock(res.data.inStock)
+
+                    setLoading(false)    
                 }
              } catch {}
         }
@@ -92,7 +99,7 @@ const ProductDetail = () => {
 }, [])
    
 
-    
+    console.log('form cat',formCategory)
    
 
     // handle choose thumbnail
@@ -290,7 +297,7 @@ const ProductDetail = () => {
   return (
     <div className={` mt-20  flex flex-col mb-20   ${loading?'bg-white opacity-50':''}  `} >
         <p className='text-3xl font-bold' >
-            Chỉnh sửa sản phẩm 
+            Chi tiết sản phẩm 
         </p>
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
@@ -316,6 +323,7 @@ const ProductDetail = () => {
                 <p className='text-sm text-gray-500' >Category sản phẩm</p>
                 <input  className='border-2 p-2 w-1/3 ' type="text" 
                     onChange={(e)=>setFormCategory(e.target.value)} value={formCategory}  />
+                <p className='text-red-500 text-sm mt-2' >Lưu ý mỗi category cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>   
             </div>
 
             <div>
@@ -328,14 +336,14 @@ const ProductDetail = () => {
                 <p className='text-sm text-gray-500' >Size sản phẩm</p>
                 <textarea  className='border-2 p-2 w-2/3 ' type="text" 
                     onChange={(e)=>setFormSize(e.target.value)}  value={formSize} />
-                <p className='text-red-500 text-sm' >Lưu ý mỗi Size cách nhau một dấu ',' Ví dụ : 6 US,7 US ...</p>
+                <p className='text-red-500 text-sm ' >Lưu ý mỗi Size cách nhau một dấu '|' Ví dụ : 6 US|7 US ...</p>
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Màu sản phẩm</p>
                 <textarea  className='border-2 p-2 w-2/3 ' type="text" 
                     onChange={(e)=>setFormColor(e.target.value)}  value={formColor} />
-                <p className='text-red-500 text-sm' >Lưu ý mỗi màu cách nhau một dấu ',' Ví dụ : black,white,blue ...</p>
+                <p className='text-red-500 text-sm' >Lưu ý mỗi màu cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>
             </div>
 
             <div>

@@ -14,6 +14,7 @@ import { FormatCurrency } from '@/utils/FormatCurrency';
 const Shoe = () => {
 
   const [loading, setLoading] = useState(true)
+  const [category, setCategory] = useState(['Giày'])
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState()
   const [limit, setLimit] = useState(16)
@@ -21,7 +22,7 @@ const Shoe = () => {
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
   wishlist?.products?.map((item)=> wishlistArray.push(item._id))
-  
+  const [reload,setReload] = useState(false)
 
   const size_data = ['6 US','6.5 US','7 US','7.5 US','8 US','8.5 US','9 US','9.5 US','10 US','10.5 US',
     '11 US']
@@ -33,25 +34,65 @@ const Shoe = () => {
   const[filter,setFilter]=useState(false)
   const[products, setProducts]=useState([])
 
+  const [categoryList, setCategoryList] = useState([])
+  const [subCategories, setSubCategories] = useState([])
+  
+
+
+    // fetching categories
+    useEffect(() => {
+      var categories = []
+      var subCatArray = []
+      setLoading(true)
+      const getCategories = async () => {
+          try {
+              const res = await publicRequest.get('/category')
+              if(res.data){
+                  res.data.categories.map((item) =>  {
+                      categories.push(item.name)
+                      const getSubCategories = async () => {    
+                          const res2 = await publicRequest.get(`/sub-category/${item._id}`)
+                          if(res2.data){
+                              res2.data.subCategory.map((subCat)=> {
+                                  categories.push(subCat.name)
+                                  subCatArray.push(subCat.name)
+                              })
+                          }
+                      }
+                      getSubCategories()
+                  })
+              }
+              setSubCategories(subCatArray)
+              setCategoryList(categories)
+              setLoading(false)
+          
+          } catch(err){
+              console.log('err while fetching categories', err)
+          }
+      }
+      getCategories()
+  }, [])
+ 
+
   const handlePrice = (e) => {
         setPrice(e.target.value)
   }
 
+  // get products
   useEffect(() => {
    
       setLoading(true)
       const getProducts = async () => {
         try {    
-          const res = await publicRequest.get(`/product?category=Giày&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
+          const res = await publicRequest.get(`/product?category=${category}&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
           setProducts(res.data.products)
           setTotalPage(res.data.totalPage)
-          console.log('res data--->',res.data)
           setLoading(false)
         } catch {}
       }
       getProducts();
-
-  },[page,price,size,color])
+      console.log(category)
+  },[page,price,size,color,category])
 
 
 
@@ -59,16 +100,7 @@ const Shoe = () => {
     setFilter((prev) => !prev) ;
   };
 
-  // const handleSizeClick = (d) => {
 
-  //   if(size.includes(d)) {
-  //     const updatedSize = size.filter((s) => s !== d );
-  //     setSize(updatedSize)
-  //   } else {
-  //     setSize((prev) => [...prev,d] );
-  //   }
-    
-  // };
 
   const handlePrev =() => {
       setPage((prev)=>prev-1)
@@ -80,6 +112,7 @@ const Shoe = () => {
   const handleReset = () => {
       setColor('')
       setSize('')
+      setCategory(['Giày'])
       setPrice([0,20000000])
   }
   const handleColor = (c) => {
@@ -97,6 +130,15 @@ const Shoe = () => {
       setSize(s)
     }
   }
+
+  const handleChooseCategory = async (cat) => {
+    if(category.includes(cat)){
+          setCategory(category.filter((c) => String(c) !== cat))        
+    } else {
+      setCategory(prev=>[...prev,cat])
+    }    
+  }
+ 
   return (
     <div className={` ${loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
@@ -136,7 +178,7 @@ const Shoe = () => {
               <select value={page} onChange={(e)=>setPage(e.target.value)}
                   className='border-gray-300 hover:border-black hover:cursor-pointer transition border-2 p-2  '  >
                {Array.from({length: totalPage}, (_, i)=> (
-                  <option value={i+1}>{i+1}</option>
+                  <option key={i} value={i+1}>{i+1}</option>
                ))}
               </select> 
              
@@ -210,15 +252,23 @@ const Shoe = () => {
                 
             <span 
               onClick={()=>handleColor('red')}      
-              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-red-500
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-red-600
               `} 
             >   
               {color==='red' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
             </span>
+
+            <span 
+              onClick={()=>handleColor('brown')}      
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-amber-900
+              `} 
+            >   
+              {color==='brown' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
+            </span>
                 
             <span 
               onClick={()=>handleColor('blue')}      
-              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-blue-500
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-blue-600
               `} 
             >   
               {color==='blue' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
@@ -234,7 +284,7 @@ const Shoe = () => {
 
             <span 
               onClick={()=>handleColor('yellow')}      
-              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-yellow-500
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-yellow-400
               `} 
             >   
               {color==='yellow' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
@@ -242,7 +292,7 @@ const Shoe = () => {
 
             <span 
               onClick={()=>handleColor('gray')}      
-              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-gray-500
+              className={`relative rounded-md w-16 h-12 border-gray-300  ml-[1px] mt-[1px] text-center hover:border-black bg-gray-400
               `} 
             >   
               {color==='gray' && <DoneIcon fontSize='large' className='absolute z-20 flex left-5 text-black'/>}
@@ -281,6 +331,32 @@ const Shoe = () => {
             </span>
       
         </div>
+
+        {/* filter categories */}
+        <div className='font-bold text-2xl mt-4' >Categories </div>
+        <div className={`  bg-white text-left p-2  rounded-md  `}   >
+                            {categoryList.sort()?.map((item, index)=> 
+                              <div key={index} className='space-x-2' >
+                                  {subCategories.includes(item)?
+                                  <span className='ml-4' >-</span>
+                                  :''}
+                                  <input type='checkbox' 
+                                      defaultChecked={category.includes(item)}
+                                      onClick = {()=>handleChooseCategory(item)} 
+                                      key={index} 
+                                      className={`hover:bg-gray-300 p-1 hover:cursor-pointer rounded-md `}         
+                                  />
+                                  <span className='ml-2' >
+                                      {item}
+                                  </span>
+
+                                                            
+                              </div>
+                            )
+                    
+                            }
+         </div>        
+              
         <button  className='text-2xl p-3 border-2 border-gray-300 hover:bg-black hover:text-white transition  font-bold mt-4 rounded-md' onClick={handleReset} >
           Reset filter
         </button>

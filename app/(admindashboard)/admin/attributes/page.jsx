@@ -87,7 +87,6 @@ const Attribute = () => {
 
   const handleClickEditAttribute = async (id, name, item) => {
       let attr = String(item).split(",").join("|")
-      console.log(attr)
       setNewAttributeItem(attr)
       setEditAttributeWindow(true)
       setAttributeId(id)

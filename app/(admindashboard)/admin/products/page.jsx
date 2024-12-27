@@ -28,7 +28,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true)
   const [products, setProducts]= useState('')
 
-  const [productId, setProductId] = useState()
+  const [reload, setReload] = useState(false)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(9999)
    // close the popup
@@ -78,7 +78,7 @@ const Products = () => {
       console.log('delete product error',err)
     }
     setLoading(false)
-    setProductId(product_id)
+    setReload(!reload)
     setNotifySuccess(true)
     setTimeout(()=> {
       setNotifySuccess(false)
@@ -99,7 +99,7 @@ const Products = () => {
     }
 
   getProducts();
-}, [productId])
+}, [reload])
   
   const columns = [
     { field: "_id", headerName: 'Mã sản phẩm', width:120 },
@@ -178,7 +178,7 @@ const Products = () => {
           return(
             <span>
               <span className='p-2 rounded hover:cursor-pointer text-gray-500 hover:text-black' title='xem chi tiết' > 
-                {moment(params.row.createdAt).format("YYYY-MMM-d h:mm:ss A")}
+                {moment(params.row.createdAt).format("YYYY-MMM-DD h:mm:ss A")}
               </span>  
                 
             </span>

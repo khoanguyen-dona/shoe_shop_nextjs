@@ -65,7 +65,7 @@ const Orders = () => {
         return(
           <span>
             <span className='p-2 rounded hover:cursor-pointer text-gray-500 hover:text-black' title='xem chi tiết' > 
-              {moment(params.row.createdAt).format("YYYY-MMM-d h:mm:ss A")}
+              {moment(params.row.createdAt).format("YYYY-MMM-DD h:mm:ss A")}
             </span>  
               
           </span>

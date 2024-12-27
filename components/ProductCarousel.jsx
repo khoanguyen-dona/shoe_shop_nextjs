@@ -25,7 +25,7 @@ const ProductCarousel = ({data}) => {
             scrollbar = {false}
             modules={[Navigation, Pagination,Scrollbar]}
         >
-            {data.map((d,index) => (
+            {data && data.map((d,index) => (
                 <SwiperSlide key={index} >
                     <a href={`/product-detail/${d._id}`}>
                         <img className='flex object-cover  items-center justify-center' src={d.thumbnail} alt="Slide 1" />

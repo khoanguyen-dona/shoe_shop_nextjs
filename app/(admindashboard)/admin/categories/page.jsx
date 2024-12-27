@@ -28,7 +28,7 @@ const Categories = () => {
       try {
         const res = await userRequest.get('/category')
         if (res.data) {
-          setCategories(res.data.category)
+          setCategories(res.data.categories)
           setLoading(false)
           
         }
