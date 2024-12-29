@@ -72,7 +72,7 @@ const ProductDetail = () => {
       }
 
     }catch(err){
-      
+      console.log(err)
     }
     
   }

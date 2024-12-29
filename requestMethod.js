@@ -1,4 +1,11 @@
+
 import axios from "axios";
+
+
+
+const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+const TOKEN = user && JSON.parse(user).currentUser?.accessToken
+
 
 
 export const publicRequest = axios.create({
@@ -8,5 +15,6 @@ export const publicRequest = axios.create({
 
 export const userRequest = axios.create({
     baseURL: process.env.NEXT_PUBLIC_BASE_URL,
-    // header: { token: `Bearer ${TOKEN}`}
+    headers: { token: `Bearer ${TOKEN}`}
 })
+

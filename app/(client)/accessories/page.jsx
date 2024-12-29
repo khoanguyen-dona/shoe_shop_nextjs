@@ -196,7 +196,7 @@ const Accessories = () => {
     
       
       {/* filter popup */}
-      <div className={`shadow-2xl   fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
+      <div className={`shadow-2xl  overflow-auto  fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
           duration-300  ${filter ? 'translate-x-0' : 'translate-x-full'}  `} >
         <div className='flex flex-row justify-between ' >
           <div className='font-bold' >Lọc sản phẩm</div>
