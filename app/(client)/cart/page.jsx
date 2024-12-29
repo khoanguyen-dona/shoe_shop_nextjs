@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { FormatCurrency } from '@/utils/FormatCurrency'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -9,9 +9,12 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
 import { userRequest } from '@/requestMethod';
 import { setCart } from '@/redux/cartRedux';
+import Loader from '@/components/Loader';
+
 
 const Cart = () => {
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
   const products = cart?.products
@@ -25,6 +28,7 @@ const Cart = () => {
   }, 0);
  
   const decreaseItem = async (product) => {
+    setLoading(true)
     try{
       const res = await userRequest.post(`/cart/${user._id}/decrease-item`,{
         productId: product.productId,
@@ -33,11 +37,13 @@ const Cart = () => {
       })
       if(res.data){
         dispatch(setCart(res.data.cart))
+        setLoading(false)
       }
     }catch(err){}
   }
 
   const addItem = async (product) => {
+    setLoading(true)
     try{
       const res = await userRequest.post(`/cart/${user._id}`,{
         productId: product.productId,
@@ -48,11 +54,13 @@ const Cart = () => {
       })
       if(res.data){
         dispatch(setCart(res.data.cart))
+        setLoading(false)
       }
     }catch(err){}
   }
 
   const removeItem = async (product) => {
+    setLoading(true)
     try{
       const res = await userRequest.post(`/cart/${user._id}/delete-item`,{
         productId: product.productId,
@@ -61,6 +69,7 @@ const Cart = () => {
       })
       if(res.data){
         dispatch(setCart(res.data.cart))
+        setLoading(false)
       }
     }catch(err){}
   }
@@ -68,7 +77,10 @@ const Cart = () => {
 
   
   return (
-    <div className='flex flex-col sm:flex-col md:flex-row   sm:px-4 lg:px-24 2xl:px-96   mt-20  ' >
+    <>
+    {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+    <div className={` flex flex-col sm:flex-col md:flex-row   sm:px-4 lg:px-24 2xl:px-96   mt-20 ${loading?'bg-white opacity-50':''}  `} >
+      
       {/* left col */}
       <div className=' sm:w-full lg:w-3/5 p-4 flex   flex-col ' >
         <h1 className='font-bold text-4xl' >GIỎ HÀNG CỦA BẠN</h1>
@@ -110,7 +122,7 @@ const Cart = () => {
       <div className='sm:w-full lg:w-2/5  p-2  flex flex-col ' >
 
           <div className='flex bg-black text-white hover:text-gray-500 ' >
-            <a  href='/checkout' className='  font-bold p-4 w-full flex  justify-start hover:text-gray-500 transition ' >THANH TOÁN</a>
+            <a  onClick={()=>setLoading(true)} href='/checkout' className='  font-bold p-4 w-full flex  justify-start hover:text-gray-500 transition ' >THANH TOÁN</a>
             <span  className=' ' > <ArrowRightAltIcon sx={{fontSize:50 }} /> </span>
           </div>
 
@@ -162,6 +174,7 @@ const Cart = () => {
       </div>
 
     </div>
+    </>
   )
 }
 

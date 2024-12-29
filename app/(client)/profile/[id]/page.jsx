@@ -1,24 +1,20 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector,useDispatch } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation'
-import { persistor } from '@/redux/store'
-import { dividerClasses } from '@mui/material'
 import { setCart } from '@/redux/cartRedux'
 import { setWishlist } from '@/redux/wishlistRedux'
 import { setLogout } from '@/redux/userRedux'
+import Loader from '@/components/Loader'
 
 const Profile  = () => {
-    const user_id = useParams().id
+    const [loading, setLoading] = useState(false)
     const router = useRouter()
-    const user = useSelector((state) => state.user.currentUser)
     const dispatch = useDispatch()
-
     const handleLogoutClick = async (e) => {
         e.preventDefault();
-        // await persistor.purge()
         try{
           dispatch(setCart(null))
           dispatch(setWishlist(null))
@@ -26,14 +22,18 @@ const Profile  = () => {
         } catch(err) {}
         router.push('/')
     }
+
+   
+
   return (
-  <div>
+  <div className={`${loading ?'bg-white opacity-50':''} `}   >   
+   {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
     <p className='font-bold text-4xl text-center mt-10'  >Profile page</p>
     <div className='px-2 md:px-8 xl:px-24 2xl:px-24 mt-20' >
         <div className=' flex flex-wrap w-full justify-center ' >
   
             <div 
-                onClick ={()=> router.push('/profile/account')}
+                onClick ={()=> router.push('/profile/account')} 
                 className='w-full md:w-1/5   h-[100px] lg:h-[200px] border-[1px] border-black text-center p-5  lg:p-10 text-xl font-bold
                 hover:bg-black hover:text-white transition ml-2 mt-2 ' >
               Account
@@ -45,19 +45,13 @@ const Profile  = () => {
            hover:bg-black hover:text-white transition ml-2 mt-2 '  >
             Order
           </div>
-          <div 
-              onClick = {()=>router.push('/profile/address')}
-              className='w-full md:w-1/5  h-[100px] lg:h-[200px] border-[1px] border-black text-center p-5  lg:p-10 text-xl font-bold
-           hover:bg-black hover:text-white transition ml-2 mt-2 '  >
-            Address
-          </div>
-          <div className='w-full md:w-1/5  h-[100px] lg:h-[200px] border-[1px] border-black text-center p-5  lg:p-10 text-xl font-bold
-           hover:bg-black hover:text-white transition ml-2 mt-2 '  >
-            Account
-          </div>
+         
+    
         </div>
-        <button  onClick={handleLogoutClick} className='bg-black w-full  mt-4 text-white font-bold p-4
-          hover:text-gray-500   transition text-3xl mb-96'  >Log out</button>
+        <div className='flex justify-center' >
+          <button  onClick={handleLogoutClick} className='bg-black w-full md:w-2/3   mt-4 text-white font-bold p-4
+            hover:text-gray-500   transition text-3xl mb-96'  >Log out</button>
+        </div>
     </div>
   </div>
   )

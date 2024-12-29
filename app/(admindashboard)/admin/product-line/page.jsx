@@ -1,0 +1,213 @@
+'use client'
+import React from 'react'
+import { DataGrid } from '@mui/x-data-grid';
+import { userRequest } from '@/requestMethod';
+import Loader from '@/components/Loader';
+import { useState, useEffect } from 'react';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+
+const ProductLine = () => {
+
+  const [notifySuccess, setNotifySuccess] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [productLines, setProductLines] = useState('')
+
+  const [productLine, setProductLine] = useState('')
+  const [productLineId, setProductLineId] = useState('')
+  const [reload, setReload] = useState(false)
+  const [editProductLineWindow, setEditProductLineWindow] = useState(false)  
+
+  
+  console.log(productLine)
+  console.log(productLineId)
+  // close the popup
+  const handleClosePopup = () => {
+    setNotifySuccess(false)
+  }
+
+  
+  useEffect(()=> {
+    
+    const getProductLines = async () => {
+      try {
+        const res = await userRequest.get('/product-line')
+        if (res.data) {
+          setProductLines(res.data.productLines)
+          setLoading(false)
+          
+          
+        }
+      } catch(err){
+        console.log('error whilte loading categories',err)
+      }
+    }
+    getProductLines()
+  }, [reload])
+
+  const handleProductLineInput = (e) => {
+    setProductLine(e.target.value)
+  }
+  
+  const handleAddProductLine = async () => {
+    setLoading(true)
+    try {
+      const res = await userRequest.post('/product-line', {
+        name: productLine
+      })
+      if(res.data){
+        setReload(!reload)
+        setNotifySuccess(true)
+            setTimeout(()=> {
+            setNotifySuccess(false)
+            }, 3000)
+      }
+    } catch (err){
+      console.log('error while adding new product line',err)
+    }
+  }
+
+  const handleDeleteProductLine = async (productLineId) => {
+    setLoading(true)
+    try {
+      const res = await userRequest.delete(`/product-line/${productLineId}`)
+      if(res.data){
+        console.log('-->delete',res)
+        setReload(!reload)
+        setNotifySuccess(true)
+            setTimeout(()=> {
+            setNotifySuccess(false)
+            }, 3000)
+       
+      }
+    } catch(err){
+      console.log('err while delete product line',err)
+    }
+  }
+
+  const handleClickEditProductLine = (productLine_name, productLine_id) => {
+        setEditProductLineWindow(true)
+        setProductLine(productLine_name)
+        setProductLineId(productLine_id)
+  }
+
+  const handleUpdateProductLine = async () => {
+        setLoading(true)
+        try {   
+            const res = await userRequest.put(`/product-line/${productLineId}`,{
+                name: productLine
+            })
+            if(res.data) {
+                setReload(!reload)
+                setEditProductLineWindow(false)
+                setNotifySuccess(true)
+                setTimeout(()=> {
+                    setNotifySuccess(false)
+                }, 3000)
+            }
+
+        } catch(err) {
+            console.log('error while updating productLine',err)
+        }
+  }
+
+  const columns = [ 
+    { field: "name", headerName: 'Tên dòng sản phẩm', width:500 },  
+    { field: "action", headerName: 'Hành động', width:150 ,
+      renderCell: (params)=>{
+        return(
+          <span>
+            <span className='p-2 rounded   '  >
+            
+              <span >
+               
+                    <span title='Edit' >
+                        <EditIcon 
+                            onClick={()=>handleClickEditProductLine(params.row.name, params.row._id)}
+                            
+                            fontSize='large' className='text-blue-500 hover:text-blue-800  '  />  
+                    </span>
+           
+               
+                    <span  title='Xóa'  >
+                        <DeleteIcon 
+                            onClick={()=>handleDeleteProductLine(params.row._id)} 
+                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                    </span>
+            
+              </span> 
+              
+            </span>  
+              
+          </span>
+        )
+      }
+    },
+   
+   
+  ]
+
+  return (
+    <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
+        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+        {notifySuccess ? 
+                <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+             : '' }
+        {editProductLineWindow ? 
+            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
+                <div className='flex flex-col justify-center' >
+                    <div className='flex justify-between' >
+                        <div className='font-bold text-2xl' >Edit category</div>
+                        <CloseIcon 
+                            className='hover:cursor-pointer ' 
+                            onClick={()=>setEditProductLineWindow(false)} fontSize='large' />
+                    </div>
+                    <input type="text" onChange={(e)=>setProductLine(e.target.value)} 
+                        value={productLine}
+                        className='w-full border-2 mt-4 p-4 rounded-md text-2xl' />
+                    <div className='text-center' >   
+                        <button
+                            onClick={handleUpdateProductLine} 
+                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/3  rounded-md transition' >
+                            Update
+                        </button>
+                    </div>  
+                 </div>  
+              
+            </div> : ''
+        }
+        <div className='text-3xl font-bold' >Product Line</div>
+        <div className='flex mt-4' >
+          <input 
+            onChange={handleProductLineInput}  
+            className='w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+          <button 
+            onClick = {handleAddProductLine}
+            className='rounded-r-md   w-1/5 bg-green-500 font-bold p-4 text-white text-xl hover:bg-green-800 transition' >
+            Thêm
+          </button>
+        </div>
+
+        <DataGrid
+          className='mt-10'
+          rows={productLines}
+          disableSelectionOnClick
+          columns={columns}
+          getRowId={(row) => row._id}
+          pageSizeOptions={[20, 40, 50, 100]}
+          // checkboxSelection
+          sx={{fontSize:'20px'}}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 20, page: 0 },
+            },
+          }}
+        />  
+
+    </div>
+  )
+}
+
+export default ProductLine

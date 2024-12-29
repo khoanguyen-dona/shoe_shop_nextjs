@@ -14,8 +14,13 @@ import { setWishlist } from '@/redux/wishlistRedux';
 import { userRequest } from '@/requestMethod';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { setCart } from '@/redux/cartRedux';
+import Loader from '@/components/Loader';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 const ProductDetail = () => {
+
+    const [notifyPopup, setNotifyPopup] = useState(false)
+    const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.currentUser)
     const wishlist = useSelector((state) => state.wishlist.userWishlist)
@@ -24,12 +29,12 @@ const ProductDetail = () => {
     const [size, setSize]=useState("")
     const [color, setColor]=useState("")
     const [product, setProduct]=useState({})
-
+  
     //  add to wishlistArray
-    wishlist?.wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
-   console.log('wishlist --->',wishlist)
-
+    wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
+  
   const addToWishlist = async (e) => {
+    setLoading(true)
     e.preventDefault()
     try {
       const res = await userRequest.post(`/wishlist/${user._id}`, {
@@ -37,6 +42,8 @@ const ProductDetail = () => {
       })
       if(res.data){
         dispatch(setWishlist(res.data.wishlist))
+        setLoading(false)
+        
       }
 
     } catch(err) {
@@ -45,6 +52,7 @@ const ProductDetail = () => {
 
   }
   const addToCart = async (e) => {
+    setLoading(true)
     e.preventDefault()
     try{
       const res = await userRequest.post(`/cart/${user._id}`, {
@@ -56,27 +64,48 @@ const ProductDetail = () => {
       }) 
       if(res.data){
         dispatch(setCart(res.data.cart))
+        setLoading(false)
+        setNotifyPopup(true)
+        setTimeout(()=> {
+          setNotifyPopup(false)
+        }, 3000)
       }
 
     }catch(err){
-      
+      console.log(err)
     }
+    
   }
 
+  //fetch data
     useEffect(()=> {
       const getProduct = async () => {
         try {
           const res = await publicRequest.get(`/product/${productId}`)
-          setProduct(res.data)
+          if(res.data) {
+            setProduct(res.data)
+            setLoading(false)
+          }
         } catch {}
       };
       getProduct();
-    }, [productId])
+      
+    }, [])
+    
+    // close the popup
+    const handleClosePopup = () => {
+      setNotifyPopup(false)
+  }
 
+  console.log()
   return (
   
-    <div className='px-4 md:px-8  xl:px-32  mb-20' >
-      {/* <div>produc_id là : {productId} </div> */}
+    <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
+     {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+     {notifyPopup ? 
+            
+                <SuccessPopup  message={'Thêm thành công!'}  handleClosePopup={handleClosePopup}   /> 
+             : '' }
       <div className='flex flex-col  md:flex-row  mt-20  ' >
         {/* product image gallery */}
         <div className='w-full  md:w-2/4 ' > 
@@ -92,25 +121,31 @@ const ProductDetail = () => {
           <div className='font-bold' > 
             Size : {size} 
           </div>
-          <div className='  flex flex-wrap  '>
-            {product.size?.map((s,index)=>(
-                <span 
-                  key={index}
-                  onClick={()=>setSize(s)}
-                  className = {` border-gray-400 border-4  text-center transition rounded py-2 ml-1 mt-1 w-20 h-12 hover:border-gray-500
-                    ${s===size?'bg-black border-4 border-black text-white ':''} `} 
-                >
-                  {s}
-                </span>
-              ))
-            }            
-          </div>
+          {/* {product.size} */}
+          {String(product.size).length === 0  ? '' :
+            <div className='  flex flex-wrap  '>
+              
+              {product.size?.map((s,index)=>(
+                  <span 
+                    key={index}
+                    onClick={()=>setSize(s)}
+                    className = {` border-gray-400 border-4  text-center transition rounded py-2 ml-1 mt-1 w-20 h-12 hover:border-gray-500
+                      ${s===size?'bg-black border-4 border-black text-white ':''} `} 
+                  >
+                    {s}
+                  </span>
+                )) 
+              }
+            </div> 
+          }            
+
           {/* color */}
           <div className='font-bold' >
             Color : {color}
           </div>
           <div className='flex flex-swap  ' >
-            {product.color?.map((c,index)=>(
+            {String(product.color).length !== 0 &&
+            product.color?.map((c,index)=>(
               <p 
               onClick={()=>setColor(c)}
               className={`object-cover ml-1 mt-1 hover:border-gray-500 hover:border-4 transition rounded border-4 p-4 ${c===color?'border-black border-4':'' } `}
@@ -118,12 +153,13 @@ const ProductDetail = () => {
               src={c} alt="" >
               {c}
               </p>
-            ))}
+            ))
+            }
           </div>
           {/* add to cart */}
           <hr className='border-2 border-gray-300 '/>
           <div className='flex  ' >
-            <div className='border-gray-400 border-4 mr-1 flex p-1 ' >
+            {/* <div className='border-gray-400 border-4 mr-1 flex p-1 ' >
               <span className='hover:bg-black hover:text-white transition  ' >
                 <RemoveIcon   sx={{fontSize:50}} />
               </span>
@@ -131,7 +167,7 @@ const ProductDetail = () => {
               <span className='hover:bg-black hover:text-white transition ' >
                 <AddIcon sx={{fontSize:50}} />
               </span>
-            </div>
+            </div> */}
             <button 
                 onClick={addToCart}
                 className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >

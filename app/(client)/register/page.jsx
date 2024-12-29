@@ -29,12 +29,14 @@ const Register = () => {
       })
       if(res.data) {
         router.push('/login')
-        setLoading(false)
+        
       } else {
         setError(true)
       }
     }catch(err){
       console.log(err)
+    } finally {
+      setLoading(false)
     }
     
    

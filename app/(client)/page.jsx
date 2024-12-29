@@ -22,8 +22,8 @@ const Home = () => {
   useEffect(() => {
     const getGiayData = async () => {
       try{
-        const res = await publicRequest.get('/product?category=Giày')
-        setGiayData(res.data);
+        const res = await publicRequest.get('/product?category=Giày&color=&size=&page=1&limit=8&minPrice')
+        setGiayData(res.data.products);
       } catch {     
       }
     }
@@ -33,8 +33,8 @@ const Home = () => {
   useEffect(() => {
     const getAoData = async () => {
       try{
-        const res = await publicRequest.get('/product?category=Áo')
-        setAoData(res.data)
+        const res = await publicRequest.get('/product?category=Áo&color=&size=&page=1&limit=8&minPrice')
+        setAoData(res.data.products)
       } catch(err) {
         console.log(err)
       }
@@ -45,8 +45,8 @@ const Home = () => {
   useEffect(() => {
     const getPhukienData = async () => {
       try{
-        const res = await publicRequest.get('/product?category=Phụ kiện')
-        setPhukienData(res.data)
+        const res = await publicRequest.get('/product?category=Phụ kiện&color=&size=&page=1&limit=8&minPrice')
+        setPhukienData(res.data.products)
       } catch(err) {
         console.log(err)
       }

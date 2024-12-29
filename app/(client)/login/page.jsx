@@ -17,7 +17,6 @@ const Login = () => {
   const [err, setError] = useState(false)
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
-  console.log('-->',email,password)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,7 +31,7 @@ const Login = () => {
         dispatch(setUser(res.data))
         dispatch(setCart(res.data.cart))
         dispatch(setWishlist(res.data.wishlist)) 
-        console.log('-->res.data',res.data)
+       
         router.push('/')
         setLoading(false)
       }
@@ -47,13 +46,14 @@ const Login = () => {
   return (
     
     <div       
-      className="px-4 sm:px-24 lg:px-48  py-16   flex justify-center  
-      h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')]" 
+      className={`px-4 sm:px-24 lg:px-48  py-16   flex justify-center  ${loading ?'bg-white opacity-50':''}
+      h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')] `} 
     >
+      
+      <div className='w-full 2xl:w-3/6  h-[550px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white  '>
       {loading ? 
          <div className='flex justify-center' >  <Loader  color={'inherit'} />  </div> 
          : ''}
-      <div className='w-full 2xl:w-3/6  h-[550px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white  '>
         <p className='font-extrabold text-2xl text-center mt-4' >Đăng nhập</p>
         <form action="" onSubmit={handleSubmit} className='space-y-4 mt-8 ' >
           <input className='w-full p-4 flex justify-center border-2  '  type="email" value={email} required

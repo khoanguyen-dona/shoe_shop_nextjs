@@ -6,7 +6,8 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { userRequest } from '@/requestMethod';
 import { useEffect, useState } from 'react';
-import { format } from 'date-fns' 
+// import { format } from 'date-fns' 
+import moment from 'moment';
 
 const CheckoutSuccess = () => {
 
@@ -47,7 +48,7 @@ const CheckoutSuccess = () => {
         </div>
         <div>
           Ngày: <span className='font-bold' > 
-         {format(Date(), "yyyy-MMMM-do-eeee-hh:mm:ss a")};</span> 
+          {moment(order.createdAt).format("YYYY-MMM-DD, h:mm:ss A")}</span> 
         </div>
         <div>
           Tổng cộng: <span className='font-bold' >{FormatCurrency(order.total)} đ</span>
