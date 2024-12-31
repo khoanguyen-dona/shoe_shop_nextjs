@@ -12,8 +12,12 @@ import { useSelector,useDispatch } from 'react-redux';
 import { userRequest } from '@/requestMethod';
 import { setCart } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
+
 
 const Checkout = () => {
+
+  const [redirectPopup, setRedirectPopup] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
@@ -40,30 +44,56 @@ const Checkout = () => {
   const[message,setMessage]=useState('')
 
   const handleSubmit = async (e) => { 
-      setLoading(true)
       e.preventDefault()
-      try{
-        const res = await userRequest.post(`/order/${user._id}`, {
-          clientName: firstName+' '+ lastName,
-          products: products,
-          phoneNumber: phoneNumber,
-          address: address,
-          email: email,
-          paymentMethod: paymentMethod,
-          message: message
-        })
-        if(res.data){
-          userRequest.post(`/cart/${user._id}/reset-cart`,{});
-          router.push(`/checkout-success/${res.data.order._id}`);      
-          dispatch(setCart(null))
-          setLoading(false)
-        } 
-        else {
-          setError(true)
-        }
+      setLoading(true)
+      if( user === null){
+
+        try{
+          const res = await userRequest.post(`/order/null`, {
+            clientName: firstName+' '+ lastName,
+            products: products,
+            phoneNumber: phoneNumber,
+            address: address,
+            email: email,
+            paymentMethod: paymentMethod,
+            message: message
+          })
+          if(res.data){
+            dispatch(setCart(null))
+            router.push(`/checkout-success/${res.data.order._id}`);      
+            setLoading(false)
+          } 
+          else {
+            setError(true)
+          }
+          
+        }catch(err){}
+
+      } else {    
         
-      }catch(err){}
-      
+        try{
+          const res = await userRequest.post(`/order/${user._id}`, {
+            clientName: firstName+' '+ lastName,
+            products: products,
+            phoneNumber: phoneNumber,
+            address: address,
+            email: email,
+            paymentMethod: paymentMethod,
+            message: message
+          })
+          if(res.data){
+            userRequest.post(`/cart/${user._id}/reset-cart`,{});
+            router.push(`/checkout-success/${res.data.order._id}`);      
+            dispatch(setCart(null))
+            setLoading(false)
+          } 
+          else {
+            setError(true)
+          }
+          
+        }catch(err){}
+
+      }
   }
 
  
@@ -71,11 +101,19 @@ const Checkout = () => {
     setMessageOption(prev=>!prev)
   }
 
+  const handleClosePopup = () => {
+    setRedirectPopup(false)
+  }
+
   return (
     <>
+    {redirectPopup && 
+      <SuccessPopup message={'Redirecting ... please wait'} handleClosePopup={handleClosePopup} />
+    }
     {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
     <div  className={` px-4 sm:px-4  xl:px-48 flex flex-col sm:flex-col lg:flex-row mt-20 mb-30 
       ${loading?'bg-white opacity-50':''}  `} >  
+
       {/* left col */}
       <div className=' w-full  lg:w-2/3  flex flex-col p-2 sm:p-20  ' >
         <p className='text-center font-bold text-3xl  ' >CHECKOUT</p>

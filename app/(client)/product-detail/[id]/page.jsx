@@ -5,24 +5,25 @@ import ProductGallery from '@/components/ProductGallery';
 import { useState  } from 'react';
 import { useEffect } from 'react';
 import { FormatCurrency } from '@/utils/FormatCurrency';
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { publicRequest } from '@/requestMethod';
 import { useDispatch, useSelector } from 'react-redux';
 import { setWishlist } from '@/redux/wishlistRedux';
 import { userRequest } from '@/requestMethod';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { setCart } from '@/redux/cartRedux';
+import { setCart, addCartItem } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
+import FailurePopup from '@/components/Popup/FailurePopup';
 
 const ProductDetail = () => {
 
+    const [notifyFailure, setNotifyFailure] = useState(false)
     const [notifyPopup, setNotifyPopup] = useState(false)
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.currentUser)
+    const user_cart = useSelector((state) => state.cart.userCart)
     const wishlist = useSelector((state) => state.wishlist.userWishlist)
     const wishlistArray = []
     const productId = useParams().id
@@ -35,6 +36,14 @@ const ProductDetail = () => {
   
   const addToWishlist = async (e) => {
     setLoading(true)
+    if(user === null ){
+      setNotifyFailure(true)
+      setLoading(false)
+      setTimeout(()=> {
+        setNotifyFailure(false)
+      }, 3000)
+
+    } else {
     e.preventDefault()
     try {
       const res = await userRequest.post(`/wishlist/${user._id}`, {
@@ -49,30 +58,78 @@ const ProductDetail = () => {
     } catch(err) {
       console.log(err)
     }
-
-  }
+    }
+}
+  console.log('user_cart',user_cart)
+  
+  //handle add to cart
   const addToCart = async (e) => {
     setLoading(true)
-    e.preventDefault()
-    try{
-      const res = await userRequest.post(`/cart/${user._id}`, {
-        productId: productId,
-        name: product.name,
-        quantity: 1,
-        color: color, 
-        size: size
-      }) 
-      if(res.data){
-        dispatch(setCart(res.data.cart))
+    //add to cart when user not logged in
+    if( user === null) {
+      if (user_cart === null ){  
+        let cart = {
+          userId: null,
+          products:[{
+            productId: productId,
+            name: product.name,
+            thumbnail: product.thumbnail,
+            price: product.price,
+            size: size,
+            color: color,
+            quantity: 1
+            }
+          ]
+        }
+        dispatch(setCart(cart))   
+        setLoading(false)
+        setNotifyPopup(true)
+            setTimeout(()=> {
+              setNotifyPopup(false)
+            }, 3000)
+      } 
+         
+      else {     
+        let prod = {
+          productId: productId,
+          name: product.name,
+          thumbnail: product.thumbnail,
+          price: product.price,
+          size: size,
+          color: color,
+          quantity: 1
+        }
+        dispatch(addCartItem(prod))
         setLoading(false)
         setNotifyPopup(true)
         setTimeout(()=> {
           setNotifyPopup(false)
-        }, 3000)
+        }, 3000)       
       }
+      
+    //add to cart when user logged in
+    } else {
+      e.preventDefault()
+      try{
+        const res = await userRequest.post(`/cart/${user._id}`, {
+          productId: productId,
+          name: product.name,
+          quantity: 1,
+          color: color, 
+          size: size
+        }) 
+        if(res.data){
+          dispatch(setCart(res.data.cart))
+          setLoading(false)
+          setNotifyPopup(true)
+          setTimeout(()=> {
+            setNotifyPopup(false)
+          }, 3000)
+        }
 
-    }catch(err){
-      console.log(err)
+      }catch(err){
+        console.log(err)
+      }
     }
     
   }
@@ -97,11 +154,19 @@ const ProductDetail = () => {
       setNotifyPopup(false)
   }
 
+  const handleCloseFailurePopup =  () => {
+    setNotifyFailure(false)
+    console.log('clicked')
+  }
+
   console.log()
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+     {notifyFailure &&
+                <FailurePopup  message={'Đăng nhập để sử dụng chức năng này'} handleClosePopup = {handleCloseFailurePopup} />
+     }
      {notifyPopup ? 
             
                 <SuccessPopup  message={'Thêm thành công!'}  handleClosePopup={handleClosePopup}   /> 
