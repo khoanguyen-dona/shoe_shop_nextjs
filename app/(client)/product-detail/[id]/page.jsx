@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useParams } from 'next/navigation';
-import ProductGallery from '@/components/ProductGallery';
+
 import { useState  } from 'react';
 import { useEffect } from 'react';
 import { FormatCurrency } from '@/utils/FormatCurrency';
@@ -15,6 +15,7 @@ import { setCart, addCartItem } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 import FailurePopup from '@/components/Popup/FailurePopup';
+import SwiperGallery from '@/components/SwiperGallery';
 
 const ProductDetail = () => {
 
@@ -159,7 +160,6 @@ const ProductDetail = () => {
     console.log('clicked')
   }
 
-  console.log()
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
@@ -171,13 +171,15 @@ const ProductDetail = () => {
             
                 <SuccessPopup  message={'Thêm thành công!'}  handleClosePopup={handleClosePopup}   /> 
              : '' }
-      <div className='flex flex-col  md:flex-row  mt-20  ' >
+      <div className='flex flex-col  xl:flex-row  mt-20  ' >
         {/* product image gallery */}
-        <div className='w-full  md:w-2/4 ' > 
-          <ProductGallery thumbnail={product.thumbnail}  product_images={product.imgGallery} />
+        <div className='w-full h-full xl:w-3/6 2xl:w-3/6 ' > 
+          {/* <ProductGallery thumbnail={product?.thumbnail}  product_images={product?.imgGallery} /> */}
+          <SwiperGallery  product_images={product?.imgGallery} />
         </div>
+
         {/* product short desciption */}
-        <div className='w-full  xl:w-2/3 px-4 md:px-10 py-5  space-y-4' >
+        <div className='w-full  xl:w-2/5 2xl:w-3/6 xl:px-8   py-5  space-y-4' >
           <div className='text-4xl font-bold' > {product.name}</div>
           <div className='text-2xl font-bold' > {FormatCurrency(product.price)} đ </div>
           <div> {product.desc}</div>
@@ -194,8 +196,8 @@ const ProductDetail = () => {
                   <span 
                     key={index}
                     onClick={()=>setSize(s)}
-                    className = {` border-gray-400 border-4  text-center transition rounded py-2 ml-1 mt-1 w-20 h-12 hover:border-gray-500
-                      ${s===size?'bg-black border-4 border-black text-white ':''} `} 
+                    className = {` border-gray-400 border-4 font-bold  text-center transition rounded py-2 ml-1 mt-1 w-20 h-12 hover:border-gray-500
+                      ${s===size?'bg-black  border-gray-900 text-white ':''} `} 
                   >
                     {s}
                   </span>
@@ -213,7 +215,7 @@ const ProductDetail = () => {
             product.color?.map((c,index)=>(
               <p 
               onClick={()=>setColor(c)}
-              className={`object-cover ml-1 mt-1 hover:border-gray-500 hover:border-4 transition rounded border-4 p-4 ${c===color?'border-black border-4':'' } `}
+              className={`object-cover ml-1 mt-1 font-bold hover:border-gray-500 hover:border-4 transition rounded border-4 p-4 ${c===color?'border-black border-4':'' } `}
               key={index} width='80px'  
               src={c} alt="" >
               {c}
@@ -224,15 +226,6 @@ const ProductDetail = () => {
           {/* add to cart */}
           <hr className='border-2 border-gray-300 '/>
           <div className='flex  ' >
-            {/* <div className='border-gray-400 border-4 mr-1 flex p-1 ' >
-              <span className='hover:bg-black hover:text-white transition  ' >
-                <RemoveIcon   sx={{fontSize:50}} />
-              </span>
-              <span className='text-4xl py-1 font-bold ' >1</span>
-              <span className='hover:bg-black hover:text-white transition ' >
-                <AddIcon sx={{fontSize:50}} />
-              </span>
-            </div> */}
             <button 
                 onClick={addToCart}
                 className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >

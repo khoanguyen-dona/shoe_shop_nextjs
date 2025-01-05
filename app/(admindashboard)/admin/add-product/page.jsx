@@ -1,6 +1,7 @@
 'use client'
 
 import { publicRequest, userRequest } from '@/requestMethod'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,8 +9,6 @@ import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
 import SelectPopup from '../../component/SelectPopup'
 import DoneIcon from '@mui/icons-material/Done';
-
-
  import {
     getStorage,
     ref,
@@ -19,6 +18,10 @@ import DoneIcon from '@mui/icons-material/Done';
 import app from '@/firebase'
 
 const AddProduct = () => {
+    const router = useRouter()
+    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+    const currentUser = user && JSON.parse(user).currentUser
+    console.log('curr',currentUser)
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(false)
     const [productName, setProductName] = useState('')
@@ -119,7 +122,6 @@ const AddProduct = () => {
         }
         getCategories()
     }, [])
-    console.log('subcat',subCategories)
     // fetching attrs
     useEffect(() => {
         setLoading(true)
@@ -210,7 +212,6 @@ const AddProduct = () => {
                 console.log('error loading file', err)
             }
         }
-        console.log('upload img gallery url: ', imageGalleryUrl)
     }
 
     // upload thumbnail to firebase , take the thumbnail url  then create product. 
@@ -239,7 +240,6 @@ const AddProduct = () => {
 
     // create product .
     const handleCreateProduct = async (thumbnail_URL) => {
-        console.log('da vao day')
         try{
             const res = await userRequest.post('/product', {
                 name: productName,
@@ -257,7 +257,7 @@ const AddProduct = () => {
                 setTimeout(()=>{
                     setNotifySuccess(false)
                 }, 3000)
-                console.log('-->create product success',res.data.product)
+        
                 
             }
         }catch(err) {
@@ -287,7 +287,6 @@ const AddProduct = () => {
         setAttribute_Size(attributeName)
         att = attributes.filter((item)=> item.name === attributeName)
         size = String(att[0].item).split(',').join('|')
-        console.log(size)
         setFormSize(size)
     }
 
@@ -298,7 +297,6 @@ const AddProduct = () => {
         setAttribute_Color(attributeName)
         att = attributes.filter((item)=> item.name === attributeName)
         color = String(att[0].item).split(',').join('|')
-        console.log(color)
         setFormColor(color)
     }
 
@@ -318,7 +316,10 @@ const AddProduct = () => {
         console.log('cat choose',categoryChoose)
         console.log('form cat',formCategory)
         console.log('cat list',categoryList)
+        console.log('pro sug',productLinesSuggest)
   return (
+    <>
+    { currentUser?.isAdmin === true ? 
     <div className={`mt-20  flex flex-col  ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
          {notifySuccess ? 
@@ -466,6 +467,8 @@ const AddProduct = () => {
         </form>
         
     </div>
+    : router.push('/admin-login')}
+    </>
   )
 }
 

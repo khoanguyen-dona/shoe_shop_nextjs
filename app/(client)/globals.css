@@ -34,4 +34,30 @@ body {
    color:gray;
    font-weight:700 ;
   }
+  .image-carousel {
+    width: auto;
+    margin: auto;
+  }
+  
+  .main-swiper img {
+    width: 100%;
+    height: auto;
+    border-radius: 0px;
+  }
+  
+  .thumbs-swiper img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    opacity: 0.7;
+    border: 2px solid transparent;
+    transition: all 0.3s;  
+  }
+  
+  .thumbs-swiper .swiper-slide-thumb-active img {
+    opacity: 1;
+    border-color: black; /* Highlight color */
+    border-radius: 8px;
+  }
+  
 }

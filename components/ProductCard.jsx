@@ -13,7 +13,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
   const dispatch = useDispatch()
 
   const [notifyPopup, setNotifyPopup] = useState(false)
-
+  var categories = String(data.categories).split(',').join(', ')
   const addToWishlist = async (e) => {
     e.preventDefault()
     if(user===null) {
@@ -41,6 +41,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
     console.log('clicked')
   }
   console.log(notifyPopup)
+  console.log('cat',data)
 
   return (
     <div>
@@ -63,8 +64,9 @@ const ProductCard = ({data, user, wishlistArray}) => {
           <img  className='object-cover w-full transition p-1' src={data.thumbnail} alt="" />
           <span className='font-bold ' > {data.name}</span>
           <span className='font-semiblod ' >{FormatCurrency(data.price)} đ</span>
-          <span className='font-extralight' >Chạy</span>
-          <span className='font-extralight' >7 màu</span>
+          <span>     
+            {categories}
+          </span>       
         </a>
       </div>
     </div>

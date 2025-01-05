@@ -20,6 +20,9 @@ import SuccessPopup from '@/components/Popup/SuccessPopup'
 import app from '@/firebase'
 
 const ProductDetail = () => {
+
+    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+    const currentUser = user && JSON.parse(user).currentUser
     const router = useRouter()
     const storage = getStorage(app);
     const [notifySuccess, setNotifySuccess]= useState(false)
@@ -295,6 +298,8 @@ const ProductDetail = () => {
     }
 
   return (
+    <>
+    { currentUser?.isAdmin === true ? 
     <div className={` mt-20  flex flex-col mb-20   ${loading?'bg-white opacity-50':''}  `} >
         <p className='text-3xl font-bold' >
             Chi tiết sản phẩm 
@@ -416,6 +421,8 @@ const ProductDetail = () => {
         </form>
         
     </div>
+     : router.push('/admin-login')}
+    </>
   )
 }
 

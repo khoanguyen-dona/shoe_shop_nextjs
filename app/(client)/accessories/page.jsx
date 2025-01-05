@@ -20,7 +20,7 @@ const Accessories = () => {
   const [category, setCategory] = useState(['Phụ kiện'])
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState()
-  const [limit, setLimit] = useState(16)
+  const [limit, setLimit] = useState(12)
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
@@ -237,7 +237,7 @@ const Accessories = () => {
             onClick={()=>handleSize(d)}
             key={index} 
             className={`w-16 border-gray-300 border-[2px] ml-[1px] mt-[1px] text-center font-bold p-2 text-xl hover:border-gray-600 
-            ${size.includes(d) ? 'bg-black text-white':'' }  `} >
+            ${size===d ? 'bg-black text-white':'' }  `} >
               {d}
           </span>
         ))}

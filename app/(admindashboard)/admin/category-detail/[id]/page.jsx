@@ -8,12 +8,15 @@ import Loader from '@/components/Loader'
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
+import { useRouter } from 'next/navigation'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
 import CloseIcon from '@mui/icons-material/Close';
 
 const CategoryDetail = () => {
 
+    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+    const currentUser = user && JSON.parse(user).currentUser
+    const router = useRouter()
     const categoryId = useParams().id
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -201,6 +204,8 @@ const CategoryDetail = () => {
       ]
 
   return (
+    <>
+    { currentUser?.isAdmin === true ? 
     <div className={` mt-20 flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
         {editSubCatWindow ?
             <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
@@ -283,6 +288,8 @@ const CategoryDetail = () => {
         />  
 
     </div>
+    : router.push('/admin-login')}
+    </>
   )
 }
 

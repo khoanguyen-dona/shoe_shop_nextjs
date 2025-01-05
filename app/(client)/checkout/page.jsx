@@ -59,6 +59,7 @@ const Checkout = () => {
             message: message
           })
           if(res.data){
+            setRedirectPopup(true)
             dispatch(setCart(null))
             router.push(`/checkout-success/${res.data.order._id}`);      
             setLoading(false)
@@ -233,7 +234,7 @@ const Checkout = () => {
               <p>{product.name}</p>
               <p>{FormatCurrency(product.price)} đ</p>
               <p>Size : {product.size} </p>
-              <p>Số lượng :{product.quantity}</p>
+              <p>Số lượng : {product.quantity}</p>
             </div>
             <div className='font-bold' >
               <span> {FormatCurrency(product.quantity*product.price)}đ </span>
@@ -258,7 +259,7 @@ const Checkout = () => {
                 </button>
               </div>
             </AccordionDetails>
-           </Accordion>
+          </Accordion>
 
           <hr  className='mb-5' />
 

@@ -19,10 +19,14 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import app from '@/firebase'
+import { useRouter } from 'next/navigation'
 
 const UserDetail = () => {  
-  const storage = getStorage(app)
 
+  const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+  const currentUser = user && JSON.parse(user).currentUser
+  const router = useRouter()
+  const storage = getStorage(app)
   const [loading, setLoading] = useState(true)
   const [notifySuccess, setNotifySuccess] = useState(false)
 
@@ -128,6 +132,8 @@ const UserDetail = () => {
 
 
   return (
+    <>
+    { currentUser?.isAdmin === true ? 
     <div className='flex flex-col w-2/3' >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
@@ -200,6 +206,8 @@ const UserDetail = () => {
         </form>        
       </div>
     </div>
+     : router.push('/admin-login')}
+    </>
   )
 }
 

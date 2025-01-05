@@ -10,9 +10,13 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from 'next/navigation'
 
 const Users = () => {
 
+  const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+  const currentUser = user && JSON.parse(user).currentUser
+  const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [users, setUsers]= useState('')
@@ -128,13 +132,14 @@ const Users = () => {
 
 
   return (
+    <>
+    { currentUser?.isAdmin === true ? 
     <div className={`flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
     
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-      {notifySuccess ? 
-            <div  className='flex justify-center p-4' > 
+      {notifySuccess ?  
                 <SuccessPopup  message={'Delete user Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+          : '' }
 
       <p className='font-bold text-3xl mt-20' >Users</p>
       <div className='flex flex-col' >
@@ -157,6 +162,8 @@ const Users = () => {
               
       </div>
     </div>
+    : router.push('/admin-login')}
+    </>
   )
 }
 

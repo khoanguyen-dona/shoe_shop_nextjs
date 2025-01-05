@@ -17,7 +17,7 @@ const Shoe = () => {
   const [category, setCategory] = useState(['Giày'])
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState()
-  const [limit, setLimit] = useState(16)
+  const [limit, setLimit] = useState(12)
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
@@ -85,9 +85,11 @@ const Shoe = () => {
       const getProducts = async () => {
         try {    
           const res = await publicRequest.get(`/product?category=${category}&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
-          setProducts(res.data.products)
-          setTotalPage(res.data.totalPage)
-          setLoading(false)
+          if(res.data){
+            setProducts(res.data.products)
+            setTotalPage(res.data.totalPage)
+            setLoading(false)
+          }
         } catch {}
       }
       getProducts();
