@@ -32,12 +32,13 @@ export default function SwiperGallery({ product_images}) {
   const handleThumbClick = (index) => {
     if (swiperRef.current) {
       swiperRef.current.slideTo(index);
+      
     }
   };
-
+  
   return (
     <>     
-            <div className="image-carousel">
+        <div className="image-carousel">
             {/* Main Carousel */}
             <Swiper    
                 modules={[Navigation, Thumbs]}
@@ -47,7 +48,6 @@ export default function SwiperGallery({ product_images}) {
                 spaceBetween={5}
                 slidesPerView={1}
                 loop
-                // onSlideChange={(swiper) => setCurrentImageIndex(swiper.activeIndex)}
             >   
                 {product_images?.map((image, index) => (
                 <SwiperSlide className='relative w-auto h-screen '  key={index}>
@@ -63,23 +63,21 @@ export default function SwiperGallery({ product_images}) {
                 onSwiper={setThumbsSwiper}
                 modules={[Thumbs]}
                 spaceBetween={10}
-                slidesPerView={6.4}
-                watchSlidesProgress
-                className="thumbs-swiper mt-2"
-            
+                slidesPerView={5.4}
+                watchSlidesProgress        
+                className="thumbs-swiper mt-2"   
             >
                 {product_images?.map((image, index) => (
                     <SwiperSlide  key={index} className={`hover:border-[1px] hover:border-black hover:opacity-100 hover:rounded-lg transition`}  >
                         <img   src={image} alt={`Thumbnail ${index + 1}`} />
                     </SwiperSlide>
                 ))}
-            </Swiper>  
-            
-            </div>
-       
+            </Swiper>           
+        </div>
+
         {/* light box */}
         { isLightboxOpen &&
-            <div  >
+            <div className='image-carousel'  >
                 <p className='fixed top-5 left-5 text-gray-500 z-50 '>{currentIndex+1} of {product_images.length} </p>
                 <div className='fixed top-0 left-0 z-20 bg-black w-screen h-screen  ' >
                     {/* Main Carousel */}
@@ -98,7 +96,7 @@ export default function SwiperGallery({ product_images}) {
 
                     <CloseIcon onClick={handleCloseLightbox} 
                                 fontSize='large'  
-                                className='absolute top-5  z-40 right-5  text-gray-500 hover:text-black transition ' />
+                                className='absolute top-5  z-40 right-5  transition  text-gray-500 hover:text-black ' />
 
                     {product_images?.map((image, index) => (
                     <SwiperSlide className=' z-40 '  key={index}>
@@ -111,17 +109,27 @@ export default function SwiperGallery({ product_images}) {
                     ))}        
                     </Swiper>
                     {/* images thumb */}
-                    <div className='flex flex-wrap  mt-2     z-40' >
+                    <Swiper 
+                        spaceBetween={1} 
+                        slidesPerView={10.5}
+                        watchSlidesProgress
+                        modules={[Thumbs]}
+                        className='mt-2'
+                    >
+                    <div className='flex flex-wrap       z-40' >
                         {product_images.map((image, index)=>
-                        <div key={index}>
+                        <SwiperSlide key={index} >
+                        {/* <div key={index}> */}
                             <img  
                                 onClick={() => handleThumbClick(index)}                         
-                                className={`w-24 lg:w-32  h-24 lg:h-32 hover:opacity-100   ${currentIndex===index?'opacity-100':'opacity-50'} `} 
+                                className={`w-24 xl:w-36 h-auto hover:opacity-100  ${currentIndex===index?'opacity-100':'opacity-50'} `} 
                                 src={image} alt="" 
                             />
-                        </div>
+                        {/* </div> */}
+                        </SwiperSlide>
                         )}
-                    </div>        
+                    </div> 
+                    </Swiper>       
                 </div>           
             </div>
         }   

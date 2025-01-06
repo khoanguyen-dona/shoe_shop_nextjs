@@ -20,11 +20,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 
   .swiper-button-next {
-    color:#0a0a0a;
+    color: gray;
+    transition: all 0.2s;
   }
   
   .swiper-button-prev {
-    color:#0a0a0a;
+    color: gray;
+    transition:  0.2s;
   }
   .swiper-pagination-bullet  {
     background-color:black;
@@ -58,6 +60,9 @@ body {
     opacity: 1;
     border-color: black; /* Highlight color */
     border-radius: 8px;
+  }
+  .swiper-button-prev:hover ,.swiper-button-next:hover {
+    color:black;
   }
   
 }
