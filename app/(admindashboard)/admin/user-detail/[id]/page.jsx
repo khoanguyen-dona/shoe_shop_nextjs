@@ -165,7 +165,7 @@ const UserDetail = () => {
 
               <div  >
                   <p className='text-sm text-gray-500' >User Id</p>
-                  <input  className='border-2 p-2 w-full bg-gray-200 ' type="text" disabled 
+                  <input  className='border-2 p-2 w-full bg-gray-200 opacity-70 ' type="text" disabled 
                           value={userId}   />
               </div>
               
@@ -184,15 +184,15 @@ const UserDetail = () => {
               <div>
                   <p className='text-sm text-gray-500' >Is admin</p>
                   <select  className={`font-bold border-2 p-2 rounded-lg  ${String(isAdmin)==='true'?'text-green-500':'text-red-500'}  `} type="text" 
-                      onChange={(e)=>setIsAdmin(e.target.value)}  value={isAdmin} >
-                        <option className='text-green-500 '  value="true">True</option>
+                      onChange={(e)=>setIsAdmin(e.target.value)}  value={isAdmin}  disabled>
+                        {/* <option className='text-green-500 '  value="true">True</option> */}
                         <option className='text-red-500'  value="false">False</option>
                   </select>
               </div>
   
               <div  >
-                  <p className='text-sm text-gray-500 mb-2 ' >Created at:</p>
-                  <span  className='border-2 p-2 w-full bg-gray-200  ' > 
+                  <p className='text-sm text-gray-500 mb-2 '  >Created at:</p>
+                  <span  className='border-2 p-2 w-full opacity-70 '  > 
                     {moment(createdAt).format("YYYY-MMM-d, h:mm:ss A")}
                   </span>
           

@@ -16,7 +16,7 @@ const page = () => {
   return (
     <>
     { currentUser?.isAdmin === true ? 
-    <p>admin page</p>
+    <p></p>
     : router.push('/admin-login')}
     </>
     

@@ -17,6 +17,7 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 import FailurePopup from '@/components/Popup/FailurePopup';
 import SwiperGallery from '@/components/SwiperGallery';
 
+
 const ProductDetail = () => {
 
     const [notifyFailure, setNotifyFailure] = useState(false)
@@ -174,7 +175,6 @@ const ProductDetail = () => {
       <div className='flex flex-col  xl:flex-row  mt-20  ' >
         {/* product image gallery */}
         <div className='w-full h-full xl:w-3/6 2xl:w-3/6 ' > 
-          {/* <ProductGallery thumbnail={product?.thumbnail}  product_images={product?.imgGallery} /> */}
           <SwiperGallery  product_images={product?.imgGallery} />
         </div>
 

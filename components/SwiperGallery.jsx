@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs } from 'swiper/modules';
+import { Navigation, Thumbs, Zoom, Keyboard } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
+import 'swiper/css/zoom';
+import 'swiper/css/keyboard';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRef } from 'react';
 
@@ -41,8 +43,10 @@ export default function SwiperGallery({ product_images}) {
         <div className="image-carousel">
             {/* Main Carousel */}
             <Swiper    
-                modules={[Navigation, Thumbs]}
+                modules={[Navigation, Thumbs, Zoom, Keyboard]}
                 navigation
+                zoom
+                keyboard
                 thumbs={{ swiper: thumbsSwiper }}
                 className="main-swiper  "
                 spaceBetween={5}
@@ -51,9 +55,10 @@ export default function SwiperGallery({ product_images}) {
             >   
                 {product_images?.map((image, index) => (
                 <SwiperSlide className='relative w-auto h-screen '  key={index}>
-                    <img  onClick={() => handleImageClick(index)}
+                    <img  
+                        onClick={() => handleImageClick(index)}
                         className='object-cover hover:cursor-pointer' src={image} alt={`Slide ${index + 1}`} />
-                    <p className='absolute top-0 right-2 z-20 '>{index +1} of {product_images.length} </p>
+                    <p className='absolute top-0 right-2 z-20 text-gray-400 '>{index +1}/{product_images.length} </p>
                 </SwiperSlide>
                 ))}        
             </Swiper>
@@ -78,12 +83,13 @@ export default function SwiperGallery({ product_images}) {
         {/* light box */}
         { isLightboxOpen &&
             <div className='image-carousel'  >
-                <p className='fixed top-5 left-5 text-gray-500 z-50 '>{currentIndex+1} of {product_images.length} </p>
+                <p className='fixed top-5 left-5 text-gray-400 z-50 '>{currentIndex+1}/{product_images.length} </p>
                 <div className='fixed top-0 left-0 z-20 bg-black w-screen h-screen  ' >
                     {/* Main Carousel */}
-                    <Swiper  
-                       
-                        modules={[Navigation, Thumbs]}
+                    <Swiper                     
+                        modules={[Navigation, Thumbs, Zoom, Keyboard]}
+                        zoom 
+                        keyboard
                         navigation
                         thumbs={{ swiper: thumbsSwiper }}
                         className="main-swiper w-full md:w-5/5 lg:w-5/5 xl:w-2/5 2xl:w-2/5   h-auto mt-[100px] md:mt-[50px] xl:mt-0 mx-2 text-center  z-40   "
