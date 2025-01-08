@@ -176,6 +176,7 @@ const ProductDetail = () => {
         {/* product image gallery */}
         <div className='w-full h-full xl:w-3/6 2xl:w-3/6 ' > 
           <SwiperGallery  product_images={product?.imgGallery} />
+       
         </div>
 
         {/* product short desciption */}

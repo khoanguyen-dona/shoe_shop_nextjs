@@ -9,8 +9,11 @@ import { setUser } from '@/redux/userRedux';
 import Loader from '@/components/Loader';
 import { setCart } from '@/redux/cartRedux';
 import { setWishlist } from '@/redux/wishlistRedux';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
+
 
 const Login = () => { 
+  const [notifyPopup, setNotifyPopup] = useState(false)
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,6 +37,7 @@ const Login = () => {
        
         router.push('/')
         setLoading(false)
+        setNotifyPopup(true)
       }
     
     } catch(err){
@@ -43,6 +47,9 @@ const Login = () => {
     }   
     
   }
+  const handleClosePopup = () => {
+    setNotifyPopup(false)
+  }
 
   return (
     
@@ -50,7 +57,9 @@ const Login = () => {
       className={`px-4 sm:px-24 lg:px-48  py-16   flex justify-center  ${loading ?'bg-white opacity-50':''}
       h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')] `} 
     >
-      
+      {notifyPopup &&
+        <SuccessPopup message={'Redirecting... Please wait !'} handleClosePopup={handleClosePopup} />
+      }
       <div className='w-full 2xl:w-3/6  h-[550px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white  '>
       {loading ? 
          <div className='flex justify-center' >  <Loader  color={'inherit'} />  </div> 
