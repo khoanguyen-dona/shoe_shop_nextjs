@@ -16,11 +16,12 @@ import DoneIcon from '@mui/icons-material/Done';
     getDownloadURL,
   } from "firebase/storage";
 import app from '@/firebase'
-
+import { useSelector } from 'react-redux'
 const AddProduct = () => {
     const router = useRouter()
-    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-    const currentUser = user && JSON.parse(user).currentUser
+    const currentUser = useSelector((state)=>state.user.currentUser)
+    // const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+    // const currentUser = user && JSON.parse(user).currentUser
     console.log('curr',currentUser)
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -317,9 +318,8 @@ const AddProduct = () => {
         console.log('form cat',formCategory)
         console.log('cat list',categoryList)
         console.log('pro sug',productLinesSuggest)
-  return (
-    <>
-    { currentUser?.isAdmin === true ? 
+
+  return  (    
     <div className={`mt-20  flex flex-col  ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
          {notifySuccess ? 
@@ -467,9 +467,8 @@ const AddProduct = () => {
         </form>
         
     </div>
-    : router.push('/admin-login')}
-    </>
   )
+  
 }
 
 export default AddProduct

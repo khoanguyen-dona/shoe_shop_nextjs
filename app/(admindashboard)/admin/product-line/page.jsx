@@ -12,8 +12,7 @@ import { useRouter } from 'next/navigation'
 
 const ProductLine = () => {
 
-  const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-  const currentUser = user && JSON.parse(user).currentUser
+  
   const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -154,8 +153,7 @@ const ProductLine = () => {
   ]
 
   return (
-    <>
-    { currentUser?.isAdmin === true ? 
+   
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
@@ -213,8 +211,7 @@ const ProductLine = () => {
         />  
 
     </div>
-    : router.push('/admin-login')}
-    </>
+   
   )
 }
 

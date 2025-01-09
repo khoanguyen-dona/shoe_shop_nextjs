@@ -11,8 +11,6 @@ import { useRouter } from 'next/navigation';
 
 const Categories = () => {
 
-  const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-  const currentUser = user && JSON.parse(user).currentUser
   const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -71,7 +69,6 @@ const Categories = () => {
     try {
       const res = await userRequest.delete(`/category/${categoryId}`)
       if(res.data){
-        console.log('-->delete',res)
         setReload(!reload)
         setLoading(false)
         setNotifySuccess(true)
@@ -121,8 +118,7 @@ const Categories = () => {
   ]
 
   return (
-    <>
-    { currentUser?.isAdmin === true ?
+
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
@@ -157,9 +153,7 @@ const Categories = () => {
         />  
 
     </div>
-    : router.push('/admin-login')
-    }
-    </>
+
   )
 }
 

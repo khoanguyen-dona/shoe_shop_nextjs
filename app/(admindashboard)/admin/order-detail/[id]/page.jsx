@@ -12,8 +12,7 @@ import { useRouter } from 'next/navigation'
 
 const OrderDetail = () => {
 
-    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-    const currentUser = user && JSON.parse(user).currentUser
+   
     const router = useRouter()
     const order_id = useParams().id
     const [loading, setLoading] = useState(true)
@@ -90,8 +89,7 @@ const OrderDetail = () => {
     }
 
   return (
-    <>
-    { currentUser?.isAdmin === true ? 
+
     <div className={`mt-20  flex flex-col   ${loading?'bg-white opacity-50':''} `} >
         <div className='text-3xl font-bold  '>
             Order Detail  
@@ -202,8 +200,7 @@ const OrderDetail = () => {
         </form>
 
     </div>
-    : router.push('/admin-login')}
-    </>
+
   )
 }
 

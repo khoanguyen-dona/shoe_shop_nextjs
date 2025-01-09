@@ -24,9 +24,7 @@ import { useRouter } from 'next/navigation'
 
 const Products = () => {
 
-  // const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-  // const currentUser = user && JSON.parse(user).currentUser
-  // const [currentUser, setCurrentUser] = useState()
+ 
   const router = useRouter()
   const storage = getStorage(app)
   const [notifySuccess, setNotifySuccess] = useState(false)
@@ -205,8 +203,7 @@ const Products = () => {
 
 
   return (
-    // <>
-    // { currentUser?.isAdmin !== true ? router.push('/admin-login') :
+
     <div className={`flex flex-col ${loading ?'bg-white opacity-50':''}  `} >
       <p className='font-bold text-3xl mt-20' >Products</p>
       <a  
@@ -240,8 +237,7 @@ const Products = () => {
               
       </div>
     </div>
-    // }
-    // </>
+
   )
 }
 

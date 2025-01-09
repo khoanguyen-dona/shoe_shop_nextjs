@@ -7,20 +7,17 @@ import { useRouter } from 'next/navigation'
 
 const page = () => {
 
-  const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-  const currentUser = user && JSON.parse(user).currentUser
-  const router = useRouter()
+ 
 
 
  
   return (
-    <>
-    { currentUser?.isAdmin === true ? 
+ 
     <p></p>
-    : router.push('/admin-login')}
-    </>
     
   )
+
+ 
 }
 
 export default page

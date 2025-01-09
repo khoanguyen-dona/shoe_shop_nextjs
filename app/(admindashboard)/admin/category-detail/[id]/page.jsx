@@ -14,8 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const CategoryDetail = () => {
 
-    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-    const currentUser = user && JSON.parse(user).currentUser
+
     const router = useRouter()
     const categoryId = useParams().id
     const [notifySuccess, setNotifySuccess] = useState(false)
@@ -204,8 +203,7 @@ const CategoryDetail = () => {
       ]
 
   return (
-    <>
-    { currentUser?.isAdmin === true ? 
+ 
     <div className={` mt-20 flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
         {editSubCatWindow ?
             <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
@@ -288,8 +286,7 @@ const CategoryDetail = () => {
         />  
 
     </div>
-    : router.push('/admin-login')}
-    </>
+   
   )
 }
 
