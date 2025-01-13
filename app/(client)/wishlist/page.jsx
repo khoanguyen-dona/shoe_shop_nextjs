@@ -28,10 +28,10 @@ const Wishlist = () => {
       }
      
       <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4' >
-        {
+        {user !== null && 
           data?.map((d,index) => (
-            <div  className='hover:border border-black transition' >
-              <ProductCard  key={index}   data={d} wishlistArray={wishlistArray} user={user}  />
+            <div  key={index}   className='hover:border border-black transition' >
+              <ProductCard    data={d} wishlistArray={wishlistArray} user={user}  />
             </div>
           ))
         }

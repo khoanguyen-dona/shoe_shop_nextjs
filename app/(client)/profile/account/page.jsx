@@ -4,7 +4,7 @@ import React from 'react'
 import { useState } from 'react'
 import { userRequest } from '@/requestMethod'
 import { useSelector, useDispatch } from 'react-redux'
-
+import Image from 'next/image'
 import Loader from '@/components/Loader'
 
 import { setUser } from '@/redux/userRedux'
@@ -41,7 +41,7 @@ const profileAccount = () => {
     const [passwordButton, setPasswordButton]= useState(false)
     const [seePassword, setSeePassword]= useState(false)
     const [error, setError]= useState(false)
-
+    
     const handleSeePassword = () => {
         setSeePassword(prev => !prev)
     }
@@ -73,7 +73,7 @@ const profileAccount = () => {
                 newPassword: newPassword1
             })
             if(res.data){
-                dispatch(setUser(res.data.user))
+                
                 setLoading(false)
                 setNotifySuccess(true)
                 setTimeout(() => {
@@ -133,15 +133,19 @@ const profileAccount = () => {
                 })
                 
                 if(res.data){
-                    dispatch(setUser(res.data.user))
-                    
+                    const { email, img, username, ...others} = user
+                    dispatch(setUser({...others, 
+                                        email: res.data.user.email, 
+                                        img: res.data.user.img, 
+                                        username: res.data.user.username }))
+                    console.log('res',res.data.user)
                 }
             }catch(err){
-                console.log(err)
+                console.log('err while handleUpdateUser',err)
             }
             
         }
-         
+       
 
   return (
     
@@ -183,7 +187,8 @@ const profileAccount = () => {
                     
                     {previewImage  && 
                     <div className='relative flex justify-center  ' >       
-                        <img  className='w-32 mt-3 border-2 rounded-full ' src={previewImage}  />                                
+                        <Image width={100} height={100}  className='w-32 mt-3 border-2 rounded-full ' alt='avatar' src={previewImage}  />  
+                                                   
                     </div>                                                      
                     } 
             </div>

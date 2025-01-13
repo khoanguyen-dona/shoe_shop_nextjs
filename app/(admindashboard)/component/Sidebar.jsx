@@ -38,10 +38,13 @@ const SideBar = () => {
   < >
    
     {loading ?  
-      <div className='fixed   ml-[200px] sm:ml-[300px] md:ml-[400px] lg:ml-[600px] xl:ml-[800px] z-40 ' >
+      <div className='fixed  right-1/2 z-40 ' >
        <Loader  color={'inherit'} />  
-       </div>
+       </div>      
        : ''}
+    {loading &&
+      <div className='fixed w-screen h-screen bg-white opacity-50 z-20' ></div> 
+    }
     {/* Notify */}
     {notifySuccess ? 
             <div  className='absolute flex justify-center p-4  ' > 

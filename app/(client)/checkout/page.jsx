@@ -9,7 +9,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useRouter } from 'next/navigation';
 import { useSelector,useDispatch } from 'react-redux';
-import { userRequest } from '@/requestMethod';
+import { userRequest, publicRequest } from '@/requestMethod';
 import { setCart } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
@@ -49,7 +49,7 @@ const Checkout = () => {
       if( user === null){
 
         try{
-          const res = await userRequest.post(`/order/null`, {
+          const res = await publicRequest.post(`/order/null`, {
             clientName: firstName+' '+ lastName,
             products: products,
             phoneNumber: phoneNumber,
@@ -83,6 +83,7 @@ const Checkout = () => {
             message: message
           })
           if(res.data){
+            setRedirectPopup(true)
             userRequest.post(`/cart/${user._id}/reset-cart`,{});
             router.push(`/checkout-success/${res.data.order._id}`);      
             dispatch(setCart(null))
@@ -92,7 +93,9 @@ const Checkout = () => {
             setError(true)
           }
           
-        }catch(err){}
+        }catch(err){
+          console.log(err)
+        }
 
       }
   }
@@ -105,7 +108,7 @@ const Checkout = () => {
   const handleClosePopup = () => {
     setRedirectPopup(false)
   }
-
+  console.log('/checkout user', user)
   return (
     <>
     {redirectPopup && 

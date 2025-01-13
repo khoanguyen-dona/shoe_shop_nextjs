@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs, Zoom, Keyboard, Controller } from 'swiper/modules';
 import 'swiper/css';
@@ -11,15 +11,31 @@ import 'swiper/css/keyboard';
 import 'swiper/css/controller';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRef } from 'react';
-
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 export default function SwiperGallery({ product_images}) {
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-    const  [currentIndex,setCurrentIndex] = useState()
+    const  [currentIndex,setCurrentIndex] = useState(0)
     const swiperRef = useRef(null);
+    const lastIndex = product_images?.length-1
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+      // Update screen width when the window is resized
+      const handleResize = () => {
+        setScreenWidth(window.innerWidth);
+      };
   
-    console.log('curr index',currentIndex)
+      // Add event listener
+      window.addEventListener('resize', handleResize);
+  
+      // Cleanup event listener on unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
 
     // Open the lightbox on image click
   const handleImageClick = (index) => {
@@ -38,6 +54,20 @@ export default function SwiperGallery({ product_images}) {
       
     }
   };
+
+  const handleNext = () => {
+    if(swiperRef.current){
+        swiperRef.current.slideTo(currentIndex+1)
+        setCurrentIndex(currentIndex+1)
+    }
+  }
+  
+  const handlePrev = () => {
+    if(swiperRef.current){
+        swiperRef.current.slideTo(currentIndex-1)
+        setCurrentIndex(currentIndex-1)
+    }
+  }
   
   return (
     <>     
@@ -87,9 +117,33 @@ export default function SwiperGallery({ product_images}) {
 
         {/* light box */}
         { isLightboxOpen &&
-            <div className='image-carousel '  >
+            <div className='image-carousel  '  >
                 <p className='fixed top-5 left-5 text-gray-400 z-50 '>{currentIndex+1}/{product_images.length} </p>
-                <div className='fixed top-0 left-0 z-20  bg-black opacity-100   w-screen h-screen  ' >
+                <CloseIcon onClick={handleCloseLightbox} 
+                                sx={{fontSize:'60px'}} 
+                                className='fixed top-5  z-40 right-5  transition  text-gray-500 hover:text-gray-700 
+                                    hover:cursor-pointer ' 
+                />
+                {/* show on pc desktop */}
+                {    currentIndex > 0 && screenWidth>1028  &&              
+                    <ArrowBackIosIcon  sx={{fontSize: '60px'}} onClick={handlePrev}  
+                        className='fixed left-5  hidden lg:top-2/4 text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                }
+                {    currentIndex < lastIndex && screenWidth>1028 &&           
+                    <ArrowForwardIosIcon  sx={{fontSize: '60px'}} onClick={handleNext}  
+                        className='fixed right-5 hidden  lg:top-2/4 text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                }
+                {/* show on phone and tab */}
+                {    currentIndex > 0 && screenWidth<=1028  &&              
+                    <ArrowBackIosIcon  sx={{fontSize: '80px'}} onClick={handlePrev}  
+                        className='fixed left-1 top-[250px] md:top-[400px] lg:top-[500px] text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                }
+                {    currentIndex < lastIndex && screenWidth<=1028 &&           
+                    <ArrowForwardIosIcon  sx={{fontSize: '80px'}} onClick={handleNext}  
+                        className='fixed right-0  top-[250px] md:top-[400px] lg:top-[500px] text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                }
+               
+                <div className='fixed top-0 left-0 z-20  bg-black    w-screen h-screen  ' >
                     {/* Main Carousel */}
                     <Swiper                     
                         modules={[Navigation, Thumbs, Zoom, Keyboard, Controller]}
@@ -99,27 +153,24 @@ export default function SwiperGallery({ product_images}) {
                         navigation = {true}
                         thumbs={{ swiper: thumbsSwiper }}
                         className="main-swiper w-full md:w-5/5 lg:w-5/5 xl:w-2/5 2xl:w-2/5   h-auto mt-[100px] md:mt-[50px] xl:mt-0 mx-2 text-center  z-40   "
-                        spaceBetween={500}
+                        spaceBetween={2000}
                         slidesPerView={1}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}    
                         initialSlide={currentIndex}
                         onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex)}
                     >   
-
-                    <CloseIcon onClick={handleCloseLightbox} 
-                                fontSize='large'  
-                                className='absolute top-5  z-40 right-5  transition  text-gray-500 hover:text-black 
-                                    hover:cursor-pointer ' />
-
+              
                     {product_images?.map((image, index) => (
-                        <SwiperSlide className=' z-40 '  key={index}>
-                    
+                        
+                        <SwiperSlide className=' z-50 '  key={index}>
+                                 {/* show on phone and tab */}
+                               
                             <img  onClick={() => handleImageClick(index)}
                                 className='   ' src={image} alt={`Slide ${index + 1}`} />    
-                            
-                                    
+                                                                
                         </SwiperSlide>
-                    ))}        
+                    ))}  
+                       
                     </Swiper>
                     {/* images thumb */}
                     <Swiper 
@@ -136,7 +187,7 @@ export default function SwiperGallery({ product_images}) {
                             <img  
                                 loading='lazy'
                                 onClick={() => handleThumbClick(index)}                         
-                                className={`w-24 xl:w-36 h-auto hover:opacity-100  ${currentIndex===index?'opacity-100':'opacity-50'} `} 
+                                className={`w-24 xl:w-36 h-auto hover:opacity-100 transition  ${currentIndex===index?'opacity-100':'opacity-50'} `} 
                                 src={image} alt="" 
                             />        
                         </SwiperSlide>

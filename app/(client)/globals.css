@@ -22,11 +22,13 @@ body {
   .swiper-button-next {
     color: gray;
     transition: all 0.2s;
+    display: none;
   }
   
   .swiper-button-prev {
     color: gray;
     transition:  0.2s;
+    display: none;
   }
   .swiper-pagination-bullet  {
     background-color:black;
@@ -60,6 +62,7 @@ body {
     opacity: 1;
     border-color: black; /* Highlight color */
     border-radius: 8px;
+    
   }
   .swiper-button-prev:hover ,.swiper-button-next:hover {
     color:black;

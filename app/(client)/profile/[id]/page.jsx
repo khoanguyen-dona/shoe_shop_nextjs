@@ -35,14 +35,14 @@ const Profile  = () => {
             <div 
                 onClick ={()=> router.push('/profile/account')} 
                 className='w-full md:w-1/5   h-[100px] lg:h-[200px] border-[1px] border-black text-center p-5  lg:p-10 text-xl font-bold
-                hover:bg-black hover:text-white transition ml-2 mt-2 ' >
+                hover:bg-black hover:text-white hover:cursor-pointer transition ml-2 mt-2 ' >
               Account
             </div>
         
           <div 
               onClick ={()=> router.push('/profile/order')}
               className='w-full md:w-1/5  h-[100px] lg:h-[200px] border-[1px] border-black text-center p-5  lg:p-10 text-xl font-bold
-           hover:bg-black hover:text-white transition ml-2 mt-2 '  >
+           hover:bg-black hover:text-white hover:cursor-pointer transition ml-2 mt-2 '  >
             Order
           </div>
          

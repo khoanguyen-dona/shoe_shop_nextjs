@@ -44,15 +44,20 @@ const Navbar = () => {
 
   const handleKeyDown = (e) => {
     if (e.key==='Enter'){
+      setLoading(true)
       router.push(`/search?q=${searchTerm}`)
       setSearchMobile(false)
+      setLoading(false)
     }
   }
   const handleSearch = () => {
-    router.push(`/search?q=${searchTerm}`)    
+    setLoading(true)
+    router.push(`/search?q=${searchTerm}`)  
+    setSearchMobile(false)
+    setLoading(false) 
   }
   const handleSearchMobileClick = () => {
-    setSearchMobile(!prev)
+    setSearchMobile((prev)=>!prev)
     
   }
 
@@ -69,12 +74,13 @@ const Navbar = () => {
       setNotifySuccess(false)
     }, 3000);
   
-  
     
-}
+  }
+ 
 
   return (
-  <div className='' >
+ 
+  <div className=''  >
     <div >
       {/* desktop navbar */}
       <div className='hidden lg:block' >
@@ -102,7 +108,7 @@ const Navbar = () => {
             </span>  
             <a href='/wishlist' onClick={()=>setLoading(true)} className='relative  ' >
               <FavoriteBorderIcon sx={{fontSize: '30px'}} />
-              { wishlist === null ||  wishlist?.products?.length === 0 ? '' :
+              {user===null || wishlist === null ||  wishlist?.products?.length === 0 ? '' :
               <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
                 { wishlist?.products?.length } </span>
               }
@@ -230,15 +236,17 @@ const Navbar = () => {
           <p className='font-bold text-2xl text-gray-300' >Tìm kiếm</p>
           <CloseIcon  className='text-white' onClick={handleSearchMobileClick} fontSize='large' />
         </div>
-        <div className='px-4 mr-4' >
-          <input type="text" className='p-4 border w-full rounded-xl' onKeyDown={handleKeyDown} placeholder='Nhập từ khóa ..'
+        <div className='px-4 mr-4 flex' >
+          <input type="text" className='p-4 border w-full  rounded-lg mr-2' onKeyDown={handleKeyDown} placeholder='Nhập từ khóa ..'
               onChange={(e)=>setSearchTerm(e.target.value)}/>
+          <SearchIcon  onClick={handleSearch}  sx={{fontSize:'60px'}}  className='rounded-lg bg-black text-white  p-1
+               hover:bg-gray-500 hover:cursor-pointer transition' />
         </div>
       </div>
       
     </div>
      {/* loader */}
-    <div className={`w-screen h-screen    ${loading ?'bg-white opacity-50 block ':'hidden'} `}  >
+    <div className={`w-screen h-screen  z-30  ${loading ?'bg-white opacity-50 block ':'hidden'} `}  >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
     </div>
     {/* Notify */}
@@ -247,6 +255,7 @@ const Navbar = () => {
                 <SuccessPopup  message={'Log out Successfully! redirecting...'}  handleClosePopup={handleClosePopup}   /> 
             </div>  : '' }
   </div>
+ 
   )
 }
 

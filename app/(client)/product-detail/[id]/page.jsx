@@ -31,10 +31,12 @@ const ProductDetail = () => {
     const productId = useParams().id
     const [size, setSize]=useState("")
     const [color, setColor]=useState("")
+    const [colorOption, setColorOption] = useState()
     const [product, setProduct]=useState({})
-  
+    const [reload, setReload] = useState(false)
     //  add to wishlistArray
     wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
+    const [isFirstRender, setIsFirstRender] = useState(true);
   
   const addToWishlist = async (e) => {
     setLoading(true)
@@ -62,8 +64,8 @@ const ProductDetail = () => {
     }
     }
 }
-  console.log('user_cart',user_cart)
-  
+
+
   //handle add to cart
   const addToCart = async (e) => {
     setLoading(true)
@@ -136,31 +138,77 @@ const ProductDetail = () => {
     
   }
 
-  //fetch data
+  //fetch product data by id
     useEffect(()=> {
       const getProduct = async () => {
+        let colorArray = []
         try {
           const res = await publicRequest.get(`/product/${productId}`)
-          if(res.data) {
+          if(res.data) {  
             setProduct(res.data)
+            setColor(res.data.color[0])
+            try {
+              const res2 = await publicRequest.get(`/product/find/${res.data.name}?page=1&limit=30`)
+              if(res2.data){
+                res2.data.products?.map((item)=>{
+                  colorArray.push(item.color[0])
+                })
+                setColorOption(colorArray)
+              }
+    
+            } catch(err){
+              console.log('err while fetching colorOptions',err)
+            }
+            
             setLoading(false)
           }
-        } catch {}
+        } catch(err) {
+          console.log('err while fetch product data',err)
+        }
       };
       getProduct();
       
     }, [])
-    
-    // close the popup
-    const handleClosePopup = () => {
-      setNotifyPopup(false)
+
+  // fetch product data when click color
+    useEffect (() => {
+      if(isFirstRender){
+        setIsFirstRender(false);
+        return;
+      } 
+
+      console.log('it run !')
+      setLoading(true)
+      const getProduct = async () => {
+        try {
+          const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
+          if(res.data){
+            console.log('product -->',res.data.products[0])
+            setProduct(res.data.products[0])
+            setLoading(false)
+          }
+
+        } catch(err){
+          console.log('err while fetching colorOptions',err)
+        }
+      }
+      getProduct()
+    }, [reload])
+   
+  const handleColorClick = (c) => {
+    setColor(c)
+    setReload(!reload)
+  }
+  // close the popup
+  const handleClosePopup = () => {
+    setNotifyPopup(false)
   }
 
   const handleCloseFailurePopup =  () => {
     setNotifyFailure(false)
     console.log('clicked')
   }
-
+  console.log('product size len',product?.size?.length)
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
@@ -181,19 +229,19 @@ const ProductDetail = () => {
 
         {/* product short desciption */}
         <div className='w-full  xl:w-2/5 2xl:w-3/6 xl:px-8   py-5  space-y-4' >
-          <div className='text-4xl font-bold' > {product.name}</div>
-          <div className='text-2xl font-bold' > {FormatCurrency(product.price)} đ </div>
-          <div> {product.desc}</div>
+          <div className='text-4xl font-bold' > {product?.name}</div>
+          <div className='text-2xl font-bold' > {FormatCurrency(product?.price)} đ </div>
+          <div> {product?.desc}</div>
           <hr className='border-2 border-gray-300' />
           {/* size */}
           <div className='font-bold' > 
             Size : {size} 
           </div>
           {/* {product.size} */}
-          {String(product.size).length === 0  ? '' :
+          {String(product?.size).length === 0  ? '' :
             <div className='  flex flex-wrap  '>
               
-              {product.size?.map((s,index)=>(
+              {product?.size?.map((s,index)=>(
                   <span 
                     key={index}
                     onClick={()=>setSize(s)}
@@ -211,28 +259,28 @@ const ProductDetail = () => {
           <div className='font-bold' >
             Color : {color}
           </div>
-          <div className='flex flex-swap  ' >
-            {String(product.color).length !== 0 &&
-            product.color?.map((c,index)=>(
+          <div className='flex flex-swap  ' >       
+            {colorOption?.map((c,index)=>(
               <p 
-              onClick={()=>setColor(c)}
-              className={`object-cover ml-1 mt-1 font-bold hover:border-gray-500 hover:border-4 transition rounded border-4 p-4 ${c===color?'border-black border-4':'' } `}
+              onClick={()=>handleColorClick(c)}
+              
+              className={`object-cover ml-1 mt-1 font-bold hover:border-gray-500 hover:border-4 transition rounded 
+                border-4 p-4 ${c===color?'border-black border-4':'' } `}
               key={index} width='80px'  
               src={c} alt="" >
               {c}
               </p>
-            ))
-            }
+            ))}
           </div>
           {/* add to cart */}
           <hr className='border-2 border-gray-300 '/>
-          <div className='flex  ' >
-            <button 
-                onClick={addToCart}
-                className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >
-                  Thêm vào giỏ hàng
-            </button>
-
+          <div className='flex  ' >   
+              <button 
+                  onClick={addToCart}
+                  className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >
+                    Thêm vào giỏ hàng
+              </button>
+        
           </div>
           
          
@@ -254,7 +302,7 @@ const ProductDetail = () => {
       {/* Product description  */}
       <div className='mt-10' >
             <h1 className='text-4xl font-bold text-center' >  Mô tả</h1>
-            <p>{product.desc}</p>
+            <p>{product?.desc}</p>
       </div>
         
     
