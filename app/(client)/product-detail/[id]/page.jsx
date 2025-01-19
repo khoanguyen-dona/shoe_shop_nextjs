@@ -208,7 +208,7 @@ const ProductDetail = () => {
     setNotifyFailure(false)
     console.log('clicked')
   }
-  console.log('product size len',product?.size?.length)
+
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >

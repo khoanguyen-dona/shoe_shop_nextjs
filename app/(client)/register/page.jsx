@@ -9,6 +9,7 @@ import { publicRequest } from '@/requestMethod';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 const Register = () => { 
+  const [registerSuccess, setRegisterSuccess] = useState(false)
   const [notifyPopup, setNotifyPopup] = useState(false)
   const router = useRouter()
   const[username,setUsername]=useState('')
@@ -31,11 +32,13 @@ const Register = () => {
       })
       
       if(res.data) {
-        setNotifyPopup(true)
-        setTimeout(()=>{
-          setNotifyPopup(false)
-          router.push('/login')
-        }, 1500)
+        setRegisterSuccess(true)
+        console.log('res data',res.data)
+        // setNotifyPopup(true)
+        // setTimeout(()=>{
+        //   setNotifyPopup(false)
+        //   router.push('/login')
+        // }, 1500)
       }
     }catch(err){
       console.log('er',err)
@@ -54,6 +57,8 @@ const Register = () => {
   }
 
   return (
+<>
+    { registerSuccess === false ?
     <div       
       className={`px-4 sm:px-24 lg:px-48  py-16  flex justify-center h-screen bg-cover bg-center bg-no-repeat 
         bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')]
@@ -99,6 +104,41 @@ const Register = () => {
         </div>
       </div>
     </div>
+    :
+    <div       
+    className={`px-4 sm:px-24 lg:px-48  py-16  flex justify-center h-screen bg-cover bg-center bg-no-repeat 
+      bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')]
+      ${loading ? 'bg-white opacity-50' : '' } `} 
+    > 
+    {notifyPopup &&
+      <SuccessPopup message={'Đăng kí thành công !'} handleClosePopup={handleClosePopup} />
+    }
+    <div className='w-full 2xl:w-3/6  h-[600px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white'>
+      {loading ?  <div className='flex justify-center ' >  <Loader  color={'inherit'} />  </div> : ''}
+      
+      <p className='font-extrabold text-2xl text-center my-4 text-green-500 p-4 bg-green-200 rounded-md ' >Đăng kí thành công (Register successfully)  </p>
+      <p className='mb-2' >Vui lòng xác thực email trong hộp thư của bạn trong vòng 24h để hoàn tất việc đăng kí. Nếu quá thời gian này tài khoản sẽ tự động xóa. Xác thực email bằng việc click vào đường link trong hộp thư. </p>
+      <p className='mb-5' >Please verify your email address in your email. Unverified account will be deleted after 24 hours. Verifying your email address by clicking on the link we have sent you. </p>
+      <div className='flex  justify-center' >
+        <hr  className='w-2/5  border-1 ' />
+      </div>
+      <div className='flex justify-center mt-2' >
+        <a href='/login' className=' p-3 hover:text-white text-xl  bg-black text-white hover:bg-gray-600 transition' >Đăng nhập tài khoản </a>
+        
+      </div>
+      <div className='flex justify-between  p-4 ' >
+        <span className=' border-black  hover:scale-110  transition ' > 
+          <a href="/">
+            <KeyboardBackspaceIcon/> Tiếp tục mua sắm 
+          </a>
+        </span>
+        <p className=' hover:scale-110 transition hover:cursor-pointer '  >Quên mật khẩu ?</p>
+      
+      </div>
+    </div>
+    </div>
+    }
+</>
   )
 }
 

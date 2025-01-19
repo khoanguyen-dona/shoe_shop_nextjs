@@ -13,6 +13,7 @@ import { userRequest, publicRequest } from '@/requestMethod';
 import { setCart } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
+import axios from 'axios';
 
 
 const Checkout = () => {
@@ -46,8 +47,8 @@ const Checkout = () => {
   const handleSubmit = async (e) => { 
       e.preventDefault()
       setLoading(true)
-      if( user === null){
 
+      if( user === null){
         try{
           const res = await publicRequest.post(`/order/null`, {
             clientName: firstName+' '+ lastName,
@@ -63,12 +64,21 @@ const Checkout = () => {
             dispatch(setCart(null))
             router.push(`/checkout-success/${res.data.order._id}`);      
             setLoading(false)
+
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send-order-email`, {
+              customerEmail: email,
+              orderDetails: products
+            }).then(()=>{
+              console.log('send order email success')
+            }).catch(()=>{
+              console.log('fail to send order email')
+            })
           } 
           else {
             setError(true)
           }
           
-        }catch(err){}
+        }catch(err){console.log('err while create order',err)}
 
       } else {    
         
@@ -88,6 +98,15 @@ const Checkout = () => {
             router.push(`/checkout-success/${res.data.order._id}`);      
             dispatch(setCart(null))
             setLoading(false)
+
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send-email/send-order-verification`, {
+              customerEmail: email,
+              orderDetails: products
+            }).then(()=>{
+              console.log('send order email success')
+            }).catch(()=>{
+              console.log('fail to send order email')
+            })
           } 
           else {
             setError(true)
@@ -100,7 +119,7 @@ const Checkout = () => {
       }
   }
 
- 
+ console.log('products',products)
   const handleClickMessage = () => {
     setMessageOption(prev=>!prev)
   }

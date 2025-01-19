@@ -79,14 +79,14 @@ const Login = () => {
                 '  type='submit'  ${loading ?"cursor-not-allowed":""}  `}>
               Đăng nhập  
             </button>
-            <div className='flex items-start' >
+            <div className='flex justify-center' >
             <button 
                 onClick = {handleLogin}
-                className='border-[2px] p-2  hover:bg-black hover:text-white transition border-gray-300 w-3/5  ' >
+                className='border-[2px] p-2  hover:bg-black hover:text-white transition border-gray-300 w-2/5  ' >
                 <span className=' text-md mr-4 ' >
                   Đăng nhập với 
                 </span>
-                <span className='font-bold text-4xl' >
+                <span className='font-bold text-3xl' >
                   <span className='text-blue-500' >G</span>
                   <span className='text-red-500' >O</span>
                   <span className='text-yellow-500' >O</span>

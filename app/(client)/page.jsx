@@ -24,15 +24,19 @@ const Home = () => {
   console.log('/ user -->', user)
 
   //fetch user after google auth
+
   useEffect(()=> {
-    axios.get('http://localhost:5000/auth/user', {withCredentials: true})
-    .then((res) => {
-      dispatch(setUser(res.data))
-      dispatch(setCart(res.data.cart))
-      dispatch(setWishlist(res.data.wishlist))
-      console.log('res-->',res)
-    })
-    .catch(() => dispatch(setUser(null)) );
+    if(user === null){
+      console.log('it fetched')
+      axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user`, {withCredentials: true})
+      .then((res) => {
+        dispatch(setUser(res.data))
+        dispatch(setCart(res.data.cart))
+        dispatch(setWishlist(res.data.wishlist))
+        console.log('res-->',res)
+      })
+      .catch(() => dispatch(setUser(null)) );
+  }
   }, [])
 
   // get data

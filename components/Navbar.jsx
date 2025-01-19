@@ -79,11 +79,11 @@ const Navbar = () => {
  
 
   return (
- 
+ <>
   <div className=''  >
     <div >
       {/* desktop navbar */}
-      <div className='hidden lg:block' >
+      <div className='hidden lg:block  ' >
         <div className= '   flex  bg-gray-300  space-x-10 h-16 justify-around  text-center py-5' >
           <div className='' >
             <a href='/' className='text-3xl'  > <strong> ShoeShop </strong>  </a>
@@ -246,7 +246,7 @@ const Navbar = () => {
       
     </div>
      {/* loader */}
-    <div className={`w-screen h-screen  z-30  ${loading ?'bg-white opacity-50 block ':'hidden'} `}  >
+    <div className={`fixed w-screen h-screen  z-30  ${loading ?'bg-white opacity-50 block ':'hidden'} `}  >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
     </div>
     {/* Notify */}
@@ -255,7 +255,11 @@ const Navbar = () => {
                 <SuccessPopup  message={'Log out Successfully! redirecting...'}  handleClosePopup={handleClosePopup}   /> 
             </div>  : '' }
   </div>
- 
+  {/* { loading &&
+    <div className='fixed w-screen h-screen bg-gray-500 opacity-50 z-40' >
+  </div>
+  } */}
+</>
   )
 }
 

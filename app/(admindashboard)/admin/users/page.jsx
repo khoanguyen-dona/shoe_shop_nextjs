@@ -114,6 +114,7 @@ const Users = () => {
             )
           }
     }, 
+    { field: "verified", headerName: 'Xác thực', width:150} ,
     { field: "createdAt", headerName: 'Ngày tạo', width:270 ,
         renderCell: (params)=>{
           return(
