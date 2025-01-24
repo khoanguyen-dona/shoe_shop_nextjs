@@ -20,8 +20,6 @@ import { useSelector } from 'react-redux'
 const AddProduct = () => {
     const router = useRouter()
     const currentUser = useSelector((state)=>state.user.currentUser)
-    // const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
-    // const currentUser = user && JSON.parse(user).currentUser
     console.log('curr',currentUser)
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(false)
