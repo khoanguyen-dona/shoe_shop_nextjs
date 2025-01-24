@@ -10,7 +10,13 @@ import { useRouter } from "next/navigation";
 
 
 //layout.jsx
-const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+const getStoredValue = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("persist:root");
+  }
+  return null; 
+};
+const user = JSON.parse(getStoredValue())?.user;
 const currentUser = user && JSON.parse(user).currentUser
 
 console.log('curr',currentUser)
