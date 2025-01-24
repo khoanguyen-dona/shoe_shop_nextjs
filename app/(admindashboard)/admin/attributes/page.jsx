@@ -8,10 +8,11 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { useRouter } from 'next/navigation';
 
 const Attribute = () => {
 
+  const router = useRouter()
   const [ editAttributeWindow , setEditAttributeWindow] = useState(false)
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -190,7 +191,7 @@ const Attribute = () => {
     },
     { field: "name", headerName: 'Tên attribute', width:150 },  
 
-    { field: "item", headerName: "Attribute con", width: 1500,
+    { field: "item", headerName: "Attribute item", width: 1500,
       renderCell: (params)=>{
         return(
           <p>
@@ -213,6 +214,7 @@ const Attribute = () => {
   
 
   return (
+
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {editAttributeWindow ?
             <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[500px] bg-white shadow-2xl  left-10 lg:left-96 top-72 border-2 rounded-md  '  >

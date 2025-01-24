@@ -9,11 +9,16 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useRouter } from 'next/navigation';
 import { useSelector,useDispatch } from 'react-redux';
-import { userRequest } from '@/requestMethod';
+import { userRequest, publicRequest } from '@/requestMethod';
 import { setCart } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
+import axios from 'axios';
+
 
 const Checkout = () => {
+
+  const [redirectPopup, setRedirectPopup] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
@@ -40,42 +45,98 @@ const Checkout = () => {
   const[message,setMessage]=useState('')
 
   const handleSubmit = async (e) => { 
-      setLoading(true)
       e.preventDefault()
-      try{
-        const res = await userRequest.post(`/order/${user._id}`, {
-          clientName: firstName+' '+ lastName,
-          products: products,
-          phoneNumber: phoneNumber,
-          address: address,
-          email: email,
-          paymentMethod: paymentMethod,
-          message: message
-        })
-        if(res.data){
-          userRequest.post(`/cart/${user._id}/reset-cart`,{});
-          router.push(`/checkout-success/${res.data.order._id}`);      
-          dispatch(setCart(null))
-          setLoading(false)
-        } 
-        else {
-          setError(true)
-        }
+      setLoading(true)
+
+      if( user === null){
+        try{
+          const res = await publicRequest.post(`/order/null`, {
+            clientName: firstName+' '+ lastName,
+            products: products,
+            phoneNumber: phoneNumber,
+            address: address,
+            email: email,
+            paymentMethod: paymentMethod,
+            message: message
+          })
+          if(res.data){
+            setRedirectPopup(true)
+            dispatch(setCart(null))
+            router.push(`/checkout-success/${res.data.order._id}`);      
+            setLoading(false)
+
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send-order-email`, {
+              customerEmail: email,
+              orderDetails: products
+            }).then(()=>{
+              console.log('send order email success')
+            }).catch(()=>{
+              console.log('fail to send order email')
+            })
+          } 
+          else {
+            setError(true)
+          }
+          
+        }catch(err){console.log('err while create order',err)}
+
+      } else {    
         
-      }catch(err){}
-      
+        try{
+          const res = await userRequest.post(`/order/${user._id}`, {
+            clientName: firstName+' '+ lastName,
+            products: products,
+            phoneNumber: phoneNumber,
+            address: address,
+            email: email,
+            paymentMethod: paymentMethod,
+            message: message
+          })
+          if(res.data){
+            setRedirectPopup(true)
+            userRequest.post(`/cart/${user._id}/reset-cart`,{});
+            router.push(`/checkout-success/${res.data.order._id}`);      
+            dispatch(setCart(null))
+            setLoading(false)
+
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send-email/send-order-verification`, {
+              customerEmail: email,
+              orderDetails: products
+            }).then(()=>{
+              console.log('send order email success')
+            }).catch(()=>{
+              console.log('fail to send order email')
+            })
+          } 
+          else {
+            setError(true)
+          }
+          
+        }catch(err){
+          console.log(err)
+        }
+
+      }
   }
 
- 
+ console.log('products',products)
   const handleClickMessage = () => {
     setMessageOption(prev=>!prev)
   }
 
+  const handleClosePopup = () => {
+    setRedirectPopup(false)
+  }
+  console.log('/checkout user', user)
   return (
     <>
+    {redirectPopup && 
+      <SuccessPopup message={'Redirecting ... please wait'} handleClosePopup={handleClosePopup} />
+    }
     {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
     <div  className={` px-4 sm:px-4  xl:px-48 flex flex-col sm:flex-col lg:flex-row mt-20 mb-30 
       ${loading?'bg-white opacity-50':''}  `} >  
+
       {/* left col */}
       <div className=' w-full  lg:w-2/3  flex flex-col p-2 sm:p-20  ' >
         <p className='text-center font-bold text-3xl  ' >CHECKOUT</p>
@@ -195,7 +256,7 @@ const Checkout = () => {
               <p>{product.name}</p>
               <p>{FormatCurrency(product.price)} đ</p>
               <p>Size : {product.size} </p>
-              <p>Số lượng :{product.quantity}</p>
+              <p>Số lượng : {product.quantity}</p>
             </div>
             <div className='font-bold' >
               <span> {FormatCurrency(product.quantity*product.price)}đ </span>
@@ -220,7 +281,7 @@ const Checkout = () => {
                 </button>
               </div>
             </AccordionDetails>
-           </Accordion>
+          </Accordion>
 
           <hr  className='mb-5' />
 

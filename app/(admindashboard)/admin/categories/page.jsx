@@ -7,9 +7,11 @@ import { useState, useEffect } from 'react';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from 'next/navigation';
 
 const Categories = () => {
 
+  const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState('')
@@ -67,7 +69,6 @@ const Categories = () => {
     try {
       const res = await userRequest.delete(`/category/${categoryId}`)
       if(res.data){
-        console.log('-->delete',res)
         setReload(!reload)
         setLoading(false)
         setNotifySuccess(true)
@@ -117,6 +118,7 @@ const Categories = () => {
   ]
 
   return (
+
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
@@ -151,6 +153,7 @@ const Categories = () => {
         />  
 
     </div>
+
   )
 }
 

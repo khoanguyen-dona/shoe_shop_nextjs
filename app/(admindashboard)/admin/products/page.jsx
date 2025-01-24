@@ -20,9 +20,12 @@ import SuccessPopup from '@/components/Popup/SuccessPopup'
     getDownloadURL,
   } from "firebase/storage";
 import app from '@/firebase'
+import { useRouter } from 'next/navigation'
 
 const Products = () => {
 
+ 
+  const router = useRouter()
   const storage = getStorage(app)
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -35,6 +38,16 @@ const Products = () => {
    const handleClosePopup = () => {
     setNotifySuccess(false)
 }
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+    const currentUser = user && JSON.parse(user).currentUser
+    // const userRole = localStorage.getItem('role'); 
+
+    if (currentUser?.isAdmin !== true) {
+      router.push('/admin-login');
+    }
+  }, [router]);
 
   const handleDeleteProduct = async (product_id) => {
     setLoading(true)
@@ -173,23 +186,24 @@ const Products = () => {
 
           }
      },
-    { field: "createdAt", headerName: 'Ngày tạo', width:270 ,
-        renderCell: (params)=>{
-          return(
-            <span>
-              <span className='p-2 rounded hover:cursor-pointer text-gray-500 hover:text-black' title='xem chi tiết' > 
-                {moment(params.row.createdAt).format("YYYY-MMM-DD h:mm:ss A")}
-              </span>  
+    // { field: "createdAt", headerName: 'Ngày tạo', width:270 ,
+    //     renderCell: (params)=>{
+    //       return(
+    //         <span>
+    //           <span className='p-2 rounded hover:cursor-pointer text-gray-500 hover:text-black' title='xem chi tiết' > 
+    //             {moment(params.row.createdAt).format("YYYY-MMM-DD h:mm:ss A")}
+    //           </span>  
                 
-            </span>
-          )
-        }
-      },
+    //         </span>
+    //       )
+    //     }
+    //   },
 
   ]
 
 
   return (
+
     <div className={`flex flex-col ${loading ?'bg-white opacity-50':''}  `} >
       <p className='font-bold text-3xl mt-20' >Products</p>
       <a  
@@ -201,10 +215,9 @@ const Products = () => {
       </a>
       <div className='flex flex-col' >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-      {notifySuccess ? 
-            <div  className='flex justify-center p-4' > 
+      {notifySuccess ?  
                 <SuccessPopup  message={'Delete product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+            : '' }
       <DataGrid
         
         rows={products}
@@ -224,6 +237,7 @@ const Products = () => {
               
       </div>
     </div>
+
   )
 }
 

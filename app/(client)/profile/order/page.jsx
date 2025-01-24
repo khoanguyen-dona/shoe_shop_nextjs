@@ -42,12 +42,12 @@ const profileOrder = () => {
 
   const columns = [
     { field: "_id", headerName: 'Mã order', width:120 },
-    { field: "createdAt", headerName: 'Ngày đặt hàng', width:270 ,
+    { field: "createdAt", headerName: 'Ngày đặt hàng', width:280 ,
       renderCell: (params)=>{
         return(
           <span>
             <span className='p-2 rounded hover:cursor-pointer text-gray-500 hover:text-black' title='xem chi tiết' > 
-              {moment(params.row.createdAt).format("YYYY-MMM-d h:mm:ss A")}
+              {moment(params.row.createdAt).format("YYYY-MMM-D, h:mm:ss A")}
             </span>  
               
           </span>

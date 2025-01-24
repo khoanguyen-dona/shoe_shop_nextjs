@@ -9,8 +9,11 @@ import { setUser } from '@/redux/userRedux';
 import Loader from '@/components/Loader';
 import { setCart } from '@/redux/cartRedux';
 import { setWishlist } from '@/redux/wishlistRedux';
+import SuccessPopup from '@/components/Popup/SuccessPopup';
+
 
 const Login = () => { 
+  const [notifyPopup, setNotifyPopup] = useState(false)
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -34,22 +37,33 @@ const Login = () => {
        
         router.push('/')
         setLoading(false)
+        setNotifyPopup(true)
       }
     
     } catch(err){
       console.log(err)
       setError(true)
+      setLoading(false)
     }   
     
+  }
+  const handleClosePopup = () => {
+    setNotifyPopup(false)
+  }
+
+  const handleLogin = () => {
+    window.location.href = 'http://localhost:5000/auth/google'
   }
 
   return (
     
     <div       
       className={`px-4 sm:px-24 lg:px-48  py-16   flex justify-center  ${loading ?'bg-white opacity-50':''}
-      h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')] `} 
+      h-screen bg-cover bg-center bg-no-repeat bg-[url('https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1735961275535Giay_Ultraboost_5_trang_ID8810_HM3_hover.avif?alt=media&token=0390b6f6-2c45-47eb-9183-fd45b4741974')] `} 
     >
-      
+      {notifyPopup &&
+        <SuccessPopup message={'Redirecting... Please wait !'} handleClosePopup={handleClosePopup} />
+      }
       <div className='w-full 2xl:w-3/6  h-[550px] z-20 shadow-2xl rounded-md flex flex-col p-4  bg-white  '>
       {loading ? 
          <div className='flex justify-center' >  <Loader  color={'inherit'} />  </div> 
@@ -65,6 +79,23 @@ const Login = () => {
                 '  type='submit'  ${loading ?"cursor-not-allowed":""}  `}>
               Đăng nhập  
             </button>
+            <div className='flex justify-center' >
+            <button 
+                onClick = {handleLogin}
+                className='border-[2px] p-2  hover:bg-black hover:text-white transition border-gray-300 w-2/5  ' >
+                <span className=' text-md mr-4 ' >
+                  Đăng nhập với 
+                </span>
+                <span className='font-bold text-3xl' >
+                  <span className='text-blue-500' >G</span>
+                  <span className='text-red-500' >O</span>
+                  <span className='text-yellow-500' >O</span>
+                  <span className='text-blue-500' >G</span>
+                  <span className='text-green-500' >L</span>
+                  <span className='text-red-500' >E</span>
+                  </span>
+              </button>
+            </div>
         
         </form>
 

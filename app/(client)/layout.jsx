@@ -20,7 +20,9 @@ const layout = ({ children }) => {
       <body className={inter.className}>  
         <Provider store={store}>
           <PersistGate loading={null}  persistor={persistor}>
-            <Navbar/>
+            <div className='sticky top-0 z-30' >
+              <Navbar  /> 
+            </div>
             <main className='mx-auto  mb'  >{children}</main> 
             <Footer  />   
           </PersistGate>

@@ -10,7 +10,8 @@ const SelectPopup = ({data, handleClick, itemChoose}) => {
 
             <div
                 onClick = {()=>handleClick(item)} 
-                key={index} className={`hover:bg-gray-300 p-1 hover:cursor-pointer rounded-md `} >
+                key={index} className={`hover:bg-gray-300 p-1 hover:cursor-pointer rounded-md `}
+             >
                 {item}
                 { itemChoose===item &&
                     <DoneIcon  className='text-green-500 font-bold ' fontSize='medium' />      

@@ -17,7 +17,7 @@ const Shoe = () => {
   const [category, setCategory] = useState(['Giày'])
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState()
-  const [limit, setLimit] = useState(16)
+  const [limit, setLimit] = useState(12)
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
@@ -85,9 +85,11 @@ const Shoe = () => {
       const getProducts = async () => {
         try {    
           const res = await publicRequest.get(`/product?category=${category}&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
-          setProducts(res.data.products)
-          setTotalPage(res.data.totalPage)
-          setLoading(false)
+          if(res.data){
+            setProducts(res.data.products)
+            setTotalPage(res.data.totalPage)
+            setLoading(false)
+          }
         } catch {}
       }
       getProducts();
@@ -138,12 +140,13 @@ const Shoe = () => {
       setCategory(prev=>[...prev,cat])
     }    
   }
+  console.log('/shoe user->',user)
  
   return (
     <div className={` ${loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
-         src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_DJen_GY9351_HM4.avif" 
+         src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1735961276128Giay_Ultraboost_5_trang_ID8810_HM4%20(1).avif?alt=media&token=63f63bce-9501-4790-b3ff-521719d0383f" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  GIÀY </h1>
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
@@ -194,7 +197,7 @@ const Shoe = () => {
       </div>
       
       {/* filter popup */}
-      <div className={`shadow-2xl overflow-auto scroll-bar:hidden  fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
+      <div className={`shadow-2xl overflow-auto scroll-bar:hidden  fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-40  p-3 top-0 right-0  flex flex-col transform  transition-transform 
           duration-300  ${filter ? 'translate-x-0' : 'translate-x-full'}  `} >
         <div className='flex flex-row justify-between ' >
           <div className='font-bold'  >Lọc sản phẩm</div>

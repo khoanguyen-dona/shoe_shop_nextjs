@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
 import { userRequest } from '@/requestMethod';
-import { setCart } from '@/redux/cartRedux';
+import { setCart, addCartItem, decreaseCartItem, deleteCartItem } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
 
 
@@ -19,7 +19,7 @@ const Cart = () => {
   const cart = useSelector((state)=>state.cart.userCart)
   const products = cart?.products
   
-
+  console.log('user cart',cart)
   // calculate total price
   const totalPrice = products?.reduce((total, item) => {
     const { price, quantity } = item;
@@ -29,49 +29,80 @@ const Cart = () => {
  
   const decreaseItem = async (product) => {
     setLoading(true)
-    try{
-      const res = await userRequest.post(`/cart/${user._id}/decrease-item`,{
+    if( user !== null){   
+      try{
+        const res = await userRequest.post(`/cart/${user._id}/decrease-item`,{
+          productId: product.productId,
+          color: product.color,
+          size: product.size
+        })
+        if(res.data){
+          dispatch(setCart(res.data.cart))
+          setLoading(false)
+        }
+      }catch(err){}
+    } else {
+      let prod = {
         productId: product.productId,
         color: product.color,
         size: product.size
-      })
-      if(res.data){
-        dispatch(setCart(res.data.cart))
-        setLoading(false)
       }
-    }catch(err){}
+      dispatch(decreaseCartItem(prod))
+      setLoading(false)
+    }
+
   }
 
   const addItem = async (product) => {
     setLoading(true)
-    try{
-      const res = await userRequest.post(`/cart/${user._id}`,{
-        productId: product.productId,
-        name: product.name,
-        quantity: 1,
+    if (user !== null){
+      try{
+        const res = await userRequest.post(`/cart/${user._id}`,{
+          productId: product.productId,
+          name: product.name,
+          quantity: 1,
+          color: product.color,
+          size: product.size
+        })
+        if(res.data){
+          dispatch(setCart(res.data.cart))
+          setLoading(false)
+        }
+      }catch(err){}
+    } else {
+      let prod = {
+        productId : product.productId,
         color: product.color,
         size: product.size
-      })
-      if(res.data){
-        dispatch(setCart(res.data.cart))
-        setLoading(false)
       }
-    }catch(err){}
+      dispatch(addCartItem(prod))
+      setLoading(false)
+    }
   }
 
   const removeItem = async (product) => {
     setLoading(true)
-    try{
-      const res = await userRequest.post(`/cart/${user._id}/delete-item`,{
-        productId: product.productId,
+    if(user !== null){  
+      try{
+        const res = await userRequest.post(`/cart/${user._id}/delete-item`,{
+          productId: product.productId,
+          color: product.color,
+          size: product.size
+        })
+        if(res.data){
+          dispatch(setCart(res.data.cart))
+          setLoading(false)
+        }
+      }catch(err){}
+    } else {
+      let prod = {
+        productId : product.productId,
         color: product.color,
         size: product.size
-      })
-      if(res.data){
-        dispatch(setCart(res.data.cart))
-        setLoading(false)
       }
-    }catch(err){}
+      dispatch(deleteCartItem(prod))
+      setLoading(false)
+    }
   }
 
 
@@ -88,6 +119,7 @@ const Cart = () => {
            {FormatCurrency(totalPrice)} đ  </span>   </p>
         {/* product card */}
         { products?.map((product, index)=> 
+       
         <div className='w-full h-2/9 sm:h-3/9  md:h-5/9  border-[1px] border-gray-500 flex ' key={index} >
           <div className='w-2/5  ' >
             <img  className='object-cover w-full p-4' src={product.thumbnail} alt="" />

@@ -15,7 +15,7 @@ import { setWishlist } from '@/redux/wishlistRedux';
 import { setUser } from '@/redux/userRedux';
 import Loader from './Loader';
 import SuccessPopup from './Popup/SuccessPopup';
-
+import { CircularProgress } from '@mui/material'
 
 const Navbar = () => {
   const dispatch = useDispatch()
@@ -44,15 +44,20 @@ const Navbar = () => {
 
   const handleKeyDown = (e) => {
     if (e.key==='Enter'){
+      setLoading(true)
       router.push(`/search?q=${searchTerm}`)
       setSearchMobile(false)
+      setLoading(false)
     }
   }
   const handleSearch = () => {
-    router.push(`/search?q=${searchTerm}`)    
+    setLoading(true)
+    router.push(`/search?q=${searchTerm}`)  
+    setSearchMobile(false)
+    setLoading(false) 
   }
   const handleSearchMobileClick = () => {
-    setSearchMobile(!prev)
+    setSearchMobile((prev)=>!prev)
     
   }
 
@@ -69,15 +74,16 @@ const Navbar = () => {
       setNotifySuccess(false)
     }, 3000);
   
-  
     
-}
+  }
+ 
 
   return (
-  <div className='' >
+ <>
+  <div className=''  >
     <div >
       {/* desktop navbar */}
-      <div className='hidden lg:block' >
+      <div className='hidden lg:block  ' >
         <div className= '   flex  bg-gray-300  space-x-10 h-16 justify-around  text-center py-5' >
           <div className='' >
             <a href='/' className='text-3xl'  > <strong> ShoeShop </strong>  </a>
@@ -91,22 +97,27 @@ const Navbar = () => {
           </div>
 
           <div className='space-x-10  ' >
+            {/* search */}
             <span className='border-1' >
               <input 
                 onKeyDown={handleKeyDown}
                 className='w-64 p-1 ' type="text"  
-                onChange={(e)=>setSearchTerm(e.target.value)}  />
+                onChange={(e)=>setSearchTerm(e.target.value)}  
+              />
+             
               <span className='p-1 border-2 bg-black hover:bg-gray-500 transition' onClick={handleSearch} >
                 <SearchIcon sx={{color:'white'}} />
               </span>          
-            </span>  
+            </span>
+            {/* wishlist   */}
             <a href='/wishlist' onClick={()=>setLoading(true)} className='relative  ' >
               <FavoriteBorderIcon sx={{fontSize: '30px'}} />
-              { wishlist === null ||  wishlist?.products?.length === 0 ? '' :
+              {user===null || wishlist === null ||  wishlist?.products?.length === 0 ? '' :
               <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
                 { wishlist?.products?.length } </span>
               }
-            </a>    
+            </a>  
+            {/* cart    */}
             <a href='/cart'  onClick={()=>setLoading(true)}  className='relative' > 
               <ShoppingCartOutlinedIcon sx={{fontSize: '30px'}}/> 
               {cart===null ||  cart?.products?.length === 0 ? '' : 
@@ -114,11 +125,12 @@ const Navbar = () => {
                 { cart?.products?.length } </span>
               }
             </a>
+            {/* user */}
             { user!== null ?
             <span  >
               <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}  className='hover:cursor-pointer' onClick={handleUserMenu}/>
               { userMenu &&
-                <div className='  flex flex-col text-left p-2 w-32 bg-white h-48 rounded shadow-2xl absolute right-10 top-12 z-40 ' >
+                <div className='  flex flex-col text-left p-2 w-32 bg-white h-48 rounded shadow-2xl absolute right-10 top-12 z-30 ' >
                 <a href="/profile/account" onClick={()=>setLoading(true)} >
                   <div className='hover:text-white hover:bg-black font-bold  p-2 rounded transition ' >Account</div>
                 </a>
@@ -198,25 +210,25 @@ const Navbar = () => {
         </div>     
       </div>
       {/* mobile toggle sidebar */}
-      <div className={`w-screen h-screen transform duration-300  transition-transform bg-white top-0 z-50 fixed flex flex-col p-4
+      <div className={`w-screen h-screen transform duration-300  transition-transform bg-white top-0 z-30 fixed flex flex-col p-4
         ${menu?'translate-x-0':'-translate-x-full'} `} >
         <div className='flex transition mb-5 justify-between '   >
           <p className='font-extrabold text-4xl  ' > <a href="/" onClick={()=>setLoading(true)}  > ShoeShop </a> </p>
           <CloseIcon  className='hover:cursor-pointer' onClick={handleToggle} fontSize='large' />
         </div>
         <hr />
-        <div className=' mt-4 space-y-4 text-2xl font-bold' >
-          <p> 
+        <div className=' mt-4 space-y-4 text-2xl font-bold  ' >
+          <p className='hover:bg-black hover:text-white p-2 transition '> 
             <a href="/shoe" onClick={()=>setLoading(true)}  >
               Giày
             </a>
           </p>
-          <p>
+          <p  className='hover:bg-black hover:text-white p-2 transition '>
             <a href="/clothes" onClick={()=>setLoading(true)}  >
             Quần áo
             </a>
           </p> 
-          <p>
+          <p  className='hover:bg-black hover:text-white p-2 transition '>
             <a href="/accessories" onClick={()=>setLoading(true)}  >
               Phụ kiện
             </a>
@@ -224,21 +236,23 @@ const Navbar = () => {
         </div>
       </div> 
       {/* searchMobile */}
-      <div className={` w-screen h-screen bg-gray-700 top-0 fixed z-50 flex flex-col transition-transform
+      <div className={` w-screen h-screen bg-gray-700 top-0 fixed z-30 flex flex-col transition-transform
           ${searchMobile?'translate-x-0 opacity-95 ':'-translate-x-full'} `}>
         <div className='flex justify-between p-4 mb-10' >
           <p className='font-bold text-2xl text-gray-300' >Tìm kiếm</p>
           <CloseIcon  className='text-white' onClick={handleSearchMobileClick} fontSize='large' />
         </div>
-        <div className='px-4 mr-4' >
-          <input type="text" className='p-4 border w-full rounded-xl' onKeyDown={handleKeyDown} placeholder='Nhập từ khóa ..'
+        <div className='px-4 mr-4 flex' >
+          <input type="text" className='p-4 border w-full  rounded-lg mr-2' onKeyDown={handleKeyDown} placeholder='Nhập từ khóa ..'
               onChange={(e)=>setSearchTerm(e.target.value)}/>
+          <SearchIcon  onClick={handleSearch}  sx={{fontSize:'60px'}}  className='rounded-lg bg-black text-white  p-1
+               hover:bg-gray-500 hover:cursor-pointer transition' />
         </div>
       </div>
       
     </div>
      {/* loader */}
-    <div className={`w-screen h-screen    ${loading ?'bg-white opacity-50 block ':'hidden'} `}  >
+    <div className={`fixed w-screen h-screen  z-30  ${loading ?'bg-white opacity-50 block ':'hidden'} `}  >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
     </div>
     {/* Notify */}
@@ -247,6 +261,11 @@ const Navbar = () => {
                 <SuccessPopup  message={'Log out Successfully! redirecting...'}  handleClosePopup={handleClosePopup}   /> 
             </div>  : '' }
   </div>
+  {/* { loading &&
+    <div className='fixed w-screen h-screen bg-gray-500 opacity-50 z-40' >
+  </div>
+  } */}
+</>
   )
 }
 

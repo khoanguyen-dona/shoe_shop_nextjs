@@ -2,18 +2,22 @@
 
 import React  from 'react'
 
-import { useState } from 'react'
-
-
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 const page = () => {
 
+ 
 
+
+ 
   return (
-    <p>admin oage</p>
-
+ 
+    <p></p>
     
   )
+
+ 
 }
 
 export default page

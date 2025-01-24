@@ -7,12 +7,15 @@ import Loader from '@/components/Loader';
 import { FormatCurrency } from '@/utils/FormatCurrency';
 import moment from 'moment';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
-
+import Image from 'next/image'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useRouter } from 'next/navigation'
 
 const Users = () => {
 
+ 
+  const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [users, setUsers]= useState('')
@@ -64,7 +67,7 @@ const Users = () => {
         return(
         <div className='w-[50px] p-[2px]  '>
 
-          <img src={params.row.img} className=' object-cover rounded-full '  alt="" />
+          <Image width={50}  height={50}  src={params.row.img} className=' object-cover border-2 rounded-full '  alt="" />
         </div>
         )
       }
@@ -111,6 +114,7 @@ const Users = () => {
             )
           }
     }, 
+    { field: "verified", headerName: 'Xác thực', width:150} ,
     { field: "createdAt", headerName: 'Ngày tạo', width:270 ,
         renderCell: (params)=>{
           return(
@@ -128,13 +132,13 @@ const Users = () => {
 
 
   return (
+   
     <div className={`flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
     
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-      {notifySuccess ? 
-            <div  className='flex justify-center p-4' > 
+      {notifySuccess ?  
                 <SuccessPopup  message={'Delete user Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+          : '' }
 
       <p className='font-bold text-3xl mt-20' >Users</p>
       <div className='flex flex-col' >
@@ -157,6 +161,7 @@ const Users = () => {
               
       </div>
     </div>
+    
   )
 }
 

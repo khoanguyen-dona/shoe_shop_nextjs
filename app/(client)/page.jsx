@@ -10,15 +10,36 @@ import 'swiper/css/pagination'
 import React, { useEffect } from 'react'
 import { publicRequest } from '@/requestMethod';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '@/redux/userRedux';
+import { setCart } from '@/redux/cartRedux';
+import { setWishlist } from '@/redux/wishlistRedux';
 
 const Home = () => {
   const [giayData,setGiayData] = useState([])
   const [aoData,setAoData] = useState([])
   const [phukienData,setPhukienData] = useState([])
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.currentUser)
+  console.log('/ user -->', user)
 
+  //fetch user after google auth
 
+  useEffect(()=> {
+    if(user === null){
+      console.log('it fetched')
+      axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user`, {withCredentials: true})
+      .then((res) => {
+        dispatch(setUser(res.data))
+        dispatch(setCart(res.data.cart))
+        dispatch(setWishlist(res.data.wishlist))
+        console.log('res-->',res)
+      })
+      .catch(() => dispatch(setUser(null)) );
+  }
+  }, [])
 
+  // get data
   useEffect(() => {
     const getGiayData = async () => {
       try{
@@ -30,6 +51,7 @@ const Home = () => {
     getGiayData();
   }, [])
 
+  //get data
   useEffect(() => {
     const getAoData = async () => {
       try{
@@ -42,6 +64,7 @@ const Home = () => {
     getAoData();
   }, [])
 
+  //get data
   useEffect(() => {
     const getPhukienData = async () => {
       try{

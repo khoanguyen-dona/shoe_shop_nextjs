@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { FormatCurrency } from '@/utils/FormatCurrency'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { userRequest } from '@/requestMethod';
+import { userRequest, publicRequest } from '@/requestMethod';
 import { useEffect, useState } from 'react';
 // import { format } from 'date-fns' 
 import moment from 'moment';
@@ -21,7 +21,7 @@ const CheckoutSuccess = () => {
   useEffect (()=> {
     const getOrder = async () => {
       try{
-        const res = await userRequest.get(`/order/${order_id}`) 
+        const res = await publicRequest.get(`/order/${order_id}`) 
         
         if(res.data) {
         

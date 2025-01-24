@@ -20,6 +20,8 @@ import SuccessPopup from '@/components/Popup/SuccessPopup'
 import app from '@/firebase'
 
 const ProductDetail = () => {
+
+   
     const router = useRouter()
     const storage = getStorage(app);
     const [notifySuccess, setNotifySuccess]= useState(false)
@@ -295,6 +297,7 @@ const ProductDetail = () => {
     }
 
   return (
+   
     <div className={` mt-20  flex flex-col mb-20   ${loading?'bg-white opacity-50':''}  `} >
         <p className='text-3xl font-bold' >
             Chi tiết sản phẩm 
@@ -416,6 +419,7 @@ const ProductDetail = () => {
         </form>
         
     </div>
+    
   )
 }
 

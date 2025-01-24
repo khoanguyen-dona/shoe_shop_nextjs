@@ -8,9 +8,12 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import { useRouter } from 'next/navigation'
 
 const ProductLine = () => {
 
+  
+  const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [productLines, setProductLines] = useState('')
@@ -150,6 +153,7 @@ const ProductLine = () => {
   ]
 
   return (
+   
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
@@ -207,6 +211,7 @@ const ProductLine = () => {
         />  
 
     </div>
+   
   )
 }
 

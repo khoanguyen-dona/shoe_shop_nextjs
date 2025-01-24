@@ -10,9 +10,12 @@ import moment from 'moment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
+import { useRouter } from 'next/navigation'
 
 const Orders = () => {
 
+ 
+  const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [orders, setOrders]= useState('')
@@ -134,12 +137,12 @@ const Orders = () => {
 
 
   return (
+   
     <div className={` flex flex-col  ${loading?'bg-white opacity-50':''}   `} >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
       {notifySuccess ? 
-            <div  className='flex justify-center p-4' > 
                 <SuccessPopup  message={'Delete order Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+            : '' }
       <p className='font-bold text-3xl mt-20' >Orders</p>
       <div className='flex flex-col' >
       <DataGrid
@@ -161,6 +164,7 @@ const Orders = () => {
               
       </div>
     </div>
+    
   )
 }
 
