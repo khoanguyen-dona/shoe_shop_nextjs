@@ -59,7 +59,7 @@ const Login = () => {
     
     <div       
       className={`px-4 sm:px-24 lg:px-48  py-16   flex justify-center  ${loading ?'bg-white opacity-50':''}
-      h-screen bg-cover bg-center bg-no-repeat bg-[url('https://adidas.donawebs.com/wp-content/uploads/2024/11/Giay_Ultraboost_Light_trang_GY9350_HM3_hover-600x600.avif')] `} 
+      h-screen bg-cover bg-center bg-no-repeat bg-[url('https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1735961275535Giay_Ultraboost_5_trang_ID8810_HM3_hover.avif?alt=media&token=0390b6f6-2c45-47eb-9183-fd45b4741974')] `} 
     >
       {notifyPopup &&
         <SuccessPopup message={'Redirecting... Please wait !'} handleClosePopup={handleClosePopup} />

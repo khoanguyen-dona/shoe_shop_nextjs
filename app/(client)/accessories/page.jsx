@@ -141,7 +141,7 @@ const Accessories = () => {
     <div className='' >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
-         src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Tui_DJeo_Vai_Vien_Logo_Ba_La_Polyurethane_DJen_IY4057_01_standard.avif" 
+         src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fphu%20kien%2Ftui%20deo%20vai%20logo%20ba%20la%20polyurethane%2FTui_DJeo_Vai_Vien_Logo_Ba_La_Polyurethane_DJen_IY4057_04_standard-600x600.avif?alt=media&token=95839042-561e-4f90-b99a-aca260cae61a" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  PHỤ KIỆN </h1>
         <div className='flex justify-end mt-2 '>
@@ -196,7 +196,7 @@ const Accessories = () => {
     
       
       {/* filter popup */}
-      <div className={`shadow-2xl  overflow-auto  fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
+      <div className={`shadow-2xl  overflow-auto  fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-40  p-3 top-0 right-0  flex flex-col transform  transition-transform 
           duration-300  ${filter ? 'translate-x-0' : 'translate-x-full'}  `} >
         <div className='flex flex-row justify-between ' >
           <div className='font-bold' >Lọc sản phẩm</div>

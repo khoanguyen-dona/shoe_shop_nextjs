@@ -7,7 +7,7 @@ import Loader from '@/components/Loader';
 import { FormatCurrency } from '@/utils/FormatCurrency';
 import moment from 'moment';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
-
+import Image from 'next/image'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation'
@@ -67,7 +67,7 @@ const Users = () => {
         return(
         <div className='w-[50px] p-[2px]  '>
 
-          <img src={params.row.img} className=' object-cover rounded-full '  alt="" />
+          <Image width={50}  height={50}  src={params.row.img} className=' object-cover border-2 rounded-full '  alt="" />
         </div>
         )
       }

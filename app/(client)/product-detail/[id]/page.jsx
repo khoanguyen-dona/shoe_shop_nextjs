@@ -31,8 +31,10 @@ const ProductDetail = () => {
     const productId = useParams().id
     const [size, setSize]=useState("")
     const [color, setColor]=useState("")
-    const [colorOption, setColorOption] = useState()
+    const [currentProduct, setCurrentProduct] = useState()
     const [product, setProduct]=useState({})
+
+    const [relatedProducts, setRelatedProducts] = useState()
     const [reload, setReload] = useState(false)
     //  add to wishlistArray
     wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
@@ -51,7 +53,7 @@ const ProductDetail = () => {
     e.preventDefault()
     try {
       const res = await userRequest.post(`/wishlist/${user._id}`, {
-        productId: productId
+        productId: currentProduct._id
       })
       if(res.data){
         dispatch(setWishlist(res.data.wishlist))
@@ -75,12 +77,12 @@ const ProductDetail = () => {
         let cart = {
           userId: null,
           products:[{
-            productId: productId,
-            name: product.name,
-            thumbnail: product.thumbnail,
-            price: product.price,
+            productId: currentProduct._id,
+            name: currentProduct.name,
+            thumbnail: currentProduct.thumbnail,
+            price: currentProduct.price,
             size: size,
-            color: color,
+            color: currentProduct.color[0],
             quantity: 1
             }
           ]
@@ -95,12 +97,12 @@ const ProductDetail = () => {
          
       else {     
         let prod = {
-          productId: productId,
-          name: product.name,
-          thumbnail: product.thumbnail,
-          price: product.price,
+          productId: currentProduct._id,
+          name: currentProduct.name,
+          thumbnail: currentProduct.thumbnail,
+          price: currentProduct.price,
           size: size,
-          color: color,
+          color: currentProduct.color[0],
           quantity: 1
         }
         dispatch(addCartItem(prod))
@@ -116,11 +118,11 @@ const ProductDetail = () => {
       e.preventDefault()
       try{
         const res = await userRequest.post(`/cart/${user._id}`, {
-          productId: productId,
-          name: product.name,
+          productId: currentProduct._id,
+          name: currentProduct.name,
           quantity: 1,
-          color: color, 
-          size: size
+          color: currentProduct.color[0], 
+          size: size         
         }) 
         if(res.data){
           dispatch(setCart(res.data.cart))
@@ -141,19 +143,17 @@ const ProductDetail = () => {
   //fetch product data by id
     useEffect(()=> {
       const getProduct = async () => {
-        let colorArray = []
+      
         try {
           const res = await publicRequest.get(`/product/${productId}`)
           if(res.data) {  
             setProduct(res.data)
+            setCurrentProduct(res.data)
             setColor(res.data.color[0])
             try {
               const res2 = await publicRequest.get(`/product/find/${res.data.name}?page=1&limit=30`)
               if(res2.data){
-                res2.data.products?.map((item)=>{
-                  colorArray.push(item.color[0])
-                })
-                setColorOption(colorArray)
+                setRelatedProducts(res2.data.products)                       
               }
     
             } catch(err){
@@ -184,6 +184,7 @@ const ProductDetail = () => {
           const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
           if(res.data){
             console.log('product -->',res.data.products[0])
+            setCurrentProduct(res.data.products[0])
             setProduct(res.data.products[0])
             setLoading(false)
           }
@@ -195,8 +196,9 @@ const ProductDetail = () => {
       getProduct()
     }, [reload])
    
-  const handleColorClick = (c) => {
-    setColor(c)
+  const handleColorClick = (p) => {
+    setCurrentProduct(p)
+    setColor(p.color[0])
     setReload(!reload)
   }
   // close the popup
@@ -209,6 +211,7 @@ const ProductDetail = () => {
     console.log('clicked')
   }
 
+  console.log('current p--',currentProduct)
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
@@ -222,7 +225,7 @@ const ProductDetail = () => {
              : '' }
       <div className='flex flex-col  xl:flex-row  mt-20  ' >
         {/* product image gallery */}
-        <div className='w-full h-full xl:w-3/6 2xl:w-3/6 ' > 
+        <div className='w-full h-full xl:w-3/6 2xl:w-3/6  ' > 
           <SwiperGallery  product_images={product?.imgGallery} />
        
         </div>
@@ -238,10 +241,10 @@ const ProductDetail = () => {
             Size : {size} 
           </div>
           {/* {product.size} */}
-          {String(product?.size).length === 0  ? '' :
+          {String(currentProduct?.size).length === 0  ? '' :
             <div className='  flex flex-wrap  '>
               
-              {product?.size?.map((s,index)=>(
+              {currentProduct?.size?.map((s,index)=>(
                   <span 
                     key={index}
                     onClick={()=>setSize(s)}
@@ -260,16 +263,23 @@ const ProductDetail = () => {
             Color : {color}
           </div>
           <div className='flex flex-swap  ' >       
-            {colorOption?.map((c,index)=>(
-              <p 
-              onClick={()=>handleColorClick(c)}
-              
-              className={`object-cover ml-1 mt-1 font-bold hover:border-gray-500 hover:border-4 transition rounded 
-                border-4 p-4 ${c===color?'border-black border-4':'' } `}
-              key={index} width='80px'  
-              src={c} alt="" >
-              {c}
-              </p>
+
+              {relatedProducts?.map((product,index)=>(
+              <div className='flex flex-col ml-1 mt-1' key={index}>
+                <div>   
+                  <img 
+                    onClick={()=>handleColorClick(product)}
+                    
+                    className={`object-cover   font-bold hover:border-gray-500 hover:border-4 transition rounded 
+                      border-4  ${product.color[0]===color?'border-black border-4':'' } `}
+                     width='80px'  
+                    src={product.thumbnail} alt="" >       
+                  </img>
+                  </div>
+                  <div className='flex justify-center font-semibold ' >
+                    <p>{product.color[0]}</p>
+                  </div>
+              </div>
             ))}
           </div>
           {/* add to cart */}
@@ -287,10 +297,10 @@ const ProductDetail = () => {
          <button  
               onClick = {addToWishlist}
               className='p-2 py-2 md:px-5 border-gray-400 ml border-4 hover:border-gray-black hover:border-black transition ' >
-                 {wishlistArray.includes(productId) ? <FavoriteIcon sx={{fontSize:40}} />  : <FavoriteBorderIcon sx={{fontSize:40}} />}
+                 {wishlistArray.includes(currentProduct?._id) ? <FavoriteIcon sx={{fontSize:40}} />  : <FavoriteBorderIcon sx={{fontSize:40}} />}
            
             <span className='font-bold text-xl ml-2' >
-            {wishlistArray.includes(productId) ? 'Đã thêm vào wishlist'  : 'Thêm vào wishlist' }
+            {wishlistArray.includes(currentProduct?._id) ? 'Đã thêm vào wishlist'  : 'Thêm vào wishlist' }
             </span> 
           </button> 
          
@@ -302,7 +312,7 @@ const ProductDetail = () => {
       {/* Product description  */}
       <div className='mt-10' >
             <h1 className='text-4xl font-bold text-center' >  Mô tả</h1>
-            <p>{product?.desc}</p>
+            <p>{currentProduct?.desc}</p>
       </div>
         
     

@@ -141,7 +141,7 @@ console.log(category)
     <div className={` ${loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
-         src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Ao_Thun_adidas_Basketball_trang_JE3762_21_model.avif" 
+         src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fao%2Fan%20thun%20adidas%20basketball%2FAo_Thun_adidas_Basketball_trang_JE3762_21_model.avif?alt=media&token=24dcab7e-9e46-4f94-85a7-a07ec67f1dcd" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  QUẦN ÁO </h1>
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
@@ -194,7 +194,7 @@ console.log(category)
       </div>
       
       {/* filter popup */}
-      <div className={`shadow-2xl overflow-auto   fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-20  p-3 top-0 right-0  flex flex-col transform  transition-transform 
+      <div className={`shadow-2xl overflow-auto   fixed  bg-white  w-full md:w-2/4 xl:w-1/4  h-screen z-40  p-3 top-0 right-0  flex flex-col transform  transition-transform 
           duration-300  ${filter ? 'translate-x-0' : 'translate-x-full'}  `} >
         <div className='flex flex-row justify-between ' >
           <div>Lọc sản phẩm</div>

@@ -71,7 +71,7 @@ export default function SwiperGallery({ product_images}) {
   
   return (
     <>     
-        <div className="image-carousel">
+        <div className="image-carousel z-10 ">
             {/* Main Carousel */}
             <Swiper    
                 lazy={true}
@@ -117,33 +117,33 @@ export default function SwiperGallery({ product_images}) {
 
         {/* light box */}
         { isLightboxOpen &&
-            <div className='image-carousel  '  >
-                <p className='fixed top-5 left-5 text-gray-400 z-50 '>{currentIndex+1}/{product_images.length} </p>
+            <div className='image-carousel z-50 '  >
+                <p className='fixed top-5 left-5 text-gray-400 z-50  '>{currentIndex+1}/{product_images.length} </p>
                 <CloseIcon onClick={handleCloseLightbox} 
                                 sx={{fontSize:'60px'}} 
-                                className='fixed top-5  z-40 right-5  transition  text-gray-500 hover:text-gray-700 
+                                className='z-50 fixed top-5   right-5  transition  text-gray-500 hover:text-gray-700 
                                     hover:cursor-pointer ' 
                 />
                 {/* show on pc desktop */}
                 {    currentIndex > 0 && screenWidth>1028  &&              
                     <ArrowBackIosIcon  sx={{fontSize: '60px'}} onClick={handlePrev}  
-                        className='fixed left-5  hidden lg:top-2/4 text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                        className='z-50 fixed left-5  hidden lg:top-2/4 text-gray-500  transition  hover:text-gray-700  ' />
                 }
                 {    currentIndex < lastIndex && screenWidth>1028 &&           
                     <ArrowForwardIosIcon  sx={{fontSize: '60px'}} onClick={handleNext}  
-                        className='fixed right-5 hidden  lg:top-2/4 text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                        className='z-50 fixed right-5 hidden  lg:top-2/4 text-gray-500  transition  hover:text-gray-700  ' />
                 }
                 {/* show on phone and tab */}
                 {    currentIndex > 0 && screenWidth<=1028  &&              
                     <ArrowBackIosIcon  sx={{fontSize: '80px'}} onClick={handlePrev}  
-                        className='fixed left-1 top-[250px] md:top-[400px] lg:top-[500px] text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                        className='z-50 fixed left-1 top-[250px]  sm:top-[400px] md:top-[450px] lg:top-[500px] text-gray-500  transition  hover:text-gray-700  ' />
                 }
                 {    currentIndex < lastIndex && screenWidth<=1028 &&           
                     <ArrowForwardIosIcon  sx={{fontSize: '80px'}} onClick={handleNext}  
-                        className='fixed right-0  top-[250px] md:top-[400px] lg:top-[500px] text-gray-500 z-50 transition  hover:text-gray-700  ' />
+                        className='z-50 fixed right-0  top-[250px] sm:top-[400px] md:top-[450px] lg:top-[500px] text-gray-500  transition  hover:text-gray-700  ' />
                 }
                
-                <div className='fixed top-0 left-0 z-20  bg-black    w-screen h-screen  ' >
+                <div className='z-40 fixed top-0 left-0  bg-black    w-screen h-screen  ' >
                     {/* Main Carousel */}
                     <Swiper                     
                         modules={[Navigation, Thumbs, Zoom, Keyboard, Controller]}
@@ -152,7 +152,7 @@ export default function SwiperGallery({ product_images}) {
                         keyboard
                         navigation = {true}
                         thumbs={{ swiper: thumbsSwiper }}
-                        className="main-swiper w-full md:w-5/5 lg:w-5/5 xl:w-2/5 2xl:w-2/5   h-auto mt-[100px] md:mt-[50px] xl:mt-0 mx-2 text-center  z-40   "
+                        className="main-swiper w-full md:w-5/5 lg:w-5/5 xl:w-2/5 2xl:w-2/5 z-50  h-auto mt-[100px] md:mt-[100px] xl:mt-0 mx-2 text-center   "
                         spaceBetween={2000}
                         slidesPerView={1}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}    
@@ -162,11 +162,11 @@ export default function SwiperGallery({ product_images}) {
               
                     {product_images?.map((image, index) => (
                         
-                        <SwiperSlide className=' z-50 '  key={index}>
+                        <SwiperSlide className='  '  key={index}>
                                  {/* show on phone and tab */}
                                
                             <img  onClick={() => handleImageClick(index)}
-                                className='   ' src={image} alt={`Slide ${index + 1}`} />    
+                                className=' z-50  ' src={image} alt={`Slide ${index + 1}`} />    
                                                                 
                         </SwiperSlide>
                     ))}  
@@ -181,13 +181,13 @@ export default function SwiperGallery({ product_images}) {
                         modules={[Thumbs]}
                         className='mt-2'
                     >
-                    <div className='flex flex-wrap z-40' >
+                    <div className='flex flex-wrap' >
                         {product_images.map((image, index)=>
                         <SwiperSlide key={index} >
                             <img  
                                 loading='lazy'
                                 onClick={() => handleThumbClick(index)}                         
-                                className={`w-24 xl:w-36 h-auto hover:opacity-100 transition  ${currentIndex===index?'opacity-100':'opacity-50'} `} 
+                                className={`z-50 w-24 xl:w-36 h-auto hover:opacity-100 transition  ${currentIndex===index?'opacity-100':'opacity-50'} `} 
                                 src={image} alt="" 
                             />        
                         </SwiperSlide>
