@@ -15,7 +15,7 @@ const Wishlist = () => {
   wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
   const data = wishlist?.products
 
-  console.log('wlA --->',wishlist)
+
 
   return (
     <div className='flex flex-col mt-20 '  >

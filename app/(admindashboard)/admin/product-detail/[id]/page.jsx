@@ -101,7 +101,7 @@ const ProductDetail = () => {
 }, [])
    
 
-    console.log('form cat',formCategory)
+
    
 
     // handle choose thumbnail
@@ -137,7 +137,7 @@ const ProductDetail = () => {
                 setTimeout(()=> {
                     setNotifySuccess(false)
                 },3000)
-                console.log(res.data)
+
             }
         } catch (err) {
             console.log('err delete in mongo ',err)
@@ -182,7 +182,7 @@ const ProductDetail = () => {
                 setTimeout(()=> {
                     setNotifySuccess(false)
                 },3000)
-                console.log(res.data)
+
             }
         } catch (err) {
             console.log('err delete in mongo ',err)
@@ -225,7 +225,6 @@ const ProductDetail = () => {
 
                     await uploadBytes(imageRef, thumbnailFile)
                     const thumbnail_URL = await getDownloadURL(imageRef)
-                    console.log('thumbnail url -> :',thumbnail_URL)
                     handleUpdateProduct(thumbnail_URL)
                 } else {
                     handleUpdateProduct(thumbnail)
@@ -237,7 +236,6 @@ const ProductDetail = () => {
     }
     // update product .
     const handleUpdateProduct = async (thumbnail_URL) => {
-        console.log('da vao day')
         try{
             if(imageGalleryUrl.length >0  ){
                 const res = await userRequest.put(`/product/${product_id}`, {
@@ -254,7 +252,7 @@ const ProductDetail = () => {
                     
                 })
                 if(res.data){
-                    console.log('-->update product success',res.data.product)
+                
                     setNotifySuccess(true)
                 }
             } else {
@@ -271,7 +269,7 @@ const ProductDetail = () => {
                     
                 })
                 if(res.data){
-                    console.log('-->update product success',res.data.product)
+              
                     setNotifySuccess(true)
                 }
             }

@@ -138,7 +138,7 @@ const profileAccount = () => {
                                         email: res.data.user.email, 
                                         img: res.data.user.img, 
                                         username: res.data.user.username }))
-                    console.log('res',res.data.user)
+                 
                 }
             }catch(err){
                 console.log('err while handleUpdateUser',err)
@@ -187,7 +187,9 @@ const profileAccount = () => {
                     
                     {previewImage  && 
                     <div className='relative flex justify-center  ' >       
-                        <Image width={100} height={100}  className='w-32 mt-3 border-2 rounded-full ' alt='avatar' src={previewImage}  />  
+                        {/* <Image width={100} height={100}  className=' mt-3 border-2 rounded-full  ' alt='avatar' src={previewImage}  /> */}
+                        <img className='w-32 h-32 mt-3 border-2 rounded-full  object-cover  ' alt='avatar' src={previewImage}  />  
+
                                                    
                     </div>                                                      
                     } 

@@ -41,8 +41,7 @@ const Orders = () => {
     setLoading(true)
     try {
       const res = await userRequest.delete(`/admin/order/${order_id}`)
-      if(res.status===200){
-        console.log('delete order successfully ')   
+      if(res.status===200){ 
         setOrderId(order_id)
         setLoading(false)
         setNotifySuccess(true)

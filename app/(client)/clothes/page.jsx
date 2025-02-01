@@ -79,7 +79,6 @@ const Clothes = () => {
         const res = await publicRequest.get(`/product?category=${category}&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
         setProducts(res.data.products)
         setTotalPage(res.data.totalPage)
-        console.log(res.data)
         setLoading(false)
       } catch {}
     }
@@ -134,8 +133,7 @@ const handleChooseCategory = async (cat) => {
     setCategory(prev=>[...prev,cat])
   }    
 }
-console.log(categoryList)
-console.log(category)
+
 
   return (
     <div className={` ${loading?'bg-white opacity-50':''} `} >

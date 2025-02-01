@@ -24,8 +24,7 @@ const ProductLine = () => {
   const [editProductLineWindow, setEditProductLineWindow] = useState(false)  
 
   
-  console.log(productLine)
-  console.log(productLineId)
+
   // close the popup
   const handleClosePopup = () => {
     setNotifySuccess(false)
@@ -44,7 +43,7 @@ const ProductLine = () => {
           
         }
       } catch(err){
-        console.log('error whilte loading categories',err)
+        console.log('error while loading categories',err)
       }
     }
     getProductLines()
@@ -77,7 +76,6 @@ const ProductLine = () => {
     try {
       const res = await userRequest.delete(`/product-line/${productLineId}`)
       if(res.data){
-        console.log('-->delete',res)
         setReload(!reload)
         setNotifySuccess(true)
             setTimeout(()=> {

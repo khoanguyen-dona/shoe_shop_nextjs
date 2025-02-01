@@ -33,7 +33,7 @@ const Register = () => {
       
       if(res.data) {
         setRegisterSuccess(true)
-        console.log('res data',res.data)
+      
         // setNotifyPopup(true)
         // setTimeout(()=>{
         //   setNotifyPopup(false)

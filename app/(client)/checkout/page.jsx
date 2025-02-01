@@ -119,7 +119,7 @@ const Checkout = () => {
       }
   }
 
- console.log('products',products)
+
   const handleClickMessage = () => {
     setMessageOption(prev=>!prev)
   }
@@ -127,7 +127,7 @@ const Checkout = () => {
   const handleClosePopup = () => {
     setRedirectPopup(false)
   }
-  console.log('/checkout user', user)
+
   return (
     <>
     {redirectPopup && 

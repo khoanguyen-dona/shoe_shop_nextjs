@@ -52,6 +52,7 @@ const Login = () => {
   }
 
   const handleLogin = () => {
+    setLoading(true)
     window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`
   }
 
@@ -82,7 +83,7 @@ const Login = () => {
             <div className='flex justify-center' >
             <button 
                 onClick = {handleLogin}
-                className='border-[2px] p-2  hover:bg-black hover:text-white transition border-gray-300 w-2/5  ' >
+                className='border-[2px] p-2  hover:bg-black hover:text-white transition border-gray-300 w-3/5 md:w-2/5  ' >
                 <span className=' text-md mr-4 ' >
                   Đăng nhập với 
                 </span>

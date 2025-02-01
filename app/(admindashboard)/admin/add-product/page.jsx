@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux'
 const AddProduct = () => {
     const router = useRouter()
     const currentUser = useSelector((state)=>state.user.currentUser)
-    console.log('curr',currentUser)
+   
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(false)
     const [productName, setProductName] = useState('')
@@ -312,10 +312,7 @@ const AddProduct = () => {
         }   
     }
 
-        console.log('cat choose',categoryChoose)
-        console.log('form cat',formCategory)
-        console.log('cat list',categoryList)
-        console.log('pro sug',productLinesSuggest)
+     
 
   return  (    
     <div className={`mt-20  flex flex-col  ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >

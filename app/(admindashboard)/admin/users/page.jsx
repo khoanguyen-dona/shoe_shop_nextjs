@@ -46,7 +46,6 @@ const Users = () => {
     try {
         const res = await userRequest.delete(`/user/${userId}`)
         if(res.data){
-          console.log(res.data)
           setUserId(userId)
           setNotifySuccess(true)
           setTimeout(()=> {
@@ -65,9 +64,8 @@ const Users = () => {
     { field: "img", headerName: 'avatar', width:110 ,height:400 ,
       renderCell: (params)=>{
         return(
-        <div className='w-[50px] p-[2px]  '>
-
-          <Image width={50}  height={50}  src={params.row.img} className=' object-cover border-2 rounded-full '  alt="" />
+        <div className=' p-[2px]  '>
+          <img  src={params.row.img} className='w-12 h-12 object-cover border-[1px] rounded-full '  alt="" />
         </div>
         )
       }

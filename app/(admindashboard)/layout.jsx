@@ -19,7 +19,7 @@ const getStoredValue = () => {
 const user = JSON.parse(getStoredValue())?.user;
 const currentUser = user && JSON.parse(user).currentUser
 
-console.log('curr',currentUser)
+
 const layout = ({ children }) => {
   
   const router = useRouter()
