@@ -2,8 +2,17 @@
 
 import axios from "axios";
 
+const getStoredValue = () => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("persist:root");
+    }
+    return null; // Return null on the server
+  };
 
-const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
+
+  const user = JSON.parse(getStoredValue())?.user;
+
+// const user = JSON.parse(localStorage.getItem("persist:root"))?.user;
 const currentUser = user && JSON.parse(user).currentUser
 const TOKEN = user && JSON.parse(user).currentUser?.accessToken
 
