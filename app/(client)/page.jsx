@@ -14,26 +14,45 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/redux/userRedux';
 import { setCart } from '@/redux/cartRedux';
 import { setWishlist } from '@/redux/wishlistRedux';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation'
+import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 const Home = () => {
+  const router = useRouter();
+  const [notifySuccess, setNotifySuccess] = useState(false)
   const [giayData,setGiayData] = useState([])
   const [aoData,setAoData] = useState([])
   const [phukienData,setPhukienData] = useState([])
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.currentUser)
-  console.log('/ user -->', user)
-
+  const searchParams = useSearchParams()
+  const logout = searchParams.get('logout')
+  
   //fetch user after google auth
+  
+  useEffect(() => {
 
+    if(logout==='true'){
+      // Remove the query param from the URL after setting message
+      router.replace("/", undefined, { shallow: true });
+      setNotifySuccess(true)
+      setTimeout(()=>{
+        setNotifySuccess(false)
+      },3000)
+    }
+  }, [])
+
+ 
   useEffect(()=> {
-    if(user === null){
-      console.log('it fetched')
+    if(user === null  ){
+     
       axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user`, {withCredentials: true})
       .then((res) => {
         dispatch(setUser(res.data))
         dispatch(setCart(res.data.cart))
         dispatch(setWishlist(res.data.wishlist))
-        console.log('res-->',res)
+  
       })
       .catch(() => dispatch(setUser(null)) );
   }
@@ -77,9 +96,18 @@ const Home = () => {
     getPhukienData();
   }, [])
 
+  const handleClosePopup = () => {
+    setNotifySuccess(false)
+  }
+  
 
   return (
     <>
+      {/* Notify */}
+    {notifySuccess ? 
+            <div  className='absolute flex justify-center p-4  ' > 
+                <SuccessPopup  message={'Log out Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            </div>  : '' }
       {/* Banner  */}
       <div>
         <Swiper

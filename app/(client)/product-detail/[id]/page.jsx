@@ -177,13 +177,11 @@ const ProductDetail = () => {
         return;
       } 
 
-      console.log('it run !')
       setLoading(true)
       const getProduct = async () => {
         try {
           const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
           if(res.data){
-            console.log('product -->',res.data.products[0])
             setCurrentProduct(res.data.products[0])
             setProduct(res.data.products[0])
             setLoading(false)
@@ -208,10 +206,8 @@ const ProductDetail = () => {
 
   const handleCloseFailurePopup =  () => {
     setNotifyFailure(false)
-    console.log('clicked')
   }
 
-  console.log('current p--',currentProduct)
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
@@ -287,7 +283,7 @@ const ProductDetail = () => {
           <div className='flex  ' >   
               <button 
                   onClick={addToCart}
-                  className='bg-black text-white font-bold text-xl md:text-2xl p-1 md:p-3  w-full hover:text-gray-500 transition ' >
+                  className='bg-black text-white font-bold text-xl md:text-2xl p-4 md:p-4  w-full hover:text-gray-500 transition ' >
                     Thêm vào giỏ hàng
               </button>
         

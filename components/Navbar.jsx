@@ -66,15 +66,9 @@ const Navbar = () => {
     
     dispatch(setCart(null))
     dispatch(setWishlist(null))
-    dispatch(setUser(null))
-    router.push('/')
-    setLoading(false)
-    setNotifySuccess(true)
-    setTimeout(() => {
-      setNotifySuccess(false)
-    }, 3000);
-  
-    
+    dispatch(setUser(null))   
+    router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`)
+     
   }
  
 
@@ -140,7 +134,7 @@ const Navbar = () => {
                 <hr />
                 <div 
                     onClick={handleLogoutClick}
-                    className='text-red-400 className hover:text-white hover:bg-red-500 font-bold p-2 rounded hover:cursor-pointer' >Log out</div>
+                    className='text-red-500 className hover:text-white hover:bg-red-500 font-bold p-2 rounded hover:cursor-pointer' >Log out</div>
                 </div> 
                 
                 }   

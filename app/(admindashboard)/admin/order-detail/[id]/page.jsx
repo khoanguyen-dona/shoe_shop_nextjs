@@ -73,13 +73,11 @@ const OrderDetail = () => {
                 paymentMethod: paymentMethod,
                 message: message
             })
-            console.log('-->',res.data)
             if(res) {
                 setNotifySuccess(true)
                 setTimeout(()=> {
                     setNotifySuccess(false)
                 })
-                console.log('res data',res.data)
             }
 
         } catch(err) {

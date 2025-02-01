@@ -25,7 +25,7 @@ const Search = () => {
     }
     getProducts()
   }, [search_keyword])
-  console.log('data',data)
+  
   return (
     <div className={`px-4 md:px-24 2xl:px-48   ${loading?'bg-white opacity-50':''}  `} >
       {loading ?

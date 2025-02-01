@@ -66,8 +66,6 @@ const UserDetail = () => {
 
   getUser();
 }, [])
-  console.log('img-->',img)
-  console.log('file-',avatarFile)
   const handleAvatar = (e) => {
       const file = e.target.files[0]
       setAvatarFile(file)

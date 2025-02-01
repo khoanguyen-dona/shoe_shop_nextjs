@@ -85,7 +85,6 @@ const Accessories = () => {
       } catch {}
     }
     getProducts();
-    console.log(category)
   },[page,price,size,color,category])
 
   const handlePrice = (e) => {

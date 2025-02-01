@@ -14,7 +14,7 @@ const profileOrder = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(false)
   const user = useSelector((state)=>state.user.currentUser)
-  console.log(orders)
+  
 
   useEffect(() => {
       const getOrders = async () =>{

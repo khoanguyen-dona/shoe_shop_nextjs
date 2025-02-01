@@ -36,7 +36,7 @@ const cartSlice = createSlice({
       var existedItem = state.userCart.products.find(item => item.productId.toString()===action.payload.productId && 
       item.size.toString() === action.payload.size && item.color.toString()===action.payload.color)  
       if(existedItem) {
-        console.log('ex',existedItem.productId)
+        
         state.userCart.products = state.userCart.products.filter((product) => product !== existedItem )
       }
     }

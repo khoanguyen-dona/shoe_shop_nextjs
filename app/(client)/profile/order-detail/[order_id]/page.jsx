@@ -12,7 +12,7 @@ const OrderDetail = () => {
     const order_id = useParams().order_id
     const [order, setOrder] = useState('')
     const products = order?.products
-    console.log('--->',order)
+
     useEffect(() => {
         
         try{

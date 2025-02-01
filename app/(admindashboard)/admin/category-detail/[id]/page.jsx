@@ -37,7 +37,6 @@ const CategoryDetail = () => {
             try {   
                 const res = await userRequest.get(`/category/${categoryId}`)
                 if(res.data){
-                    console.log(res)
                     setLoading(false)
                     setCategory(res.data.category.name)
                 }
@@ -61,7 +60,6 @@ const CategoryDetail = () => {
             try {   
                 const res = await userRequest.get(`/sub-category/${categoryId}`)
                 if(res.data){
-                    console.log(res)
                     setLoading(false)
                     setSubCategory(res.data.subCategory)
                 }
@@ -143,9 +141,6 @@ const CategoryDetail = () => {
         setNewCategory(category)
     }
 
-    console.log('subCatId:',subCategoryId)
-    console.log('subcat name:', newSubCategory)
-    console.log('new category', newCategory)
     // delete subcat
     const handleUpdateSubCategory = async () => {
         setLoading(true)

@@ -93,7 +93,7 @@ const Shoe = () => {
         } catch {}
       }
       getProducts();
-      console.log(category)
+      
   },[page,price,size,color,category])
 
 
@@ -140,7 +140,7 @@ const Shoe = () => {
       setCategory(prev=>[...prev,cat])
     }    
   }
-  console.log('/shoe user->',user)
+  
  
   return (
     <div className={` ${loading?'bg-white opacity-50':''} `} >
