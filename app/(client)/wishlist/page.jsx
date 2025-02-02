@@ -3,14 +3,12 @@
 import React, { useState } from 'react'
 
 import ProductCard from '@/components/ProductCard'
-import {  useSelector, useDispatch } from 'react-redux'
+import {  useSelector} from 'react-redux'
 import Loader from '@/components/Loader'
-import { setLoading } from '@/redux/loadingRedux'
+
 
 const Wishlist = () => {
-  const dispatch = useDispatch()
   const addToWishlist_loading = useSelector((state)=>state.loading.status)
-  const [loading,setLoading] = useState(false)
   const user = useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=>state.wishlist.userWishlist)
   const wishlistArray = []
@@ -21,7 +19,7 @@ const Wishlist = () => {
 
 
   return (
-    <div className={`flex flex-col mt-20  ${loading||addToWishlist_loading?'bg-white opacity-50':''} `}  >
+    <div className={`flex flex-col mt-20  ${addToWishlist_loading?'bg-white opacity-50':''} `}  >
       {data?.length===0 ?
       <p className='font-bold text-4xl text-center mb-5' > Wishlist của  bạn trống</p>
         :
@@ -29,7 +27,7 @@ const Wishlist = () => {
         Wishlist
       </p>
       }
-      {loading||addToWishlist_loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+      {addToWishlist_loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
       <div className='grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4' >
         {user !== null && 
           data?.map((d,index) => (
