@@ -20,7 +20,8 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 
 const Home = () => {
   const router = useRouter();
-  const [notifySuccess, setNotifySuccess] = useState(false)
+  const [notifyLogoutSuccess, setNotifyLogoutSuccess] = useState(false)
+  const [notifyLoginSuccess, setNotifyLoginSuccess] = useState(false)
   const [giayData,setGiayData] = useState([])
   const [aoData,setAoData] = useState([])
   const [phukienData,setPhukienData] = useState([])
@@ -28,7 +29,7 @@ const Home = () => {
   const user = useSelector((state) => state.user.currentUser)
   const searchParams = useSearchParams()
   const logout = searchParams.get('logout')
-  
+  const googleAuth = searchParams.get('googleAuth')
   //fetch user after google auth
   
   useEffect(() => {
@@ -36,11 +37,20 @@ const Home = () => {
     if(logout==='true'){
       // Remove the query param from the URL after setting message
       router.replace("/", undefined, { shallow: true });
-      setNotifySuccess(true)
+      setNotifyLogoutSuccess(true)
       setTimeout(()=>{
-        setNotifySuccess(false)
+        setNotifyLogoutSuccess(false)
       },3000)
     }
+    if(googleAuth==='true'){
+      // Remove the query param from the URL after setting message
+      router.replace("/", undefined, { shallow: true });
+      setNotifyLoginSuccess(true)
+      setTimeout(()=>{
+        setNotifyLoginSuccess(false)
+      },3000)
+    }
+    
   }, [])
 
  
@@ -97,17 +107,25 @@ const Home = () => {
   }, [])
 
   const handleClosePopup = () => {
-    setNotifySuccess(false)
+    setNotifyLogoutSuccess(false)
+    setNotifyLoginSuccess(false)
   }
   
 
   return (
     <>
-      {/* Notify */}
-    {notifySuccess ? 
+      {/* Notify when user logout successfully*/}
+    {notifyLogoutSuccess ? 
             <div  className='absolute flex justify-center p-4  ' > 
                 <SuccessPopup  message={'Log out Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            </div>  : '' }
+            </div>  : '' 
+    }
+    {/* Notify when login successfully */}
+    {notifyLoginSuccess ? 
+            <div  className='absolute flex justify-center p-4  ' > 
+                <SuccessPopup  message={'Log in Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            </div>  : '' 
+    }
       {/* Banner  */}
       <div>
         <Swiper
