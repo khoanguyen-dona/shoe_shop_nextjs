@@ -106,6 +106,7 @@ const Accessories = () => {
 
 
   const handleReset = () => {
+    setPage(1)
     setColor('')
     setSize('')
     setCategory(['Phụ kiện'])
@@ -113,6 +114,7 @@ const Accessories = () => {
   }
 
   const handleColor = (c) => {
+    setPage(1)
     if(color === c){
       setColor('')
     } else {
@@ -121,6 +123,7 @@ const Accessories = () => {
   }
 
   const handleSize = (s) => {
+    setPage(1)
     if(size===s){
       setSize('')
     } else {
@@ -129,6 +132,7 @@ const Accessories = () => {
   }
 
   const handleChooseCategory = async (cat) => {
+    setPage(1)
     if(category.includes(cat)){
           setCategory(category.filter((c) => String(c) !== cat))        
     } else {

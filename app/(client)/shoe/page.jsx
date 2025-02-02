@@ -112,20 +112,24 @@ const Shoe = () => {
   }
 
   const handleReset = () => {
+      setPage(1)
       setColor('')
       setSize('')
       setCategory(['Giày'])
       setPrice([0,20000000])
   }
   const handleColor = (c) => {
+      setPage(1)
       if(color === c){
         setColor('')
       } else {
         setColor(c)
       }
+
   }
 
   const handleSize = (s) => {
+    setPage(1)
     if(size===s){
       setSize('')
     } else {
@@ -134,6 +138,7 @@ const Shoe = () => {
   }
 
   const handleChooseCategory = async (cat) => {
+    setPage(1)
     if(category.includes(cat)){
           setCategory(category.filter((c) => String(c) !== cat))        
     } else {

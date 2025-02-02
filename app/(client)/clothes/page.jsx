@@ -104,6 +104,7 @@ const Clothes = () => {
   }
 
   const handleReset = () => {
+    setPage(1)
     setColor('')
     setSize('')
     setCategory(['Áo','Quần'])
@@ -111,6 +112,7 @@ const Clothes = () => {
   }
 
   const handleColor = (c) => {
+    setPage(1)
     if(color === c){
       setColor('')
     } else {
@@ -119,6 +121,7 @@ const Clothes = () => {
   }
 
   const handleSize = (s) => {
+    setPage(1)
     if(size===s){
       setSize('')
     } else {
@@ -127,6 +130,7 @@ const Clothes = () => {
   }
 
 const handleChooseCategory = async (cat) => {
+  setPage(1)
   if(category.includes(cat)){
         setCategory(category.filter((c) => String(c) !== cat))        
   } else {
