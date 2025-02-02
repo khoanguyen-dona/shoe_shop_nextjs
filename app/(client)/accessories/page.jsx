@@ -15,7 +15,7 @@ import Loader from '@/components/Loader';
 import DoneIcon from '@mui/icons-material/Done';
 
 const Accessories = () => {
-
+  const addToWishlist_loading = useSelector((state)=>state.loading.status)
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState(['Phụ kiện'])
   const [page, setPage] = useState(1)
@@ -141,12 +141,13 @@ const Accessories = () => {
   }
 
   return (
-    <div className='' >
+    <div className={` ${loading||addToWishlist_loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
          src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fphu%20kien%2Ftui%20deo%20vai%20logo%20ba%20la%20polyurethane%2FTui_DJeo_Vai_Vien_Logo_Ba_La_Polyurethane_DJen_IY4057_04_standard-600x600.avif?alt=media&token=95839042-561e-4f90-b99a-aca260cae61a" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  PHỤ KIỆN </h1>
+        {loading||addToWishlist_loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         <div className='flex justify-end mt-2 '>
           <button  
             onClick={handleFilterClick}
