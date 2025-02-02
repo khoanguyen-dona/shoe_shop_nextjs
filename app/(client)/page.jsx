@@ -51,9 +51,10 @@ const Home = () => {
       },3000)
     }
     
+
   }, [])
 
- 
+ //get data of user when redirect by googleAuth
   useEffect(()=> {
     if(user === null  ){
      
