@@ -17,7 +17,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import { FormatCurrency } from '@/utils/FormatCurrency';
 
 const Clothes = () => {
-
+  const addToWishlist_loading = useSelector((state)=>state.loading.status)
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState(['Áo','Quần'])
   const [page, setPage] = useState(1)
@@ -104,6 +104,7 @@ const Clothes = () => {
   }
 
   const handleReset = () => {
+    setPage(1)
     setColor('')
     setSize('')
     setCategory(['Áo','Quần'])
@@ -111,6 +112,7 @@ const Clothes = () => {
   }
 
   const handleColor = (c) => {
+    setPage(1)
     if(color === c){
       setColor('')
     } else {
@@ -119,6 +121,7 @@ const Clothes = () => {
   }
 
   const handleSize = (s) => {
+    setPage(1)
     if(size===s){
       setSize('')
     } else {
@@ -127,6 +130,7 @@ const Clothes = () => {
   }
 
 const handleChooseCategory = async (cat) => {
+  setPage(1)
   if(category.includes(cat)){
         setCategory(category.filter((c) => String(c) !== cat))        
   } else {
@@ -136,13 +140,13 @@ const handleChooseCategory = async (cat) => {
 
 
   return (
-    <div className={` ${loading?'bg-white opacity-50':''} `} >
+    <div className={` ${loading||addToWishlist_loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
          src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fao%2Fan%20thun%20adidas%20basketball%2FAo_Thun_adidas_Basketball_trang_JE3762_21_model.avif?alt=media&token=24dcab7e-9e46-4f94-85a7-a07ec67f1dcd" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  QUẦN ÁO </h1>
-        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+        {loading||addToWishlist_loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         <div className='flex justify-end'>
           <button  
             onClick={handleFilterClick}

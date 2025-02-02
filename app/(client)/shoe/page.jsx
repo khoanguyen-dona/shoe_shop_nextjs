@@ -18,6 +18,7 @@ const Shoe = () => {
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState()
   const [limit, setLimit] = useState(12)
+  const addToWishlist_loading = useSelector((state)=>state.loading.status)
   const user =useSelector((state)=>state.user.currentUser)
   const wishlist = useSelector((state)=> state.wishlist.userWishlist)
   const wishlistArray = []
@@ -112,20 +113,24 @@ const Shoe = () => {
   }
 
   const handleReset = () => {
+      setPage(1)
       setColor('')
       setSize('')
       setCategory(['Giày'])
       setPrice([0,20000000])
   }
   const handleColor = (c) => {
+      setPage(1)
       if(color === c){
         setColor('')
       } else {
         setColor(c)
       }
+
   }
 
   const handleSize = (s) => {
+    setPage(1)
     if(size===s){
       setSize('')
     } else {
@@ -134,6 +139,7 @@ const Shoe = () => {
   }
 
   const handleChooseCategory = async (cat) => {
+    setPage(1)
     if(category.includes(cat)){
           setCategory(category.filter((c) => String(c) !== cat))        
     } else {
@@ -143,13 +149,13 @@ const Shoe = () => {
   
  
   return (
-    <div className={` ${loading?'bg-white opacity-50':''} `} >
+    <div className={` ${loading||addToWishlist_loading?'bg-white opacity-50':''} `} >
       <div className='flex flex-col' >
         <img  className='object-cover w-full h-[300px] '  
          src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1735961276128Giay_Ultraboost_5_trang_ID8810_HM4%20(1).avif?alt=media&token=63f63bce-9501-4790-b3ff-521719d0383f" 
          alt="" />
         <h1 className='text-4xl font-bold text-center mt-5' >  GIÀY </h1>
-        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+        {loading||addToWishlist_loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         <div className='flex justify-end'>
           <button  
             onClick={handleFilterClick}

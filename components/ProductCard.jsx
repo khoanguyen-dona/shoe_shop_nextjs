@@ -8,12 +8,13 @@ import { userRequest } from '@/requestMethod';
 import { setWishlist } from '@/redux/wishlistRedux';
 import FailurePopup from './Popup/FailurePopup';
 import { useState } from 'react';
+import { setLoading } from '@/redux/loadingRedux';
 
 const ProductCard = ({data, user, wishlistArray}) => {
   const dispatch = useDispatch()
-
   const [notifyPopup, setNotifyPopup] = useState(false)
   var categories = String(data.categories).split(',').join(', ')
+  
   const addToWishlist = async (e) => {
     e.preventDefault()
     if(user===null) {
@@ -23,6 +24,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
       }, 3000)
     } else {
       try {
+        dispatch(setLoading(true))
         const res = await userRequest.post(`/wishlist/${user._id}`, {
           productId: data._id
         })
@@ -33,12 +35,13 @@ const ProductCard = ({data, user, wishlistArray}) => {
       } catch(err) {
         console.log(err)
       }
+      dispatch(setLoading(false))
     }
   }
 
   const handleClosePopup =  () => {
     setNotifyPopup(false)
-    console.log('clicked')
+
   }
   
  
