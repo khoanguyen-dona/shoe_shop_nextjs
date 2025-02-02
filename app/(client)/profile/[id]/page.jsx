@@ -48,7 +48,7 @@ const Profile  = () => {
         </div>
         <div className='flex justify-center' >
           <button  onClick={handleLogoutClick} className='bg-black w-full md:w-2/3   mt-4 text-white font-bold p-4
-            hover:text-gray-500   transition text-3xl mb-96'  >Log outt</button>
+            hover:text-gray-500   transition text-3xl mb-96'  >Log out</button>
         </div>
     </div>
   </div>
