@@ -41,9 +41,22 @@ const Home = () => {
         setNotifySuccess(false)
       },3000)
     }
+
+    if(googleAuth==='true'){
+      // Remove the query param from the URL after setting message
+      router.replace("/", undefined, { shallow: true });
+      setNotifyLoginSuccess(true)
+      setTimeout(()=>{
+        setNotifyLoginSuccess(false)
+      },3000)
+    }
+    
+
+
+
   }, [])
 
- 
+ //get data of user when redirect by googleAuth
   useEffect(()=> {
     if(user === null  ){
      
