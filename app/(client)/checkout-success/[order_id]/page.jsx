@@ -80,10 +80,11 @@ const CheckoutSuccess = () => {
           <div className='' >
             <p>{item.name}</p>
             <p>Size : {item.size}</p>
+            <p>Quantity: {item.quantity}</p>
           </div>
-          <div className='ml-5 ' >
+          {/* <div className='ml-1 ' >
             X {item.quantity}
-          </div>
+          </div> */}
         </div>
         <div className='' >
           {FormatCurrency(item.price*item.quantity)} đ

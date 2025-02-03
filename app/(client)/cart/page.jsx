@@ -18,8 +18,7 @@ const Cart = () => {
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
   const products = cart?.products
-  
- 
+
   // calculate total price
   const totalPrice = products?.reduce((total, item) => {
     const { price, quantity } = item;

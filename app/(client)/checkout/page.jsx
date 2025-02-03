@@ -14,10 +14,10 @@ import { setCart } from '@/redux/cartRedux';
 import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 import axios from 'axios';
-
+import FailurePopup from '@/components/Popup/FailurePopup';
 
 const Checkout = () => {
-
+  const [notifyFailure, setNotifyFailure] = useState(false)
   const [redirectPopup, setRedirectPopup] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.user.currentUser)
@@ -43,9 +43,15 @@ const Checkout = () => {
   const[phoneNumber, setPhoneNumber]=useState('')
   const[paymentMethod, setPaymentMethod]=useState('')
   const[message,setMessage]=useState('')
-
+console.log('cart--',cart)
   const handleSubmit = async (e) => { 
-      e.preventDefault()
+    e.preventDefault()
+    if (cart?.products?.length===0 || cart===null){   
+      setNotifyFailure(true)
+      setTimeout(()=>{
+        setNotifyFailure(false)
+      }, 5000)
+    }else {
       setLoading(true)
 
       if( user === null){
@@ -65,7 +71,7 @@ const Checkout = () => {
             router.push(`/checkout-success/${res.data.order._id}`);      
             setLoading(false)
 
-            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send-order-email`, {
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/send-email/send-order-verification`, {
               customerEmail: email,
               orderDetails: products
             }).then(()=>{
@@ -117,6 +123,7 @@ const Checkout = () => {
         }
 
       }
+    }
   }
 
 
@@ -127,9 +134,15 @@ const Checkout = () => {
   const handleClosePopup = () => {
     setRedirectPopup(false)
   }
+  const handleCloseFailurePopup =  () => {
+    setNotifyFailure(false)
+  }
 
   return (
     <>
+    {notifyFailure &&
+                <FailurePopup  message={'Giỏ hàng của bạn trống'} handleClosePopup = {handleCloseFailurePopup} />
+     }
     {redirectPopup && 
       <SuccessPopup message={'Redirecting ... please wait'} handleClosePopup={handleClosePopup} />
     }
