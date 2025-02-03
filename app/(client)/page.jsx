@@ -88,7 +88,7 @@ const Home = () => {
   useEffect(() => {
     const getAoData = async () => {
       try{
-        const res = await publicRequest.get('/product?category=Áo&color=&size=&page=1&limit=8&minPrice')
+        const res = await publicRequest.get('/product?category=Áo,Quần&color=&size=&page=1&limit=8&minPrice')
         setAoData(res.data.products)
       } catch(err) {
         console.log(err)
@@ -142,13 +142,13 @@ const Home = () => {
           modules={[Navigation, Pagination]}
         >
           <SwiperSlide>
-            <img className='flex object-cover  items-center justify-center' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Mu_Nam_Mui_Rolling_Links_trang_JE6720_HM7-768x768.avif" alt="Slide 1" />
+            <img className='flex object-cover  items-center justify-center' src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fao%2FMu_Nam_Mui_Rolling_Links_trang_JE6720_HM7-768x768.avif?alt=media&token=e9989a8d-5177-4b1d-b3ed-e7c524956ab7" alt="Slide 1" />
           </SwiperSlide>
           <SwiperSlide>
-            <img className='flex object-cover items-center justify-center' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Mu_Nam_Mui_Rolling_Links_trang_JE6720_HM6.avif" alt="Slide 2" />
+            <img className='flex object-cover items-center justify-center' src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fao%2FMu_Nam_Mui_Rolling_Links_trang_JE6720_HM6.avif?alt=media&token=5e0c1cb9-74cf-4700-a03e-0f038ba3ac22" alt="Slide 2" />
           </SwiperSlide>
           <SwiperSlide>
-            <img className='flex object-cover  items-center justify-center ' src="https://adidas.donawebs.com/wp-content/uploads/2024/11/Mu_Nam_Mui_Rolling_Links_trang_JE6720_HM3_hover.avif" alt="Slide 3" />
+            <img className='flex object-cover  items-center justify-center ' src="https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2Fao%2FMu_Nam_Mui_Rolling_Links_trang_JE6720_HM3_hover.avif?alt=media&token=0becb333-8125-42d9-a76a-954ad7b925eb" alt="Slide 3" />
           </SwiperSlide>
         </Swiper>
       </div>
