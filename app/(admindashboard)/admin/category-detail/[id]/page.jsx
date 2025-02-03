@@ -163,7 +163,7 @@ const CategoryDetail = () => {
     }
 
     const columns = [ 
-        { field: "name", headerName: 'Tên sub-category', width:500 },  
+        { field: "name", headerName: 'Tên sub-category', width:250 },  
         { field: "action", headerName: 'Hành động', width:150 ,
           renderCell: (params)=>{
             return(
@@ -213,7 +213,7 @@ const CategoryDetail = () => {
                     <div className='text-center' >   
                         <button
                             onClick={handleUpdateSubCategory} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/3  rounded-md transition' >
+                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-2/4 lg:w-1/3  rounded-md transition' >
                             Update
                         </button>
                     </div>  
@@ -234,7 +234,7 @@ const CategoryDetail = () => {
                     <div className='text-center' >   
                         <button
                             onClick={handleUpdateCategory} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/3  rounded-md transition' >
+                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/2 lg:w-1/3  rounded-md transition' >
                             Update
                         </button>
                     </div>  
@@ -254,11 +254,11 @@ const CategoryDetail = () => {
         <div className='flex mt-2' >
           <input 
             onChange={handleInput}  
-            className='w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            className='w-4/5 lg:w-3/5 rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
           <button 
             disabled={input===''}
             onClick = {handleAddSubCategory}
-            className={` rounded-r-md   w-1/5 bg-green-500 font-bold p-4 text-white text-xl hover:bg-green-800 transition
+            className={` rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition
                 ${input===''?'hover:cursor-not-allowed':''} `} >
             Thêm
           </button>

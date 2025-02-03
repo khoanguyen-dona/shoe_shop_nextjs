@@ -82,7 +82,7 @@ const Categories = () => {
   }
 
   const columns = [ 
-    { field: "name", headerName: 'Tên category', width:500 },  
+    { field: "name", headerName: 'Tên category', width:250 },  
     { field: "action", headerName: 'Hành động', width:150 ,
       renderCell: (params)=>{
         return(
@@ -128,10 +128,10 @@ const Categories = () => {
         <div className='flex mt-4' >
           <input 
             onChange={handleCategoryInput}  
-            className='w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            className='w-4/5 lg:w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
           <button 
             onClick = {handleAddCategory}
-            className='rounded-r-md   w-1/5 bg-green-500 font-bold p-4 text-white text-xl hover:bg-green-800 transition' >
+            className='rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition' >
             Thêm
           </button>
         </div>

@@ -100,19 +100,19 @@ const OrderDetail = () => {
         <form action="" className='space-y-4 flex flex-col mt-10  ' >
             <div>           
                 <p className='text-sm text-gray-500 '>Order ID</p>
-                <input  className='w-2/3 border-2 p-2 bg-gray-200'  type="text" value={order_id} 
+                <input  className='w-full lg:w-4/5 border-2 p-2 bg-gray-200'  type="text" value={order_id} 
                     disabled  />
             </div>
 
             <div>
                 <p className='text-sm text-gray-500 '>Tên khách hàng </p>
-                <input  className='w-2/3 border-2 p-2 '  type="text" value={clientName} 
+                <input  className='w-full lg:w-4/5 border-2 p-2 '  type="text" value={clientName} 
                     onChange={(e)=>setClientName(e.target.value)}  />
             </div>
 
             <div>
             <p className='text-sm text-gray-500'>Ngày đặt hàng</p>
-                <input  className='w-2/3 border-2 p-2 bg-gray-200'  type="text" value={moment(createdAt).format("YYYY-MMM-d h:mm:ss A")} 
+                <input  className='w-full lg:w-4/5 border-2 p-2 bg-gray-200'  type="text" value={moment(createdAt).format("YYYY-MMM-d h:mm:ss A")} 
                     disabled  />
             </div>
 
@@ -130,7 +130,7 @@ const OrderDetail = () => {
 
             <div>
             <p className='text-sm text-gray-500'>Tổng cộng(Vnđ) </p>
-                <input  className='w-2/3 border-2 p-2 '  type="number" value={total} 
+                <input  className='w-full lg:w-4/5 border-2 p-2 '  type="number" value={total} 
                     onChange={(e)=>setTotal(e.target.value)}  />
                 
             </div>
@@ -147,30 +147,30 @@ const OrderDetail = () => {
 
             <div>
             <p className='text-sm text-gray-500'>Email khách hảng</p>
-                <input  className='w-2/3 border-2 p-2 '  type="email" value={email} 
+                <input  className='w-full lg:w-4/5 border-2 p-2 '  type="email" value={email} 
                     onChange={(e)=>setEmail(e.target.value)}  />
             </div>
 
             <div>
             <p className='text-sm text-gray-500'>Số điện thoại liên hệ</p>
-                <input  className='w-2/3 border-2 p-2 '  type="number" value={phoneNumber} 
+                <input  className='w-full lg:w-4/5 border-2 p-2 '  type="number" value={phoneNumber} 
                     onChange={(e)=>setPhoneNumber(e.target.value)}  />
             </div>
             
             <div>
             <p className='text-sm text-gray-500'>Địa chỉ</p>
-                <textarea  className='w-2/3 border-2 p-2 '  type="text" value={address} 
+                <textarea  className='w-full lg:w-4/5 border-2 p-2 '  type="text" value={address} 
                     onChange={(e)=>setAddress(e.target.value)}  />
             </div>
 
             <div>
             <p className='text-sm text-gray-500'>Ghi chú</p>
-                <textarea  className='w-2/3 border-2 p-2 '  type="text" value={message || ''} 
+                <textarea  className='w-full lg:w-4/5 border-2 p-2 '  type="text" value={message || ''} 
                     onChange={(e)=>setMessage(e.target.value)}  />
             </div>
 
             <p  className='text-sm text-gray-500' >Sản phẩm</p>
-            <div className={`w-2/3  ${products.length>0?'border-2':''}  `} >    
+            <div className={`w-full lg:w-4/5  ${products.length>0?'border-2':''}  `} >    
                 {products?.map((product, index) => 
                     <div key={index}  className='flex p-2 '  >
                         <img className='w-32 object-cover' src={product.thumbnail} alt="" />
@@ -190,7 +190,7 @@ const OrderDetail = () => {
 
             <button 
                     onClick={handleSubmit}
-                    className='font-bold bg-black text-white hover:text-gray-500 p-4 w-[520px] transition' >
+                    className='font-bold bg-black text-white hover:text-gray-500 p-4 w-full lg:w-4/5 transition' >
                 Update
             </button>
 

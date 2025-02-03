@@ -130,7 +130,7 @@ const UserDetail = () => {
 
   return (
 
-    <div className='flex flex-col w-2/3' >
+    <div className='flex flex-col w-full' >
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
             <div  className='flex justify-center p-4' > 
@@ -147,7 +147,7 @@ const UserDetail = () => {
                 <div>
                   <p className='text-sm text-gray-500' >Avatar</p>
                   {img  &&    
-                     <img  className='w-32 mt-3 border-2 rounded-full ' src={img}  />                                
+                     <img  className='w-32 h-32 object-cover mt-3 border-2 rounded-full ' src={img}  />                                
                       }
                 </div>
                 <div className='' >
@@ -161,19 +161,19 @@ const UserDetail = () => {
 
               <div  >
                   <p className='text-sm text-gray-500' >User Id</p>
-                  <input  className='border-2 p-2 w-full bg-gray-200 opacity-70 ' type="text" disabled 
+                  <input  className='border-2 p-2 w-full lg:w-4/5  bg-gray-200 opacity-70 ' type="text" disabled 
                           value={userId}   />
               </div>
               
               <div>
                   <p className='text-sm text-gray-500' >Username</p>
-                  <input  className='border-2 p-2 w-full ' type="text" 
+                  <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                       onChange={(e)=>setUsername(e.target.value)} value={username}  />
               </div>
 
               <div>
                   <p className='text-sm text-gray-500' >Email</p>
-                  <input  className='border-2 p-2 w-full ' type="text" 
+                  <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                       onChange={(e)=>setEmail(e.target.value)} value={email}  />
               </div>
 
@@ -188,7 +188,7 @@ const UserDetail = () => {
   
               <div  >
                   <p className='text-sm text-gray-500 mb-2 '  >Created at:</p>
-                  <span  className='border-2 p-2 w-full opacity-70 '  > 
+                  <span  className='border-2 p-2 w-full lg:w-4/5 opacity-70 '  > 
                     {moment(createdAt).format("YYYY-MMM-d, h:mm:ss A")}
                   </span>
           
@@ -196,7 +196,7 @@ const UserDetail = () => {
 
               <button 
                   onClick={handleUpdate}
-                  className='w-full bg-black text-white font-bold p-4 hover:text-gray-500 transition' >
+                  className='w-full lg:w-4/5 bg-black text-white font-bold p-4 hover:text-gray-500 transition' >
                   Update
               </button>  
         </form>        
