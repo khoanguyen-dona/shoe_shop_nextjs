@@ -8,9 +8,10 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
+import FailurePopup from '@/components/Popup/FailurePopup';
 
 const Categories = () => {
-
+  const [notifyFailure, setNotifyFailure] = useState(false)
   const router = useRouter()
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -22,7 +23,9 @@ const Categories = () => {
   const handleClosePopup = () => {
     setNotifySuccess(false)
   }
-
+  const handleCloseFailurePopup =  () => {
+    setNotifyFailure(false)
+  }
 
   useEffect(()=> {
     setLoading(true)
@@ -46,21 +49,28 @@ const Categories = () => {
   }
   
   const handleAddCategory = async () => {
-    setLoading(true)
-    try {
-      const res = await userRequest.post('/category', {
-        name: category
-      })
-      if(res.data){
-        setReload(!reload)
-        setLoading(false)
-        setNotifySuccess(true)
-        setTimeout(()=> {
-          setNotifySuccess(false)
-        }, 3000)
+    if(category===''){
+      setNotifyFailure(true)
+      setTimeout(()=>{
+        setNotifyFailure(false)
+      }, 3000)
+    } else {
+      setLoading(true)
+      try {
+        const res = await userRequest.post('/category', {
+          name: category
+        })
+        if(res.data){
+          setReload(!reload)
+          setLoading(false)
+          setNotifySuccess(true)
+          setTimeout(()=> {
+            setNotifySuccess(false)
+          }, 3000)
+        }
+      } catch (err){
+        console.log('error while add new category',err)
       }
-    } catch (err){
-      console.log('error while add new category',err)
     }
   }
 
@@ -123,7 +133,11 @@ const Categories = () => {
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-             : '' }
+             : '' 
+        }
+        {notifyFailure &&
+                <FailurePopup  message={'Categories trống'} handleClosePopup = {handleCloseFailurePopup} />
+        }
         <div className='text-3xl font-bold' >Categories</div>
         <div className='flex mt-4' >
           <input 

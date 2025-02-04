@@ -9,10 +9,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
+import FailurePopup from '@/components/Popup/FailurePopup';
 
 const Attribute = () => {
-
   const router = useRouter()
+  const [notifyFailure, setNotifyFailure] = useState(false)
   const [ editAttributeWindow , setEditAttributeWindow] = useState(false)
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -27,6 +28,9 @@ const Attribute = () => {
   // close the popup
   const handleClosePopup = () => {
     setNotifySuccess(false)
+  }
+  const handleCloseFailurePopup =  () => {
+    setNotifyFailure(false)
   }
 
  // get all attributes
@@ -53,20 +57,27 @@ const Attribute = () => {
   }
   
   const handleAddAttribute = async () => {
-    setLoading(true)
-    try {
-      const res = await userRequest.post('/attribute', {
-        name: attribute
-      })
-      if(res.data){
-        setReload(!reload)
-        setNotifySuccess(true)
-        setTimeout(()=> {
-          setNotifySuccess(false)
-        }, 3000)
+    if(attribute===''){
+      setNotifyFailure(true)
+      setTimeout(()=>{
+        setNotifyFailure(false)
+      }, 3000)
+    } else {
+      setLoading(true)
+      try {
+        const res = await userRequest.post('/attribute', {
+          name: attribute
+        })
+        if(res.data){
+          setReload(!reload)
+          setNotifySuccess(true)
+          setTimeout(()=> {
+            setNotifySuccess(false)
+          }, 3000)
+        }
+      } catch (err){
+        console.log('error while adding new attribute',err)
       }
-    } catch (err){
-      console.log('error while adding new attribute',err)
     }
   }
 
@@ -251,7 +262,11 @@ const Attribute = () => {
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-             : '' }
+             : '' 
+        }
+        {notifyFailure &&
+                <FailurePopup  message={'Attribute trống'} handleClosePopup = {handleCloseFailurePopup} />
+        }
         <div className='text-3xl font-bold' >Attributes</div>
         <div className='flex mt-4' >
           <input 

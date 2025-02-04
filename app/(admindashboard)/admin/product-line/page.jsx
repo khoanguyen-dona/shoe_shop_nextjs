@@ -9,11 +9,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation'
+import FailurePopup from '@/components/Popup/FailurePopup';
 
 const ProductLine = () => {
 
-  
   const router = useRouter()
+  const [notifyFailure, setNotifyFailure] = useState(false)
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
   const [productLines, setProductLines] = useState('')
@@ -52,22 +53,29 @@ const ProductLine = () => {
   const handleProductLineInput = (e) => {
     setProductLine(e.target.value)
   }
-  
+
   const handleAddProductLine = async () => {
-    setLoading(true)
-    try {
-      const res = await userRequest.post('/product-line', {
-        name: productLine
-      })
-      if(res.data){
-        setReload(!reload)
-        setNotifySuccess(true)
-            setTimeout(()=> {
-            setNotifySuccess(false)
-            }, 3000)
+    if(productLine===''){
+      setNotifyFailure(true)
+      setTimeout(()=>{
+        setNotifyFailure(false)
+      }, 3000)
+    } else {
+      setLoading(true)
+      try {
+        const res = await userRequest.post('/product-line', {
+          name: productLine
+        })
+        if(res.data){
+          setReload(!reload)
+          setNotifySuccess(true)
+              setTimeout(()=> {
+              setNotifySuccess(false)
+              }, 3000)
+        }
+      } catch (err){
+        console.log('error while adding new product line',err)
       }
-    } catch (err){
-      console.log('error while adding new product line',err)
     }
   }
 
@@ -113,6 +121,9 @@ const ProductLine = () => {
             console.log('error while updating productLine',err)
         }
   }
+  const handleCloseFailurePopup =  () => {
+    setNotifyFailure(false)
+  }
 
   const columns = [ 
     { field: "name", headerName: 'Tên dòng sản phẩm', width:250 },  
@@ -151,12 +162,16 @@ const ProductLine = () => {
   ]
 
   return (
-   
+ 
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-             : '' }
+             : '' 
+        }
+        {notifyFailure &&
+                <FailurePopup  message={'Product Line trống'} handleClosePopup = {handleCloseFailurePopup} />
+        }
         {editProductLineWindow ? 
             <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-96 top-52 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
@@ -184,7 +199,8 @@ const ProductLine = () => {
         <div className='flex mt-4 w-full ' >
           <input 
             onChange={handleProductLineInput}  
-            className='w-4/5  lg:w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            className='w-4/5  lg:w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" 
+          />
           <button 
             onClick = {handleAddProductLine}
             className='rounded-r-md   w-1/5  lg:w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition' >
