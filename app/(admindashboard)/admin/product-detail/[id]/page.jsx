@@ -309,47 +309,47 @@ const ProductDetail = () => {
 
             <div>
                 <p className='text-sm text-gray-500' >Tên sản phẩm</p>
-                <input  className='border-2 p-2 w-2/3 ' type="text" 
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                         onChange={(e)=>setProductName(e.target.value)} value={productName}   />
             </div>
             
 
             <div>
                 <p className='text-sm text-gray-500' >Dòng sản phẩm</p>
-                <input  className='border-2 p-2 w-2/3 ' type="text" 
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                     onChange={(e)=>setProductLine(e.target.value)} value={productLine}  />
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Category sản phẩm</p>
-                <input  className='border-2 p-2 w-1/3 ' type="text" 
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                     onChange={(e)=>setFormCategory(e.target.value)} value={formCategory}  />
                 <p className='text-red-500 text-sm mt-2' >Lưu ý mỗi category cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>   
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Giá sản phẩm (vnđ)</p>
-                <input  className='border-2 p-2 w-2/3 ' type="number" 
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="number" 
                     onChange={(e)=>setPrice(e.target.value)}  value={price} />
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Size sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' type="text" 
+                <textarea  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                     onChange={(e)=>setFormSize(e.target.value)}  value={formSize} />
                 <p className='text-red-500 text-sm ' >Lưu ý mỗi Size cách nhau một dấu '|' Ví dụ : 6 US|7 US ...</p>
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Màu sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' type="text" 
+                <textarea  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                     onChange={(e)=>setFormColor(e.target.value)}  value={formColor} />
                 <p className='text-red-500 text-sm' >Lưu ý mỗi màu cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>
             </div>
 
             <div>
                 <p className='text-sm text-gray-500' >Mô tả sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3  ' rows='9'  type="text" 
+                <textarea  className='border-2 p-2 w-full lg:w-4/5  ' rows='9'  type="text" 
                     onChange={(e)=>setDesc(e.target.value)}  value={desc} />
          
             </div>
@@ -395,9 +395,9 @@ const ProductDetail = () => {
                 </label>
 
                 {imageGallery.length>0   &&
-                    <div className='flex flex-wrap space-x-1' >
+                    <div className='flex flex-wrap ' >
                         {imageGallery.map((img, index)=>(
-                            <div className='relative' key={index} >
+                            <div className='relative mr-2 ' key={index} >
                                 <img  className='w-32 border-2  mt-3' src={img} alt="" />
                                 <DeleteIcon  
                                     onClick={()=>handleRemoveImageGallery(index, img)}
@@ -410,7 +410,7 @@ const ProductDetail = () => {
             </div>
             <button 
                 onClick = {handleSubmit}
-                className='p-4 font-bold bg-black text-white hover:text-gray-500 transition w-2/3 mb-30' >
+                className='p-4 font-bold bg-black text-white hover:text-gray-500 transition w-full lg:w-4/5 mb-30' >
                     Update
             </button>
 

@@ -315,7 +315,7 @@ const AddProduct = () => {
      
 
   return  (    
-    <div className={`mt-20  flex flex-col  ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >
+    <div className={`mt-20  flex flex-col   ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
          {notifySuccess ? 
             <div  className='flex justify-center p-4' > 
@@ -325,18 +325,18 @@ const AddProduct = () => {
             Thêm sản phẩm 
         </p>
         
-        <form action="" className='flex flex-col space-y-4 mt-8' >
+        <form action="" className='flex flex-col space-y-4 mt-8   ' >
 
             <div>
                 <p className='text-sm text-gray-500' >Tên sản phẩm</p>
-                <input  className='border-2 p-2 w-2/3 ' type="text" 
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" 
                         onChange={(e)=>setProductName(e.target.value)} value={productName}   />
             </div>
             
 
             <div className='relative' >
                 <p className='text-sm text-gray-500' >Dòng sản phẩm</p>
-                <input  className='border-2 p-2 w-2/3 overflow-auto ' type="text" 
+                <input  className='border-2 p-2  overflow-auto w-full lg:w-4/5' type="text" 
                         onClick={()=>setProductLinesPopup(true)}
                         onChange={(e)=>setProductLine(e.target.value)} value={productLine}  />
                 {productLinesPopup &&
@@ -348,7 +348,7 @@ const AddProduct = () => {
 
             <div className='relative' >
                 <p className='text-sm text-gray-500' >Category sản phẩm</p>
-                <input  className='border-2 p-2 w-2/3 ' type="text" onClick={()=>setCategoriesPopup(true)} spellCheck='false'
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="text" onClick={()=>setCategoriesPopup(true)} spellCheck='false'
                     onChange={(e)=>setFormCategory(e.target.value)} value={formCategory}  />
 
                     {categoriesPopup &&
@@ -382,13 +382,13 @@ const AddProduct = () => {
 
             <div>
                 <p className='text-sm text-gray-500' >Giá sản phẩm (vnđ)</p>
-                <input  className='border-2 p-2 w-2/3 ' type="number" 
+                <input  className='border-2 p-2 w-full lg:w-4/5 ' type="number" 
                     onChange={(e)=>setPrice(e.target.value)}  value={price} />
             </div>
 
             <div className='relative' >
                 <p className='text-sm text-gray-500' >Size sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' type="text" onClick={()=>setSizePopup(true)}
+                <textarea  className='border-2 p-2 w-full lg:w-4/5 ' type="text" onClick={()=>setSizePopup(true)}
                     onChange={(e)=>setFormSize(e.target.value)}  value={formSize} spellCheck="false" />
                 {sizePopup &&
                     <SelectPopup data={attributesName} handleClick={handleChooseSize} itemChoose={attribute_Size}  />
@@ -398,7 +398,7 @@ const AddProduct = () => {
 
             <div  className='relative' >  
                 <p className='text-sm text-gray-500' >Màu sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' type="text" onClick={()=>setColorsPopup(true)}
+                <textarea  className='border-2 p-2 w-full lg:w-4/5 ' type="text" onClick={()=>setColorsPopup(true)}
                     onChange={(e)=>setFormColor(e.target.value)}  value={formColor} spellCheck="false" />
                 {colorsPopup &&
                     <SelectPopup data={attributesName} handleClick={handleChooseColor} itemChoose={attribute_Color}  />
@@ -408,7 +408,7 @@ const AddProduct = () => {
 
             <div>
                 <p className='text-sm text-gray-500' >Mô tả sản phẩm</p>
-                <textarea  className='border-2 p-2 w-2/3 ' rows='9' type="text" 
+                <textarea  className='border-2 p-2 w-full lg:w-4/5' rows='9' type="text" 
                     onChange={(e)=>setDesc(e.target.value)}  value={desc} spellCheck="false" />
                 
             </div>
@@ -455,7 +455,7 @@ const AddProduct = () => {
                 }
             </div>
 
-            <button  onClick={handleSubmit} className='p-4 font-bold bg-black text-white hover:text-gray-500 transition w-2/3' >
+            <button  onClick={handleSubmit} className='p-4 font-bold bg-black text-white w-full lg:w-4/5 hover:text-gray-500 transition ' >
                 Submit
             </button>
 

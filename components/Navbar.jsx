@@ -70,6 +70,12 @@ const Navbar = () => {
     router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`)
      
   }
+  const handleNavigate = async (url) => {
+    setLoading(true)
+    router.push(`/${url}`)
+    setMenu(false)
+    setLoading(false)
+  }
  
 
   return (
@@ -207,25 +213,25 @@ const Navbar = () => {
       <div className={`w-screen h-screen transform duration-300  transition-transform bg-white top-0 z-30 fixed flex flex-col p-4
         ${menu?'translate-x-0':'-translate-x-full'} `} >
         <div className='flex transition mb-5 justify-between '   >
-          <p className='font-extrabold text-4xl  ' > <a href="/" onClick={()=>setLoading(true)}  > ShoeShop </a> </p>
+          <p className='font-extrabold text-4xl  ' > <a href="/" onClick={()=>setLoading(true)}  > ShoeShop a</a> </p>
           <CloseIcon  className='hover:cursor-pointer' onClick={handleToggle} fontSize='large' />
         </div>
         <hr />
         <div className=' mt-4 space-y-4 text-2xl font-bold  ' >
           <p className='hover:bg-black hover:text-white p-2 transition '> 
-            <a href="/shoe" onClick={()=>setLoading(true)}  >
+            <p  onClick={()=>handleNavigate('shoe')}  >
               Giày
-            </a>
+            </p>
           </p>
           <p  className='hover:bg-black hover:text-white p-2 transition '>
-            <a href="/clothes" onClick={()=>setLoading(true)}  >
+            <p  onClick={()=>handleNavigate('clothes')}  >
             Quần áo
-            </a>
+            </p>
           </p> 
           <p  className='hover:bg-black hover:text-white p-2 transition '>
-            <a href="/accessories" onClick={()=>setLoading(true)}  >
+            <p  onClick={()=>handleNavigate('accessories')}  >
               Phụ kiện
-            </a>
+            </p>
           </p>
         </div>
       </div> 

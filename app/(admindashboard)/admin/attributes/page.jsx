@@ -9,10 +9,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
+import FailurePopup from '@/components/Popup/FailurePopup';
 
 const Attribute = () => {
-
   const router = useRouter()
+  const [notifyFailure, setNotifyFailure] = useState(false)
   const [ editAttributeWindow , setEditAttributeWindow] = useState(false)
   const [notifySuccess, setNotifySuccess] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -27,6 +28,9 @@ const Attribute = () => {
   // close the popup
   const handleClosePopup = () => {
     setNotifySuccess(false)
+  }
+  const handleCloseFailurePopup =  () => {
+    setNotifyFailure(false)
   }
 
  // get all attributes
@@ -53,20 +57,27 @@ const Attribute = () => {
   }
   
   const handleAddAttribute = async () => {
-    setLoading(true)
-    try {
-      const res = await userRequest.post('/attribute', {
-        name: attribute
-      })
-      if(res.data){
-        setReload(!reload)
-        setNotifySuccess(true)
-        setTimeout(()=> {
-          setNotifySuccess(false)
-        }, 3000)
+    if(attribute===''){
+      setNotifyFailure(true)
+      setTimeout(()=>{
+        setNotifyFailure(false)
+      }, 3000)
+    } else {
+      setLoading(true)
+      try {
+        const res = await userRequest.post('/attribute', {
+          name: attribute
+        })
+        if(res.data){
+          setReload(!reload)
+          setNotifySuccess(true)
+          setTimeout(()=> {
+            setNotifySuccess(false)
+          }, 3000)
+        }
+      } catch (err){
+        console.log('error while adding new attribute',err)
       }
-    } catch (err){
-      console.log('error while adding new attribute',err)
     }
   }
 
@@ -159,7 +170,7 @@ const Attribute = () => {
 
   const columns = [ 
     
-    { field: "action", headerName: 'Hành động', width:150 ,
+    { field: "action", headerName: 'Hành động', width:130 ,
       renderCell: (params)=>{
         return(
           <span>
@@ -217,11 +228,11 @@ const Attribute = () => {
 
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {editAttributeWindow ?
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[500px] bg-white shadow-2xl  left-10 lg:left-96 top-72 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-96 top-36 lg:top-20 lg:top-68 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
                         <div className='font-bold text-2xl' >Edit attribute</div>
-                        <CloseIcon className='hover:cursor-pointer ' onClick={()=>setEditAttributeWindow(false)} fontSize='large' />
+                        <CloseIcon className='hover:cursor-pointer text-black hover:text-gray-300 transition' onClick={()=>setEditAttributeWindow(false)} fontSize='large' />
                     </div>
 
                     <p className='mt-4'  >Tên attribute</p>
@@ -231,16 +242,16 @@ const Attribute = () => {
                     />
 
                     <p className='mt-4'  >Attribute item </p>
-                    <textarea type="text" onChange={(e)=>setNewAttributeItem(e.target.value)} 
+                    <textarea type="text" rows={3} onChange={(e)=>setNewAttributeItem(e.target.value)} 
                         value={newAttributeItem   }
-                        className='w-full border-2  p-4 rounded-md text-2xl' 
+                        className='w-full border-2  p-2 lg:p-4 rounded-md  text-2xl' 
                     />
                     <p  className='text-red-500 text-sm' >! Mỗi thuộc tính con cách nhau một dấu "|" , ví dụ : black|white|blue...</p>
 
                     <div className='text-center' >   
                         <button
                             onClick={handleUpdateAttribute} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/3  rounded-md transition' >
+                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-2/4 lg:w-1/3  rounded-md transition' >
                             Update
                         </button>
                     </div>  
@@ -251,15 +262,19 @@ const Attribute = () => {
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-             : '' }
+             : '' 
+        }
+        {notifyFailure &&
+                <FailurePopup  message={'Attribute trống'} handleClosePopup = {handleCloseFailurePopup} />
+        }
         <div className='text-3xl font-bold' >Attributes</div>
         <div className='flex mt-4' >
           <input 
             onChange={handleAttributeInput}  
-            className='w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            className='w-4/5 lg:w-3/5 rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
           <button 
             onClick = {handleAddAttribute}
-            className='rounded-r-md   w-1/5 bg-green-500 font-bold p-4 text-white text-xl hover:bg-green-800 transition' >
+            className='rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition' >
             Thêm
           </button>
         </div>

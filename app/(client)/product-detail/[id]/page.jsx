@@ -19,7 +19,7 @@ import SwiperGallery from '@/components/SwiperGallery';
 
 
 const ProductDetail = () => {
-
+    const [notifyChooseSize, setNotifyChooseSize] = useState(false)
     const [notifyFailure, setNotifyFailure] = useState(false)
     const [notifyPopup, setNotifyPopup] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -70,13 +70,39 @@ const ProductDetail = () => {
 
   //handle add to cart
   const addToCart = async (e) => {
-    setLoading(true)
-    //add to cart when user not logged in
-    if( user === null) {
-      if (user_cart === null ){  
-        let cart = {
-          userId: null,
-          products:[{
+    if(size===''){
+      setNotifyChooseSize(true)
+      setTimeout(()=>{
+        setNotifyChooseSize(false)
+      }, 3000)
+    } else {
+      setLoading(true)
+      //add to cart when user not logged in
+      if( user === null) {
+        if (user_cart === null ){  
+          let cart = {
+            userId: null,
+            products:[{
+              productId: currentProduct._id,
+              name: currentProduct.name,
+              thumbnail: currentProduct.thumbnail,
+              price: currentProduct.price,
+              size: size,
+              color: currentProduct.color[0],
+              quantity: 1
+              }
+            ]
+          }
+          dispatch(setCart(cart))   
+          setLoading(false)
+          setNotifyPopup(true)
+              setTimeout(()=> {
+                setNotifyPopup(false)
+              }, 3000)
+        } 
+          
+        else {     
+          let prod = {
             productId: currentProduct._id,
             name: currentProduct.name,
             thumbnail: currentProduct.thumbnail,
@@ -84,60 +110,41 @@ const ProductDetail = () => {
             size: size,
             color: currentProduct.color[0],
             quantity: 1
-            }
-          ]
-        }
-        dispatch(setCart(cart))   
-        setLoading(false)
-        setNotifyPopup(true)
-            setTimeout(()=> {
-              setNotifyPopup(false)
-            }, 3000)
-      } 
-         
-      else {     
-        let prod = {
-          productId: currentProduct._id,
-          name: currentProduct.name,
-          thumbnail: currentProduct.thumbnail,
-          price: currentProduct.price,
-          size: size,
-          color: currentProduct.color[0],
-          quantity: 1
-        }
-        dispatch(addCartItem(prod))
-        setLoading(false)
-        setNotifyPopup(true)
-        setTimeout(()=> {
-          setNotifyPopup(false)
-        }, 3000)       
-      }
-      
-    //add to cart when user logged in
-    } else {
-      e.preventDefault()
-      try{
-        const res = await userRequest.post(`/cart/${user._id}`, {
-          productId: currentProduct._id,
-          name: currentProduct.name,
-          quantity: 1,
-          color: currentProduct.color[0], 
-          size: size         
-        }) 
-        if(res.data){
-          dispatch(setCart(res.data.cart))
+          }
+          dispatch(addCartItem(prod))
           setLoading(false)
           setNotifyPopup(true)
           setTimeout(()=> {
             setNotifyPopup(false)
-          }, 3000)
+          }, 3000)       
         }
+        
+      //add to cart when user logged in
+      } else {
+        e.preventDefault()
+        try{
+          const res = await userRequest.post(`/cart/${user._id}`, {
+            productId: currentProduct._id,
+            name: currentProduct.name,
+            quantity: 1,
+            color: currentProduct.color[0], 
+            size: size         
+          }) 
+          if(res.data){
+            dispatch(setCart(res.data.cart))
+            setLoading(false)
+            setNotifyPopup(true)
+            setTimeout(()=> {
+              setNotifyPopup(false)
+            }, 3000)
+          }
 
-      }catch(err){
-        console.log(err)
+        }catch(err){
+          console.log(err)
+        }
       }
     }
-    
+      
   }
 
   //fetch product data by id
@@ -206,6 +213,7 @@ const ProductDetail = () => {
 
   const handleCloseFailurePopup =  () => {
     setNotifyFailure(false)
+    setNotifyChooseSize(false)
   }
 
   return (
@@ -214,6 +222,9 @@ const ProductDetail = () => {
      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
      {notifyFailure &&
                 <FailurePopup  message={'Đăng nhập để sử dụng chức năng này'} handleClosePopup = {handleCloseFailurePopup} />
+     }
+     {notifyChooseSize &&
+                <FailurePopup  message={'Vui lòng chọn size'} handleClosePopup = {handleCloseFailurePopup} />
      }
      {notifyPopup ? 
             

@@ -179,7 +179,7 @@ const Accessories = () => {
           <div className='p-3' >
             Page 
             <span className='mx-2  transition   ' > 
-              <select value={page} onChange={(e)=>setPage(e.target.value)}
+              <select value={page} onChange={(e)=>setPage(parseInt(e.target.value))}
                   className='border-gray-300 hover:border-black hover:cursor-pointer transition border-2 p-2  '  >
                {Array.from({length: totalPage}, (_, i)=> (
                   <option key={i} value={i+1}>{i+1}</option>

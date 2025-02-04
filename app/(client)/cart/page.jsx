@@ -18,8 +18,7 @@ const Cart = () => {
   const user = useSelector((state)=>state.user.currentUser)
   const cart = useSelector((state)=>state.cart.userCart)
   const products = cart?.products
-  
- 
+
   // calculate total price
   const totalPrice = products?.reduce((total, item) => {
     const { price, quantity } = item;
@@ -115,7 +114,7 @@ const Cart = () => {
       {/* left col */}
       <div className=' sm:w-full lg:w-3/5 p-4 flex   flex-col ' >
         <h1 className='font-bold text-4xl' >GIỎ HÀNG CỦA BẠN</h1>
-        <p className=' text-xl mt-3' >TỔNG CỘNG ({products?.length} SẢN PHẨM)  :<span className='font-bold' >
+        <p className=' text-xl mt-3' >TỔNG CỘNG ({products?.length} SẢN PHẨM)  : <span className='font-bold' >
            {FormatCurrency(totalPrice)} đ  </span>   </p>
         {/* product card */}
         { products?.map((product, index)=> 

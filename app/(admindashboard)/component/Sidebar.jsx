@@ -29,8 +29,8 @@ const SideBar = () => {
     dispatch(setCart(null))
     dispatch(setWishlist(null))
     dispatch(setUser(null))
-    // router.push('/')
-    setNotifySuccess(true)
+    router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`)
+
     
   }
   return (

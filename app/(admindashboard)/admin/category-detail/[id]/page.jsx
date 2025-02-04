@@ -11,11 +11,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useRouter } from 'next/navigation'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
 import CloseIcon from '@mui/icons-material/Close';
+import FailurePopup from '@/components/Popup/FailurePopup'
 
 const CategoryDetail = () => {
 
-
     const router = useRouter()
+    const [notifyFailure, setNotifyFailure] = useState(false)
     const categoryId = useParams().id
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -52,6 +53,9 @@ const CategoryDetail = () => {
         setNotifySuccess(false)
         
     }
+    const handleCloseFailurePopup =  () => {
+        setNotifyFailure(false)
+      }
 
     //get subCategory
     useEffect(()=> {
@@ -75,22 +79,30 @@ const CategoryDetail = () => {
     }
     //add subcategory
     const handleAddSubCategory = async () => {
-        setLoading(true)
-        try {
-            const res = await userRequest.post('/sub-category', {
-                categoryId: categoryId,
-                name: input
-            })
-            if(res.data) {
-          
-                setReload(!reload)
-                setNotifySuccess(true)
-                setTimeout(()=>{
-                    setNotifySuccess(false)
-                }, 3000)
+        console.log('clicked')
+        if(input===''){
+            setNotifyFailure(true)
+            setTimeout(()=>{
+                setNotifyFailure(false)
+            }, 3000)
+        } else {
+            setLoading(true)
+            try {
+                const res = await userRequest.post('/sub-category', {
+                    categoryId: categoryId,
+                    name: input
+                })
+                if(res.data) {
+            
+                    setReload(!reload)
+                    setNotifySuccess(true)
+                    setTimeout(()=>{
+                        setNotifySuccess(false)
+                    }, 3000)
+                }
+            } catch(err) {
+                console.log('error while adding sub-category',err)
             }
-        } catch(err) {
-            console.log('error while adding sub-category',err)
         }
     }
 
@@ -163,7 +175,7 @@ const CategoryDetail = () => {
     }
 
     const columns = [ 
-        { field: "name", headerName: 'Tên sub-category', width:500 },  
+        { field: "name", headerName: 'Tên sub-category', width:250 },  
         { field: "action", headerName: 'Hành động', width:150 ,
           renderCell: (params)=>{
             return(
@@ -201,11 +213,11 @@ const CategoryDetail = () => {
  
     <div className={` mt-20 flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
         {editSubCatWindow ?
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-auto h-auto bg-white shadow-2xl  left-10 lg:left-72 top-72 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
                         <div className='font-bold text-2xl' >Edit sub-category</div>
-                        <CloseIcon className='hover:cursor-pointer ' onClick={()=>setEditSubCatWindow(false)} fontSize='large' />
+                        <CloseIcon className='hover:cursor-pointer hover:text-gray-300 transition' onClick={()=>setEditSubCatWindow(false)} fontSize='large' />
                     </div>
                     <input type="text" onChange={(e)=>setNewSubCategory(e.target.value)} 
                         value={newSubCategory}
@@ -213,7 +225,7 @@ const CategoryDetail = () => {
                     <div className='text-center' >   
                         <button
                             onClick={handleUpdateSubCategory} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/3  rounded-md transition' >
+                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-2/4 lg:w-1/3  rounded-md transition' >
                             Update
                         </button>
                     </div>  
@@ -222,11 +234,11 @@ const CategoryDetail = () => {
             </div> : ''
         }
         {editCatWindow ?
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-72 top-72 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
                         <div className='font-bold text-2xl' >Edit category</div>
-                        <CloseIcon className='hover:cursor-pointer ' onClick={()=>setEditCatWindow(false)} fontSize='large' />
+                        <CloseIcon className='hover:cursor-pointer text-black hover:text-gray-300 transition' onClick={()=>setEditCatWindow(false)} fontSize='large' />
                     </div>
                     <input type="text" onChange={(e)=>setNewCategory(e.target.value)} 
                         value={newCategory}
@@ -234,7 +246,7 @@ const CategoryDetail = () => {
                     <div className='text-center' >   
                         <button
                             onClick={handleUpdateCategory} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/3  rounded-md transition' >
+                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/2 lg:w-1/3  rounded-md transition' >
                             Update
                         </button>
                     </div>  
@@ -245,7 +257,11 @@ const CategoryDetail = () => {
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
         {notifySuccess ? 
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-           : '' }
+           : ''
+        }
+        {notifyFailure &&
+                <FailurePopup  message={'Sub-category trống'} handleClosePopup = {handleCloseFailurePopup} />
+        }
         <div className='text-3xl font-bold' >
             Category : {category} 
             <EditIcon fontSize='large' onClick={handleEditCategoryClick} className='text-blue-500 ml-2 hover:text-blue-800 hover:cursor-pointer' />
@@ -254,12 +270,10 @@ const CategoryDetail = () => {
         <div className='flex mt-2' >
           <input 
             onChange={handleInput}  
-            className='w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            className='w-4/5 lg:w-3/5 rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
           <button 
-            disabled={input===''}
             onClick = {handleAddSubCategory}
-            className={` rounded-r-md   w-1/5 bg-green-500 font-bold p-4 text-white text-xl hover:bg-green-800 transition
-                ${input===''?'hover:cursor-not-allowed':''} `} >
+            className={` rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition `} >
             Thêm
           </button>
         </div>
