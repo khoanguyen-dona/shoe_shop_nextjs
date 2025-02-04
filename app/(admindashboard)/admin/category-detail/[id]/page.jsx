@@ -201,11 +201,11 @@ const CategoryDetail = () => {
  
     <div className={` mt-20 flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
         {editSubCatWindow ?
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-auto h-auto bg-white shadow-2xl  left-10 lg:left-60 top-72 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
                         <div className='font-bold text-2xl' >Edit sub-category</div>
-                        <CloseIcon className='hover:cursor-pointer ' onClick={()=>setEditSubCatWindow(false)} fontSize='large' />
+                        <CloseIcon className='hover:cursor-pointer hover:text-gray-300 transition' onClick={()=>setEditSubCatWindow(false)} fontSize='large' />
                     </div>
                     <input type="text" onChange={(e)=>setNewSubCategory(e.target.value)} 
                         value={newSubCategory}
@@ -222,11 +222,11 @@ const CategoryDetail = () => {
             </div> : ''
         }
         {editCatWindow ?
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-60 top-72 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
                         <div className='font-bold text-2xl' >Edit category</div>
-                        <CloseIcon className='hover:cursor-pointer ' onClick={()=>setEditCatWindow(false)} fontSize='large' />
+                        <CloseIcon className='hover:cursor-pointer text-black hover:text-gray-300 transition' onClick={()=>setEditCatWindow(false)} fontSize='large' />
                     </div>
                     <input type="text" onChange={(e)=>setNewCategory(e.target.value)} 
                         value={newCategory}

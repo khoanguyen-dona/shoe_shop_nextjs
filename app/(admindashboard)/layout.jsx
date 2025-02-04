@@ -29,13 +29,16 @@ const layout = ({ children }) => {
        <Provider store={store}>   
           {currentUser?.isAdmin ?
           <>
-            <Admin/>
-            <div className="flex flex-col lg:flex-row" >             
-                <div className="w-full  lg:w-1/6  bg-gray-800 h-2/5 lg:h-screen">       
-                  <SideBar/>                  
+            <div className="flex flex-col lg:flex-row" >  
+                <div className="z-30 lg:z-20 fixed   w-full" >
+                  <Admin/>
+                </div>           
+                <div className="w-full lg:fixed mt-14 lg:mt-0 lg:w-[250px] z-20 lg:z-30  bg-gray-800 h-2/5 lg:h-screen">       
+                  <SideBar/>                       
                 </div>              
-              <div className='w-full  lg:w-5/6  p-4  '  >{children}</div>      
+              <div className='w-full lg:ml-[260px] lg:w-full  p-4  '  >{children}</div>      
             </div> 
+           
           </>
            :router.push('/admin-login')   
           }    

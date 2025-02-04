@@ -217,11 +217,11 @@ const Attribute = () => {
 
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {editAttributeWindow ?
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[500px] bg-white shadow-2xl  left-10 lg:left-96 top-40 lg:top-68 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-96 top-36 lg:top-20 lg:top-68 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
                         <div className='font-bold text-2xl' >Edit attribute</div>
-                        <CloseIcon className='hover:cursor-pointer ' onClick={()=>setEditAttributeWindow(false)} fontSize='large' />
+                        <CloseIcon className='hover:cursor-pointer text-black hover:text-gray-300 transition' onClick={()=>setEditAttributeWindow(false)} fontSize='large' />
                     </div>
 
                     <p className='mt-4'  >Tên attribute</p>
@@ -231,7 +231,7 @@ const Attribute = () => {
                     />
 
                     <p className='mt-4'  >Attribute item </p>
-                    <textarea type="text" rows={4} onChange={(e)=>setNewAttributeItem(e.target.value)} 
+                    <textarea type="text" rows={3} onChange={(e)=>setNewAttributeItem(e.target.value)} 
                         value={newAttributeItem   }
                         className='w-full border-2  p-2 lg:p-4 rounded-md  text-2xl' 
                     />

@@ -158,10 +158,10 @@ const ProductLine = () => {
                 <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
              : '' }
         {editProductLineWindow ? 
-            <div className='fixed p-4 z-20 flex flex-col w-4/5  lg:w-3/5 h-[300px] bg-white shadow-2xl  left-10 lg:left-96 top-96 border-2 rounded-md  '  >
+            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-96 top-52 border-2 rounded-md  '  >
                 <div className='flex flex-col justify-center' >
                     <div className='flex justify-between' >
-                        <div className='font-bold text-2xl' >Edit category</div>
+                        <div className='font-bold text-2xl' >Edit product line</div>
                         <CloseIcon 
                             className='hover:cursor-pointer ' 
                             onClick={()=>setEditProductLineWindow(false)} fontSize='large' />
