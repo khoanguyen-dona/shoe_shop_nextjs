@@ -114,6 +114,12 @@ const Products = () => {
   getProducts();
 }, [reload])
   
+  const handleNavigate = (url) => {
+    setLoading(true)
+    router.push(url)
+    setLoading(false)
+  }
+
   const columns = [
     { field: "_id", headerName: 'Mã sản phẩm', width:120 },
    
@@ -137,7 +143,7 @@ const Products = () => {
             <span className='p-2 rounded   '  >
             
               <span >
-                <a  href={`/admin/product-detail/${params.row._id}`}>
+                <a    onClick={()=>handleNavigate(`/admin/product-detail/${params.row._id}`)}  >
                     <span title='Edit' >
                         <EditIcon 
                             onClick={()=>setLoading(true)}
@@ -208,8 +214,7 @@ const Products = () => {
       {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
       <p className='font-bold text-3xl mt-20' >Products</p>
       <a  
-          onClick={()=>setLoading(true)}
-          href="/admin/add-product" className='my-2 p-2  text-center text-xl rounded hover:bg-green-800 transition w-[220px]  bg-green-500
+          onClick={()=>handleNavigate('/admin/add-product')} className='my-2 p-2  text-center text-xl rounded hover:bg-green-800 transition w-[220px]  bg-green-500
            text-white font-bold' disabled={loading}>
             <AddIcon fontSize='large' className='mb-1' />
             Thêm sản phẩm

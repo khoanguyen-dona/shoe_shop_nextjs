@@ -28,15 +28,13 @@ const layout = ({ children }) => {
        <body className={inter.className}>   
        <Provider store={store}>   
           {currentUser?.isAdmin ?
-          <>
-            <div className="flex flex-col lg:flex-row" >  
-                <div className="z-30 lg:z-20 fixed   w-full" >
+          <>                                                                       
+            <div className="flex flex-col " >  
+                <div className="z-40 lg:z-40 fixed   w-full" >
                   <Admin/>
-                </div>           
-                <div className="w-full lg:fixed mt-14 lg:mt-0 lg:w-[250px] z-20 lg:z-30  bg-gray-800 h-2/5 lg:h-screen">       
-                  <SideBar/>                       
-                </div>              
-              <div className='w-full lg:ml-[260px] lg:w-full  p-4  '  >{children}</div>      
+                </div>  
+                <SideBar  />                        
+                <div className='w-full lg:ml-[200px]   p-4 mt-24   '  >{children}</div>      
             </div> 
            
           </>

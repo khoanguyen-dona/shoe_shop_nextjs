@@ -24,7 +24,6 @@ const ProductLine = () => {
   const [reload, setReload] = useState(false)
   const [editProductLineWindow, setEditProductLineWindow] = useState(false)  
 
-  
 
   // close the popup
   const handleClosePopup = () => {
@@ -124,6 +123,10 @@ const ProductLine = () => {
   const handleCloseFailurePopup =  () => {
     setNotifyFailure(false)
   }
+  const closeEditProductLineWindow = () => {
+    setEditProductLineWindow(false)
+    setProductLine('')
+  }
 
   const columns = [ 
     { field: "name", headerName: 'Tên dòng sản phẩm', width:250 },  
@@ -179,7 +182,7 @@ const ProductLine = () => {
                         <div className='font-bold text-2xl' >Edit product line</div>
                         <CloseIcon 
                             className='hover:cursor-pointer ' 
-                            onClick={()=>setEditProductLineWindow(false)} fontSize='large' />
+                            onClick={closeEditProductLineWindow} fontSize='large' />
                     </div>
                     <input type="text" onChange={(e)=>setProductLine(e.target.value)} 
                         value={productLine}

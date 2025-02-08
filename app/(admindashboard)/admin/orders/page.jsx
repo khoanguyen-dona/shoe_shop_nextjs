@@ -60,6 +60,12 @@ const Orders = () => {
     setNotifySuccess(false)
 }
   
+  const handleNavigate = (url) => {
+    setLoading(true)
+    router.push(url)
+    setLoading(false)
+  }
+
   const columns = [
     { field: "_id", headerName: 'Mã order', width:120 },
     { field: "createdAt", headerName: 'Ngày đặt hàng', width:270 ,
@@ -104,7 +110,7 @@ const Orders = () => {
             <span className='p-2 rounded   '  >
             
               <span >
-                <a  href={`/admin/order-detail/${params.row._id}`}>
+                <a   onClick={()=>handleNavigate(`/admin/order-detail/${params.row._id}`)} >
                     <span title='Edit' >
                         <EditIcon 
                             onClick={()=>setLoading(true)}

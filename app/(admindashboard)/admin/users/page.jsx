@@ -57,6 +57,12 @@ const Users = () => {
     }
   }
   
+  const handleNavigate = (url) => {
+    setLoading(true)
+    router.push(url)
+    setLoading(false)
+  }
+
   const columns = [
     { field: "_id", headerName: 'Mã user', width:100 },
    
@@ -78,7 +84,7 @@ const Users = () => {
             <span className='p-2 rounded   '  >
             
               <span >
-                <a onClick={()=>setLoading(true)}  href={`/admin/user-detail/${params.row._id}`}>
+                <a onClick={()=>handleNavigate(`/admin/user-detail/${params.row._id}`)}   >
                     <span title='Edit' >
                         <EditIcon fontSize='large' className='text-blue-500 hover:text-black  '  />  
                     </span>

@@ -47,7 +47,7 @@ const CategoryDetail = () => {
         }
         getCategory();
     }, [reload])
-
+  
     // close the popup
     const handleClosePopup = () => {
         setNotifySuccess(false)
@@ -79,7 +79,7 @@ const CategoryDetail = () => {
     }
     //add subcategory
     const handleAddSubCategory = async () => {
-        console.log('clicked')
+      
         if(input===''){
             setNotifyFailure(true)
             setTimeout(()=>{
