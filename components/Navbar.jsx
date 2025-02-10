@@ -113,7 +113,7 @@ console.log('curre user',user)
             <a href='/wishlist' onClick={()=>setLoading(true)} className='relative  ' >
               <FavoriteBorderIcon sx={{fontSize: '30px'}} />
               {user===null || wishlist === null ||  wishlist?.products?.length === 0 ? '' :
-              <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  >
+              <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-4'  >
                 { wishlist?.products?.length } </span>
               }
             </a>  
@@ -126,7 +126,7 @@ console.log('curre user',user)
               }
             </a>
             {/* user */}
-            { user!== null ?
+            { user!== null && user?.img!=='' ?
             <span className='' >
               {/* <AccountCircleOutlinedIcon sx={{fontSize: '30px'}}  className='hover:cursor-pointer' onClick={handleUserMenu}/> */}
                 <img src={user?.img}  className='w-8 h-8 aligns-center rounded-full object-cover  hover:cursor-pointer' onClick={handleUserMenu}/>
@@ -179,7 +179,7 @@ console.log('curre user',user)
           <span>
             <SearchIcon fontSize='large'  className='hover:cursor-pointer' onClick={handleSearchMobileClick} />
           </span>
-          <span className='font-bold text-xl' >
+          <span className='font-extrabold text-2xl' >
             <a href="/" onClick={()=>setLoading(true)}   >ShoeShop </a>  
             </span>
           <span className='relative' >
@@ -202,7 +202,7 @@ console.log('curre user',user)
           </span>
           
           <span>
-          { user!== null ?
+          { user!== null && user?.img!=='' ?
             <a href={`/profile/${user._id}`} onClick={()=>setLoading(true)}   >
               <img src={user?.img} className='w-9 h-9 object-cover rounded-full' alt="" />
             </a> :
