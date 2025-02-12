@@ -11,6 +11,7 @@ import Image from 'next/image'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation'
+import { AirlineSeatReclineNormalRounded } from '@mui/icons-material';
 
 const Users = () => {
 
@@ -20,7 +21,7 @@ const Users = () => {
   const [loading, setLoading] = useState(true)
   const [users, setUsers]= useState('')
   const [userId, setUserId] = useState('')
-
+  const [reload, setReload] = useState(false)
   const handleClosePopup = () => {
     setNotifySuccess(false)
 }
@@ -39,14 +40,14 @@ const Users = () => {
     }
 
   getUsers();
-}, [userId])
+}, [reload])
 
   const handleDeleteUser = async (userId) => {
     setLoading(true)
     try {
         const res = await userRequest.delete(`/user/${userId}`)
         if(res.data){
-          setUserId(userId)
+          setReload(!reload)
           setNotifySuccess(true)
           setTimeout(()=> {
             setNotifySuccess(false)
