@@ -29,6 +29,7 @@ const ProductDetail = () => {
     const wishlist = useSelector((state) => state.wishlist.userWishlist)
     const wishlistArray = []
     const productId = useParams().id
+    
     const [size, setSize]=useState("")
     const [color, setColor]=useState("")
     const [currentProduct, setCurrentProduct] = useState()

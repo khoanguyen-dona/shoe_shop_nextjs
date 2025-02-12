@@ -11,6 +11,7 @@ import Image from 'next/image'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation'
+import { AirlineSeatReclineNormalRounded } from '@mui/icons-material';
 
 const Users = () => {
 
@@ -20,7 +21,7 @@ const Users = () => {
   const [loading, setLoading] = useState(true)
   const [users, setUsers]= useState('')
   const [userId, setUserId] = useState('')
-
+  const [reload, setReload] = useState(false)
   const handleClosePopup = () => {
     setNotifySuccess(false)
 }
@@ -39,14 +40,14 @@ const Users = () => {
     }
 
   getUsers();
-}, [userId])
+}, [reload])
 
   const handleDeleteUser = async (userId) => {
     setLoading(true)
     try {
         const res = await userRequest.delete(`/user/${userId}`)
         if(res.data){
-          setUserId(userId)
+          setReload(!reload)
           setNotifySuccess(true)
           setTimeout(()=> {
             setNotifySuccess(false)
@@ -57,6 +58,12 @@ const Users = () => {
     }
   }
   
+  const handleNavigate = (url) => {
+    setLoading(true)
+    router.push(url)
+    setLoading(false)
+  }
+
   const columns = [
     { field: "_id", headerName: 'Mã user', width:100 },
    
@@ -78,7 +85,7 @@ const Users = () => {
             <span className='p-2 rounded   '  >
             
               <span >
-                <a onClick={()=>setLoading(true)}  href={`/admin/user-detail/${params.row._id}`}>
+                <a onClick={()=>handleNavigate(`/admin/user-detail/${params.row._id}`)}   >
                     <span title='Edit' >
                         <EditIcon fontSize='large' className='text-blue-500 hover:text-black  '  />  
                     </span>

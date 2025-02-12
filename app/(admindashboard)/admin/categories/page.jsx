@@ -91,6 +91,12 @@ const Categories = () => {
     }
   }
 
+  const handleNavigate = (url) => {
+    setLoading(true)
+    router.push(url)
+    setLoading(false)
+  }
+
   const columns = [ 
     { field: "name", headerName: 'Tên category', width:250 },  
     { field: "action", headerName: 'Hành động', width:150 ,
@@ -100,7 +106,7 @@ const Categories = () => {
             <span className='p-2 rounded   '  >
             
               <span >
-                <a  href={`/admin/category-detail/${params.row._id}`}>
+                <a  onClick={()=>handleNavigate(`/admin/category-detail/${params.row._id}`)} >
                     <span title='Edit' >
                         <EditIcon 
                             onClick={()=>setLoading(true)}
