@@ -29,7 +29,7 @@ const Navbar = () => {
   const [userMenu, setUserMenu] =useState(false)
   const [loading, setLoading]= useState(false)
   const [notifySuccess, setNotifySuccess] = useState(false)
-console.log('curre user',user)
+
   const handleClosePopup = () => {
     setNotifySuccess(false)
   }
@@ -121,7 +121,7 @@ console.log('curre user',user)
             <a href='/cart'  onClick={()=>setLoading(true)}  className='relative' > 
               <ShoppingCartOutlinedIcon sx={{fontSize: '30px'}}/> 
               {cart===null ||  cart?.products?.length === 0 ? '' : 
-              <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-2'  > 
+              <span className='absolute bg-red-500 text-white rounded-xl w-6 h-6 left-5  text-center  bottom-4'  > 
                 { cart?.products?.length } </span>
               }
             </a>

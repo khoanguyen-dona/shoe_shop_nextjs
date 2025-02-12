@@ -14,7 +14,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
   const dispatch = useDispatch()
   const [notifyPopup, setNotifyPopup] = useState(false)
   var categories = String(data.categories).split(',').join(', ')
-  
+  var slug = data.name.split(' ').join('-')
   const addToWishlist = async (e) => {
     e.preventDefault()
     if(user===null) {
@@ -55,7 +55,7 @@ const ProductCard = ({data, user, wishlistArray}) => {
         : ''
       }
       <div className=' flex flex-col relative p-1    hover:opacity-60 transition' >
-        <a className='flex flex-col' href={`/product-detail/${data._id}`}>
+        <a className='flex flex-col' href={`/product-detail/${slug}/${data._id}`}>
 
           <div className='absolute top-4 right-4 z-10' >
               {user!==null && wishlistArray.includes(data._id) ?
