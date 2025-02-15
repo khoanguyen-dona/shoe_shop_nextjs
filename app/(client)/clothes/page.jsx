@@ -74,6 +74,7 @@ const Clothes = () => {
   }, [])
 
   useEffect(() => {
+    setLoading(true)
     const getProducts = async () => {
       try {    
         const res = await publicRequest.get(`/product?category=${category}&color=${color}&size=${size}&page=${page}&limit=${limit}&minPrice=${price[0]}&maxPrice=${price[1]}`)
