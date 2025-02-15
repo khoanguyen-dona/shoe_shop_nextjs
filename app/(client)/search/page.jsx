@@ -25,7 +25,7 @@ const Search = () => {
     }
     getProducts()
   }, [search_keyword])
-  
+  console.log('data',data)
   return (
     <div className={`px-4 md:px-24 2xl:px-48   ${loading?'bg-white opacity-50':''}  `} >
       {loading ?
@@ -39,7 +39,7 @@ const Search = () => {
         }
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-center' >
           {data?.map((product, index) => 
-          <a key={index}  href={`/product-detail/${product._id}`} className='flex  flex-col  ml-2 mt-4   transition hover:border-2 hover:border-black   ' >
+          <a key={index}  href={`/product-detail/${product.name.split(' ').join('-')}/${product._id}`} className='flex  flex-col  ml-2 mt-4   transition hover:border-2 hover:border-black   ' >
             <img src={product.thumbnail} alt={product.name} />
             <p className='font-bold ' >{product.name}</p>
             <p>{FormatCurrency(product.price)} đ</p>
