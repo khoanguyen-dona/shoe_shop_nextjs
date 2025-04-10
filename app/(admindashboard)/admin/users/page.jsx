@@ -72,7 +72,8 @@ const Users = () => {
       renderCell: (params)=>{
         return(
         <div className=' p-[2px]  '>
-          <img  src={params.row.img} className='w-12 h-12 object-cover border-[1px] rounded-full '  alt="" />
+          {/* <img  src={params.row.img} className='w-12 h-12 object-cover border-[1px] rounded-full '  alt="" /> */}
+          <Image src ={params.row.img} width={100} height={100} alt='avatar' className='w-12 h-12 object-cover rounded-full '  />
         </div>
         )
       }
