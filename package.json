@@ -19,6 +19,7 @@
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "firebase": "^11.0.2",
+    "javascript-time-ago": "^2.5.11",
     "lightbox.js-react": "^1.2.5",
     "moment": "^2.30.1",
     "next": "15.0.3",
@@ -29,6 +30,7 @@
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.2",
     "react-responsive-carousel": "^3.2.23",
+    "react-time-ago": "^7.3.3",
     "redux-persist": "^6.0.0",
     "swiper": "^11.2.0"
   },

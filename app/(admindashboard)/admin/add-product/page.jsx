@@ -416,7 +416,8 @@ const AddProduct = () => {
             <div>
                 <p className='font-bold  mt-4 mb-2' >Ảnh thumbnail </p>
                 <label className='hover:text-white  border-[1px] font-semibold hover:bg-black p-2 transition border-black ' 
-                        htmlFor="thumbnail">
+                        htmlFor="thumbnail"
+                >
                     Chọn ảnh
                     <input  className='hidden' type="file" id='thumbnail' onChange={handleThumbnail} />
                 </label>

@@ -2,6 +2,10 @@
 import React from 'react'
 import { useParams } from 'next/navigation';
 
+import SendIcon from '@mui/icons-material/Send';
+import CloseIcon from '@mui/icons-material/Close';
+
+import Image from 'next/image';
 import { useState  } from 'react';
 import { useEffect } from 'react';
 import { FormatCurrency } from '@/utils/FormatCurrency';
@@ -16,12 +20,14 @@ import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 import FailurePopup from '@/components/Popup/FailurePopup';
 import SwiperGallery from '@/components/SwiperGallery';
-
+import Comment from '@/components/Comment';
 
 const ProductDetail = () => {
     const [notifyChooseSize, setNotifyChooseSize] = useState(false)
     const [notifyFailure, setNotifyFailure] = useState(false)
     const [notifyPopup, setNotifyPopup] = useState(false)
+    const [commentSuccess, setCommentSuccess] = useState(false)
+
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.currentUser)
@@ -37,10 +43,21 @@ const ProductDetail = () => {
 
     const [relatedProducts, setRelatedProducts] = useState()
     const [reload, setReload] = useState(false)
+   
     //  add to wishlistArray
     wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
     const [isFirstRender, setIsFirstRender] = useState(true);
-  
+    const [imageGallery , setImageGallery] = useState([])
+    const [imageGalleryFile, setImageGalleryFile] = useState([])
+    const [comment, setComment] = useState('')
+    const [comments, setComments] = useState([])
+    const [hasNextComment, setHasNextComment] = useState(true)
+
+    const [limitImageNotify, setLimitImageNotify] = useState(false)
+    const [page, setPage] = useState(2)
+    const limit = 5
+    const maxImages = 5
+
   const addToWishlist = async (e) => {
     setLoading(true)
     if(user === null ){
@@ -201,6 +218,53 @@ const ProductDetail = () => {
       }
       getProduct()
     }, [reload])
+
+  // fetch comments first time
+  useEffect (() => {
+    const getComment = async () => {
+      try {
+        const res = await publicRequest.get(`/comment/${productId}?type=thread&limit=${limit}&page=1`)
+        if(res.data){
+          console.log(res.data)
+          setComments(res.data.replyData)
+        }
+      } catch(err) {
+        console.log('error while fetch comments type thread',err)
+      } finally {
+        
+      }
+    }
+    getComment()
+  }, [])
+
+  console.log('-----',comments)
+
+  console.log(page)
+
+  // fetch more comments when user click on 'see more comments' button
+  const fetchMoreComment = async () => {
+      try {
+        setLoading(true)
+        const res = await publicRequest.get(`/comment/${productId}?type=thread&limit=${limit}&page=${page}`) 
+        if(res.data){
+          res.data.replyData.map((c)=>{
+            comments.push(c)
+          })  
+          console.log(res.data)
+          if(res.data.hasNext===false){
+            setHasNextComment(false)
+          }
+        }
+      } catch(err) {
+        console.log('error while fetch more comment type thread',err)
+      } finally {
+        setPage(prev => prev+1)
+        setLoading(false)
+      }
+  
+  }
+
+  console.log(page)
    
   const handleColorClick = (p) => {
     setCurrentProduct(p)
@@ -217,6 +281,72 @@ const ProductDetail = () => {
     setNotifyChooseSize(false)
   }
 
+  const handleSendComment = async () => {
+    try {
+      setLoading(true)
+      const res = await userRequest.post(`/comment`, {
+        productId: productId,
+        userId: user._id,
+        content: comment,
+        imgGallery:[],
+        avatarUrl: user.img,
+        userName: user.username,
+        type: "thread",
+        refCommentId:"",
+        refCommentUserId:"",
+        refCommentUsername:"",
+        isReplied: false
+      })
+      if (res.data){
+        comments.push(res.data.comment)
+        setComment('')
+        setCommentSuccess(true)
+        setTimeout(()=> {
+          setCommentSuccess(false)
+        }, 5000)
+      }
+    } catch(err){
+      console.log('error while send comment')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+ 
+  // handle choose image gallery
+  const handleImageGallery = (e) => {
+    const files = Array.from(e.target.files)
+
+    if(files.length + imageGallery.length > maxImages) {
+      setLimitImageNotify(true)
+      return
+    }
+
+    files.map((f)=>{
+      setImageGalleryFile((prev)=>[...prev,f])
+    })
+    const imgUrls = files.map(f=>URL.createObjectURL(f))
+    imgUrls.map((img)=>{
+      setImageGallery((prev)=>[...prev,img])
+    })
+  }
+  
+  console.log(imageGallery)
+  console.log(imageGalleryFile)
+
+  // handle delete image gallery
+  const handleRemoveImageGallery = (index) => {
+      const imgs=imageGallery.filter((img, i) => i !== index)
+      const files = imageGalleryFile.filter((img, i)=> i !==index)
+      setImageGallery(imgs)
+      setImageGalleryFile(files)
+  }
+
+  const handleLike = () => {
+
+  }
+ 
+
   return (
   
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
@@ -231,6 +361,10 @@ const ProductDetail = () => {
             
                 <SuccessPopup  message={'Thêm thành công!'}  handleClosePopup={handleClosePopup}   /> 
              : '' }
+      {commentSuccess ? 
+            
+            <SuccessPopup  message={'Bình luận thành công!'}  handleClosePopup={handleClosePopup}   /> 
+         : '' }
       <div className='flex flex-col  xl:flex-row  mt-20  ' >
         {/* product image gallery */}
         <div className='w-full h-full xl:w-3/6 2xl:w-3/6  ' > 
@@ -248,7 +382,7 @@ const ProductDetail = () => {
           <div className='font-bold' > 
             Size : {size} 
           </div>
-          {/* {product.size} */}
+          {/* product.size option */}
           {String(currentProduct?.size).length === 0  ? '' :
             <div className='  flex flex-wrap  '>
               
@@ -266,7 +400,7 @@ const ProductDetail = () => {
             </div> 
           }            
 
-          {/* color */}
+          {/* color  option */}
           <div className='font-bold' >
             Color : {color}
           </div>
@@ -316,13 +450,134 @@ const ProductDetail = () => {
         </div>
 
       </div>
-      <div className='border-b-2 mt-2 border-black mx-96' ></div>
+
+      <div className='border-b-4 mt-2 border-gray-300 mx-4 lg:mx-72 ' ></div>
+
       {/* Product description  */}
       <div className='mt-10' >
             <h1 className='text-4xl font-bold text-center' >  Mô tả</h1>
             <p>{currentProduct?.desc}</p>
       </div>
-        
+
+      <div className='border-b-4 mt-8 border-gray-300  mx-4 lg:mx-72  ' ></div>
+
+      {/* Comment box */}
+      <div className='h-auto flex flex-row gap-2 mt-4' >
+            {user?.img ? 
+              <Image 
+                class='rounded-full object-cover w-8 h-8  md:w-12 md:h-12 '
+                src={user?.img}
+                width={50}
+                height={50}
+                alt='avatar'
+              />
+              :
+              <Image 
+                alt='user avatar'
+                src='/icon-user.jpg'  width={50} height={50}    
+                className='rounded-full  object-cover w-8 h-8 md:w-12 md:h-12 hover:cursor-pointer' 
+              />
+            }
+
+            <div className='flex flex-col w-full  border-2 p-2 h-auto' >
+
+              <div className='flex  gap-2  '>
+
+                <textarea 
+                  onChange={(e)=>setComment(e.target.value)}
+                  value={comment}
+                  className='flex-1 bg-gray-100 p-2 rounded-md h-48 '
+                  placeholder='Bạn đang nghĩ gì ?' >
+                </textarea> 
+
+
+              </div>
+
+              
+
+              {/* display images after choose */}
+              {imageGallery.length >0 &&
+                <div className='flex flex-wrap mt-2' >
+                  {imageGallery.map((img, index)=> (
+                      <div className='relative' key={index}>
+                        <img src={img} className='w-32 h-32 border-2 object-cover rounded-xl ' alt="" />
+                        <CloseIcon  
+                          fontSize='large'
+                          onClick={()=>handleRemoveImageGallery(index)}
+                          className='hover:text-red-500 text-gray-400 hover:cursor-pointer bg-black  rounded-md  transition absolute top-1 right-1 z-20 ' 
+                        />
+
+                      </div> 
+                  ))}
+                </div>
+              }
+              { limitImageNotify &&
+                <span className='text-red-500 font-semibold' >
+                  Upload tối đa 5 ảnh
+                </span>
+              }
+
+              <div className='flex justify-end gap-4' >
+                {/* add images */}
+                <span className='text-left flex gap-2 p-2'>          
+                  <label 
+                      title='Thêm ảnh'
+                      className='hover:text-blue-500   transition  ' 
+                      htmlFor="imageGallery"
+                  >
+                        <img
+                          src='/gallery.png'
+                          alt='Thêm ảnh'
+                          className='  h-12 hover:cursor-pointer hover:bg-blue-200 px-2  rounded-lg '
+                          fontSize='large' 
+                        />
+                      <input  className='hidden' type="file" multiple onChange={handleImageGallery} id='imageGallery' />
+                  </label>
+                </span>
+
+                {/* send commetn */}
+                <button 
+                    disabled={comment.trim()===''}
+                    title='Gửi bình luận'
+                    onClick={handleSendComment}
+                    className={`text-white flex gap-2 h-[50px] bg-blue-500 justify-center mt-2 items-center transition p-3 md:p-5 rounded-md
+                      ${comment.trim()===''?'bg-gray-500 hover:bg-gray-500':'hover:bg-blue-600'}  `} 
+                  >
+                    <SendIcon/>    
+                    Send
+                </button>
+              </div>
+
+            </div>
+            
+      </div>
+
+      {/* Comments of other */}
+      
+        {comments?.map((c, index)=>(
+          <Comment 
+            key={index} 
+            loading={loading}
+            setLoading={setLoading}
+            user={user}
+            comment={c} 
+            handleLike={handleLike}  
+            productId={productId}
+            setCommentSuccess={setCommentSuccess}
+          />
+        ))}
+    
+
+      {
+
+      hasNextComment ?
+      <div 
+        onClick={fetchMoreComment}
+        className='p-4 text-lg bg-gray-200 text-black-500 mt-10 hover:bg-gray-300 hover:text-white  transition hover:cursor-pointer  flex font-semibold justify-center' >
+        Xem thêm bình luận
+      </div> : ''
+      }
+      
     
     </div>
   )
