@@ -105,8 +105,6 @@ console.log(imageGalleryFile)
           isReplied: false
         })
         if (res.data){
-          console.log(res.data)
-          replyData.push(res.data.comment)
           setUserComment('')
           setImageGallery([])
           setImageGalleryFile([])

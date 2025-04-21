@@ -69,8 +69,6 @@ const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, 
               isReplied: false
             })
             if (res.data){
-              console.log(res.data)
-              replyData.push(res.data.comment)
               setUserComment('')
               setImageGallery([])
               setImageGalleryFile([])

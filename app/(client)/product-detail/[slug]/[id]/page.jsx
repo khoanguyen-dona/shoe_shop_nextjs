@@ -314,7 +314,6 @@ const ProductDetail = () => {
         isReplied: false
       })
       if (res.data){
-        comments.push(res.data.comment)
         setComment('')
         setImageGallery([])
         setImageGalleryFile([])
