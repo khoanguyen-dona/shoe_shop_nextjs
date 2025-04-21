@@ -9,29 +9,57 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
 import { publicRequest, userRequest } from '@/requestMethod';
-
+import CommentGallery from './CommentGallery';
 import ReactTimeAgoUtil from '@/utils/ReactTimeAgoUtil';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import app from '@/firebase'
 
 const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, productId, comment }) => {
+
+    const storage = getStorage(app);
     const [replyBox, setReplyBox] = useState(false)
     const [userComment, setUserComment] = useState('')
     const [imageGallery , setImageGallery] = useState([])
     const [imageGalleryFile, setImageGalleryFile] = useState([])
     const [limitImageNotify, setLimitImageNotify] = useState(false)
-    
-    const maxImages = 5
+    const [limitFileSizeNotify, setLimitFileSizeNotify] = useState(false)
+    const maxImagesInput = 3
+    var imageGalleryUrl = []
     console.log(userComment)
+
+
     const handleLike = () => {
     }
 
+     const uploadGallery = async () => {
+        for(let image_file of imageGalleryFile) {
+            let imageName = new Date().getTime() +"_"+ image_file.name
+            let imageRef = ref(storage, `comment-gallery/${imageName}`)
+            try{
+                await uploadBytes(imageRef, image_file)
+                const imgGallery_URL = await getDownloadURL(imageRef)
+                imageGalleryUrl.push(imgGallery_URL)
+            } catch (err){
+                console.log('error uploading file to firebase', err)
+            }
+        }
+      }
+
     const handleSendReply = async () => {
+      setLoading(true)
+      await uploadGallery()
           try {
-            setLoading(true)
             const res = await userRequest.post(`/comment`, {
               productId: productId,
               userId: user._id,
               content: userComment,
-              imgGallery:[],
+              imgGallery: imageGalleryUrl ,
               avatarUrl: user.img,
               userName: user.username,
               type: "comment",
@@ -44,7 +72,12 @@ const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, 
               console.log(res.data)
               replyData.push(res.data.comment)
               setUserComment('')
+              setImageGallery([])
+              setImageGalleryFile([])
+              setLimitFileSizeNotify(false)
+              setLimitImageNotify(false)
               setCommentSuccess(true)
+              setReplyBox(false)
               setTimeout(()=> {
                 setCommentSuccess(false)
               }, 5000)
@@ -60,17 +93,20 @@ const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, 
     const handleImageGallery = (e) => {
         const files = Array.from(e.target.files)
 
-        if(files.length + imageGallery.length > maxImages) {
-          setLimitImageNotify(true)
-          return
-        }
-
-        files.map((f)=>{
-          setImageGalleryFile((prev)=>[...prev,f])
-        })
-        const imgUrls = files.map(f=>URL.createObjectURL(f))
-        imgUrls.map((img)=>{
-          setImageGallery((prev)=>[...prev,img])
+        files.map((file)=>{
+          if(file.size > 3000000){
+            setLimitFileSizeNotify(true)
+            return
+          } else {
+            if(files.length + imageGallery.length > maxImagesInput) {
+              setLimitImageNotify(true)
+              return
+            }      
+            setImageGalleryFile((prev)=>[...prev,file])
+            const imgUrls = URL.createObjectURL(file)
+            setImageGallery((prev)=>[...prev,imgUrls])
+          
+          }
         })
     }
 
@@ -83,7 +119,7 @@ const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, 
   }
 console.log(imageGallery)
 console.log(imageGalleryFile)
-
+console.log(reply)
   return (
     <div  className=' ml-10  md:ml-14 border-l-2 p-2 ' >
         <div className=' gap-2 h-auto  flex '  >
@@ -114,6 +150,13 @@ console.log(imageGalleryFile)
                     </span>
                     {reply.content}
                 </div>
+
+                {/* display comment imgGallery */}
+                {reply.imgGallery.length !== 0 &&
+                  <div className='mt-2 ' > 
+                    <CommentGallery product_images={reply?.imgGallery}  />
+                  </div>
+                }
             </div>
 
         </div>
@@ -123,8 +166,8 @@ console.log(imageGalleryFile)
             <div class="relative group inline-block cursor-pointer ">
                 <p onClick={handleLike} class="hover:text-red-500 ">Thích</p>
 
-                <div class="flex absolute gap-2 left-20 -top-12 -translate-x-1/2 mt-2 w-max px-3 py-1 bg-white shadow-2xl border-[1px] border-gray-100  text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                    <img title='Thích' onClick={handleLike} src='/icon-like.svg' className='w-6 h-6 hover:scale-150 transition  ' />
+                <div class="flex absolute gap-2 left-20 -top-12 -translate-x-1/2 mt-2 w-max px-3 py-1 bg-white shadow-lg  text-white text-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <img title='Thích' onClick={handleLike} src='/icon-like.svg' className='w-6 h-6 hover:scale-150 transition ' />
                     <img title='Yêu' onClick={handleLike} src='/icon-love.svg' className='w-6 h-6 hover:scale-150 transition  ' />
                     <img title='Vui' onClick={handleLike} src='/icon-haha.svg' className='w-6 h-6 hover:scale-150 transition ' />
                     <img title='Buồn' onClick={handleLike} src='/icon-sad.svg'  className='w-6 h-6 hover:scale-150 transition '/>
@@ -185,7 +228,7 @@ console.log(imageGalleryFile)
 
                           {/* display images after choose  */}
                             {imageGallery.length >0 &&
-                                <div className='flex flex-wrap mt-2' >
+                                <div className='flex flex-wrap gap-2 mt-2' >
                                     {imageGallery.map((img, index)=> (
                                         <div className='relative' key={index}>
                                             <img src={img} className='w-28 h-28 md:w-32 md:h-32 object-cover rounded-xl border-2' alt="" />
@@ -202,7 +245,12 @@ console.log(imageGalleryFile)
                           {/*  */}
                           { limitImageNotify &&
                             <span className='text-red-500 font-semibold' >
-                              Upload tối đa 5 ảnh
+                              Upload tối đa 3 ảnh
+                            </span>
+                          }
+                          { limitFileSizeNotify &&
+                            <span className='text-red-500 font-semibold' >
+                              Upload ảnh có dung lượng nhỏ hơn 5 MB
                             </span>
                           }
 

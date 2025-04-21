@@ -21,8 +21,19 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 import FailurePopup from '@/components/Popup/FailurePopup';
 import SwiperGallery from '@/components/SwiperGallery';
 import Comment from '@/components/Comment';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import app from '@/firebase'
+
 
 const ProductDetail = () => {
+
+    const storage = getStorage(app);
     const [notifyChooseSize, setNotifyChooseSize] = useState(false)
     const [notifyFailure, setNotifyFailure] = useState(false)
     const [notifyPopup, setNotifyPopup] = useState(false)
@@ -47,17 +58,21 @@ const ProductDetail = () => {
     //  add to wishlistArray
     wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
     const [isFirstRender, setIsFirstRender] = useState(true);
+
     const [imageGallery , setImageGallery] = useState([])
     const [imageGalleryFile, setImageGalleryFile] = useState([])
+    var imageGalleryUrl = []
+
     const [comment, setComment] = useState('')
     const [comments, setComments] = useState([])
     const [hasNextComment, setHasNextComment] = useState(true)
 
+    const [limitFileSizeNotify, setLimitFileSizeNotify]= useState(false)
     const [limitImageNotify, setLimitImageNotify] = useState(false)
     const [page, setPage] = useState(2)
     const limit = 5
-    const maxImages = 5
-
+    const maxImagesInput = 3
+    console.log(product.imgGallery)
   const addToWishlist = async (e) => {
     setLoading(true)
     if(user === null ){
@@ -282,13 +297,14 @@ const ProductDetail = () => {
   }
 
   const handleSendComment = async () => {
+    setLoading(true)
+    await uploadGallery()
     try {
-      setLoading(true)
       const res = await userRequest.post(`/comment`, {
         productId: productId,
         userId: user._id,
         content: comment,
-        imgGallery:[],
+        imgGallery: imageGalleryUrl,
         avatarUrl: user.img,
         userName: user.username,
         type: "thread",
@@ -300,36 +316,62 @@ const ProductDetail = () => {
       if (res.data){
         comments.push(res.data.comment)
         setComment('')
+        setImageGallery([])
+        setImageGalleryFile([])
+        setLimitFileSizeNotify(false)
+        setLimitImageNotify(false)
         setCommentSuccess(true)
         setTimeout(()=> {
           setCommentSuccess(false)
         }, 5000)
       }
     } catch(err){
-      console.log('error while send comment')
+      console.log('error while upload comment data to mongodb')
     } finally {
       setLoading(false)
     }
   }
 
- 
+  const uploadGallery = async () => {
+    for(let image_file of imageGalleryFile) {
+        let imageName = new Date().getTime() +"_"+ image_file.name
+        let imageRef = ref(storage, `comment-gallery/${imageName}`)
+        try{
+            await uploadBytes(imageRef, image_file)
+            const imgGallery_URL = await getDownloadURL(imageRef)
+            imageGalleryUrl.push(imgGallery_URL)
+        } catch (err){
+            console.log('error uploading file to firebase', err)
+        }
+    }
+  }
+
   // handle choose image gallery
-  const handleImageGallery = (e) => {
+  const handleImageGallery = async (e) => {
     const files = Array.from(e.target.files)
 
-    if(files.length + imageGallery.length > maxImages) {
-      setLimitImageNotify(true)
-      return
-    }
+    files.map((file)=>{
+      if(file.size > 3000000){
+        setLimitFileSizeNotify(true)
+        return
+      } else {
+        if(files.length + imageGallery.length > maxImagesInput) {
+          setLimitImageNotify(true)
+          return
+        }      
+        setImageGalleryFile((prev)=>[...prev,file])
+        const imgUrls = URL.createObjectURL(file)
+        setImageGallery((prev)=>[...prev,imgUrls])
+      
+      }
+    })
 
-    files.map((f)=>{
-      setImageGalleryFile((prev)=>[...prev,f])
-    })
-    const imgUrls = files.map(f=>URL.createObjectURL(f))
-    imgUrls.map((img)=>{
-      setImageGallery((prev)=>[...prev,img])
-    })
+    
   }
+
+  // const checkFileSize = async (files) =>{
+      
+  // }
   
   console.log(imageGallery)
   console.log(imageGalleryFile)
@@ -409,14 +451,15 @@ const ProductDetail = () => {
               {relatedProducts?.map((product,index)=>(
               <div className='flex flex-col ml-1 mt-1' key={index}>
                 <div>   
-                  <img 
+                  <Image 
+                    width={80} height={80} 
                     onClick={()=>handleColorClick(product)}
                     
                     className={`object-cover   font-bold hover:border-gray-500 hover:border-4 transition rounded 
                       border-4  ${product.color[0]===color?'border-black border-4':'' } `}
-                     width='80px'  
+                      
                     src={product.thumbnail} alt="" >       
-                  </img>
+                  </Image>
                   </div>
                   <div className='flex justify-center font-semibold ' >
                     <p>{product.color[0]}</p>
@@ -497,7 +540,7 @@ const ProductDetail = () => {
 
               {/* display images after choose */}
               {imageGallery.length >0 &&
-                <div className='flex flex-wrap mt-2' >
+                <div className='flex flex-wrap gap-2  mt-2' >
                   {imageGallery.map((img, index)=> (
                       <div className='relative' key={index}>
                         <img src={img} className='w-32 h-32 border-2 object-cover rounded-xl ' alt="" />
@@ -509,12 +552,17 @@ const ProductDetail = () => {
 
                       </div> 
                   ))}
-                </div>
+                </div> 
               }
-              { limitImageNotify &&
+              { limitImageNotify ?
                 <span className='text-red-500 font-semibold' >
-                  Upload tối đa 5 ảnh
-                </span>
+                  Upload tối đa 3 ảnh
+                </span> : ''
+              }
+              { limitFileSizeNotify ?
+                <span className='text-red-500 font-semibold' >
+                  Vui lòng chọn ảnh nhỏ hơn 5 MB
+                </span> : ''
               }
 
               <div className='flex justify-end gap-4' >
@@ -531,7 +579,7 @@ const ProductDetail = () => {
                           className='  h-12 hover:cursor-pointer hover:bg-blue-200 px-2  rounded-lg '
                           fontSize='large' 
                         />
-                      <input  className='hidden' type="file" multiple onChange={handleImageGallery} id='imageGallery' />
+                      <input  className='hidden' type="file" multiple accept='image/*' onChange={handleImageGallery} id='imageGallery' />
                   </label>
                 </span>
 
