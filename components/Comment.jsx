@@ -23,7 +23,8 @@ import {
 import app from '@/firebase'
 
 
-const Comment = ({loading, setLoading, comment, handleLike, user, productId, setCommentSuccess }) => {
+const Comment = ({loading, setLoading, comment, handleLike, user, productId, setCommentSuccess, reportCommentsId, 
+  setReloadGetReportComment,reloadGetReportComment }) => {
 
   const storage = getStorage(app);
   const [reply, setReply] = useState(false)
@@ -31,7 +32,7 @@ const Comment = ({loading, setLoading, comment, handleLike, user, productId, set
   const [imageGallery , setImageGallery] = useState([])
   const [imageGalleryFile, setImageGalleryFile] = useState([])
   const [page, setPage] = useState(1)
-  const limit = 2 
+  const limit = 4 
   const [replyData, setReplyData] = useState([])
   const [hasNextReply, setHasNextReply] = useState(true)
   const [seeMoreReply, setSeeMoreReply] = useState(false)
@@ -39,6 +40,7 @@ const Comment = ({loading, setLoading, comment, handleLike, user, productId, set
   const [limitFileSizeNotify, setLimitFileSizeNotify]= useState(false)
   const maxImagesInput = 3
   var imageGalleryUrl = []
+
 
 
   // handle choose image gallery
@@ -69,8 +71,7 @@ const Comment = ({loading, setLoading, comment, handleLike, user, productId, set
       setImageGallery(imgs)
       setImageGalleryFile(files)
   }
-console.log(imageGallery)
-console.log(imageGalleryFile)
+
 
   const uploadGallery = async () => {
     for(let image_file of imageGalleryFile) {
@@ -86,7 +87,7 @@ console.log(imageGalleryFile)
     }
   }
 
-
+  
   const handleSendReply = async () => {     
     setLoading(true)
     await uploadGallery()
@@ -147,8 +148,26 @@ console.log(imageGalleryFile)
       }
     
   }
-  // console.log(comment.imgGallery.split(","))
-  console.log(comment.imgGallery)
+  
+  //
+  const handleReportComment = async () =>{
+    try {
+      setLoading(true)
+      const res = await userRequest.post(`/report-comment`,{
+        commentId: comment._id,
+        productId: productId,
+        userId: user._id,
+      })
+      if(res.data){
+        setReloadGetReportComment(!reloadGetReportComment)
+      }
+    } catch(err) {
+      console.log('error while handle report comment',err)
+    } finally{
+      setLoading(false)
+    }
+  }
+
   return (
   <>
     <div  className='mt-4  h-auto w-auto  ' >
@@ -216,7 +235,9 @@ console.log(imageGalleryFile)
                 </p>
     
                 <span title='báo xấu' >
-                  <FlagIcon className='text-gray-400 hover:text-red-500 hover:cursor-pointer transition' />
+                  <FlagIcon 
+                      onClick={handleReportComment}
+                      className={`text-gray-400 hover:text-red-500 hover:cursor-pointer transition ${reportCommentsId?.includes(comment?._id)? 'text-red-500':''}  `} />
                 </span>
     
               </div>
@@ -345,6 +366,9 @@ console.log(imageGalleryFile)
             setCommentSuccess={setCommentSuccess}
             productId={productId}
             comment={comment}
+            reloadGetReportComment={reloadGetReportComment}
+            setReloadGetReportComment={setReloadGetReportComment}
+            reportCommentsId={reportCommentsId}
         /> 
       ))}
     </div>

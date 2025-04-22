@@ -20,7 +20,9 @@ import {
 } from "firebase/storage";
 import app from '@/firebase'
 
-const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, productId, comment }) => {
+const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, productId, comment, reloadGetReportComment, setReloadGetReportComment
+    , reportCommentsId
+ }) => {
 
     const storage = getStorage(app);
     const [replyBox, setReplyBox] = useState(false)
@@ -115,8 +117,25 @@ const Reply = ({loading, setLoading, reply, user, replyData, setCommentSuccess, 
       setImageGallery(imgs)
       setImageGalleryFile(files)
   }
-console.log(imageGallery)
-console.log(imageGalleryFile)
+
+  const handleReportComment = async () =>{
+      try {
+        setLoading(true)
+        const res = await userRequest.post(`/report-comment`,{
+          commentId: reply._id,
+          productId: productId,
+          userId: user._id,
+        })
+        if(res.data){
+          setReloadGetReportComment(!reloadGetReportComment)
+        }
+      } catch(err) {
+        console.log('error while handle report comment',err)
+      } finally{
+        setLoading(false)
+      }
+    }
+
 console.log(reply)
   return (
     <div  className=' ml-10  md:ml-14 border-l-2 p-2 ' >
@@ -187,7 +206,9 @@ console.log(reply)
             </p>
 
             <span title='báo xấu' >
-                <FlagIcon className='text-gray-400 hover:text-red-500 hover:cursor-pointer transition' />
+                <FlagIcon 
+                    onClick={handleReportComment}
+                    className={`text-gray-400 hover:text-red-500 hover:cursor-pointer transition ${reportCommentsId.includes(reply._id)? 'text-red-500':''}  `} />
             </span>
 
         </div>

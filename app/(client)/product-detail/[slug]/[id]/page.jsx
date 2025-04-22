@@ -54,6 +54,7 @@ const ProductDetail = () => {
 
     const [relatedProducts, setRelatedProducts] = useState()
     const [reload, setReload] = useState(false)
+    const [reloadGetReportComment, setReloadGetReportComment] = useState(false)
    
     //  add to wishlistArray
     wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
@@ -66,7 +67,7 @@ const ProductDetail = () => {
     const [comment, setComment] = useState('')
     const [comments, setComments] = useState([])
     const [hasNextComment, setHasNextComment] = useState(true)
-
+    const [reportCommentsId, setReportCommentsId] = useState([])
     const [limitFileSizeNotify, setLimitFileSizeNotify]= useState(false)
     const [limitImageNotify, setLimitImageNotify] = useState(false)
     const [page, setPage] = useState(2)
@@ -100,7 +101,7 @@ const ProductDetail = () => {
     }
 }
 
-
+console.log(user)
   //handle add to cart
   const addToCart = async (e) => {
     if(size===''){
@@ -223,12 +224,13 @@ const ProductDetail = () => {
           const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
           if(res.data){
             setCurrentProduct(res.data.products[0])
-            setProduct(res.data.products[0])
-            setLoading(false)
+            setProduct(res.data.products[0])           
           }
 
         } catch(err){
           console.log('err while fetching colorOptions',err)
+        } finally {
+          setLoading(false)
         }
       }
       getProduct()
@@ -252,9 +254,30 @@ const ProductDetail = () => {
     getComment()
   }, [])
 
-  console.log('-----',comments)
+  //fetch reportComments 
+  useEffect (()=> {
+    const getReportComments = async () =>{
+      try {
+        const reportCommentArray = []
+        const res = await userRequest.get(`/report-comment/${user._id}?productId=${productId}`)
+        if(res.data){
+          res.data.reportComments.map((reportComment)=>{
+            reportCommentArray.push(reportComment.commentId)
+          })
+          setReportCommentsId(reportCommentArray)
 
-  console.log(page)
+        }
+      } catch(err){
+        console.log('error loading reportComments',err)
+      } finally {
+        
+      }
+    }
+    getReportComments()
+  },[reloadGetReportComment])
+
+
+  console.log(reportCommentsId)
 
   // fetch more comments when user click on 'see more comments' button
   const fetchMoreComment = async () => {
@@ -611,6 +634,9 @@ const ProductDetail = () => {
             handleLike={handleLike}  
             productId={productId}
             setCommentSuccess={setCommentSuccess}
+            reportCommentsId = {reportCommentsId}
+            setReloadGetReportComment={setReloadGetReportComment}
+            reloadGetReportComment={reloadGetReportComment}
           />
         ))}
     

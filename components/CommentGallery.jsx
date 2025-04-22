@@ -36,7 +36,7 @@ export default function CommentGallery({ product_images}) {
         window.removeEventListener('resize', handleResize);
       };
     }, []);
-
+  
     // Open the lightbox on image click
   const handleImageClick = (index) => {
     setCurrentIndex(index);
@@ -88,7 +88,7 @@ export default function CommentGallery({ product_images}) {
 
         {/* light box */}
         { isLightboxOpen &&
-            <div className='image-carousel z-50  '  >
+            <div className={` image-carousel z-50   `}  >
                 <p className='fixed top-5 left-5 text-gray-400 z-50  '>{currentIndex+1}/{product_images.length} </p>
                 <CloseIcon onClick={handleCloseLightbox} 
                                 sx={{fontSize:'60px'}} 
@@ -114,7 +114,7 @@ export default function CommentGallery({ product_images}) {
                         className='z-50 fixed right-0  top-[375px] sm:top-[300px] md:top-[450px] lg:top-[500px] text-gray-500  transition  hover:text-gray-700  ' />
                 }
                
-                <div className={`z-40 fixed top-0 left-0  bg-black    w-screen h-screen  `} >
+                <div className={`z-40 fixed top-0 left-0  bg-black w-screen h-screen   `} >
                     {/* Main Carousel */}
                     <Swiper                     
                         modules={[Navigation, Thumbs, Zoom, Keyboard, Controller]}
