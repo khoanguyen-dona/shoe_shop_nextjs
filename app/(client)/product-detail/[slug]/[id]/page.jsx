@@ -73,6 +73,7 @@ const ProductDetail = () => {
     const [page, setPage] = useState(2)
     const limit = 5
     const maxImagesInput = 3
+
     console.log(product.imgGallery)
   const addToWishlist = async (e) => {
     setLoading(true)
@@ -406,13 +407,10 @@ console.log(user)
       setImageGalleryFile(files)
   }
 
-  const handleLike = () => {
-
-  }
- 
+ console.log(comments.length)
 
   return (
-  
+
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
      {notifyFailure &&
@@ -630,8 +628,7 @@ console.log(user)
             loading={loading}
             setLoading={setLoading}
             user={user}
-            comment={c} 
-            handleLike={handleLike}  
+            comment={c}  
             productId={productId}
             setCommentSuccess={setCommentSuccess}
             reportCommentsId = {reportCommentsId}
@@ -642,17 +639,18 @@ console.log(user)
     
 
       {
-
-      hasNextComment ?
-      <div 
-        onClick={fetchMoreComment}
-        className='p-4 text-lg bg-gray-200 text-black-500 mt-10 hover:bg-gray-300 hover:text-white  transition hover:cursor-pointer  flex font-semibold justify-center' >
-        Xem thêm bình luận
-      </div> : ''
+        hasNextComment && comments.length!==0  ?
+        <div 
+          onClick={fetchMoreComment}
+          className='p-4 text-lg bg-gray-200 text-black-500 mt-10 hover:bg-gray-300 hover:text-white  transition hover:cursor-pointer  flex font-semibold justify-center' >
+          Xem thêm bình luận
+        </div> : comments.length===0 ? 
+        <div className='p-4 bg-gray-200 text-xl font-semibold mt-4 rounded-lg text-center' >Không có bình luận nào ! </div> : ''
       }
       
     
     </div>
+ 
   )
 }
 
