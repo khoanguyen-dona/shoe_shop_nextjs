@@ -2,6 +2,10 @@
 import React from 'react'
 import { useParams } from 'next/navigation';
 
+import SendIcon from '@mui/icons-material/Send';
+import CloseIcon from '@mui/icons-material/Close';
+
+import Image from 'next/image';
 import { useState  } from 'react';
 import { useEffect } from 'react';
 import { FormatCurrency } from '@/utils/FormatCurrency';
@@ -16,12 +20,27 @@ import Loader from '@/components/Loader';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 import FailurePopup from '@/components/Popup/FailurePopup';
 import SwiperGallery from '@/components/SwiperGallery';
+import Comment from '@/components/Comment';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import app from '@/firebase'
 
+import Fancybox from '@/components/Fancybox';
+import Carousel from '@/components/Carousel';
 
 const ProductDetail = () => {
+
+    const storage = getStorage(app);
     const [notifyChooseSize, setNotifyChooseSize] = useState(false)
     const [notifyFailure, setNotifyFailure] = useState(false)
     const [notifyPopup, setNotifyPopup] = useState(false)
+    const [commentSuccess, setCommentSuccess] = useState(false)
+
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.currentUser)
@@ -37,10 +56,28 @@ const ProductDetail = () => {
 
     const [relatedProducts, setRelatedProducts] = useState()
     const [reload, setReload] = useState(false)
+    const [reloadGetReportComment, setReloadGetReportComment] = useState(false)
+   
     //  add to wishlistArray
     wishlist?.products?.map((item)=> wishlistArray.push(item._id)) 
     const [isFirstRender, setIsFirstRender] = useState(true);
-  
+
+    const [imageGallery , setImageGallery] = useState([])
+    const [imageGalleryFile, setImageGalleryFile] = useState([])
+    var imageGalleryUrl = []
+
+    const [comment, setComment] = useState('')
+    const [comments, setComments] = useState([])
+    const [hasNextComment, setHasNextComment] = useState(true)
+    const [reportCommentsId, setReportCommentsId] = useState([])
+    const [limitFileSizeNotify, setLimitFileSizeNotify]= useState(false)
+    const [limitImageNotify, setLimitImageNotify] = useState(false)
+    const [page, setPage] = useState(2)
+    const limit = 5
+    const maxImagesInput = 3
+
+    console.log(product.imgGallery)
+
   const addToWishlist = async (e) => {
     setLoading(true)
     if(user === null ){
@@ -66,8 +103,7 @@ const ProductDetail = () => {
       console.log(err)
     }
     }
-}
-
+  }
 
   //handle add to cart
   const addToCart = async (e) => {
@@ -191,17 +227,81 @@ const ProductDetail = () => {
           const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
           if(res.data){
             setCurrentProduct(res.data.products[0])
-            setProduct(res.data.products[0])
-            setLoading(false)
+            setProduct(res.data.products[0])           
           }
 
         } catch(err){
           console.log('err while fetching colorOptions',err)
+        } finally {
+          setLoading(false)
         }
       }
       getProduct()
     }, [reload])
-   
+
+  // fetch comments first time
+  useEffect (() => {
+    const getComment = async () => {
+      try {
+        const res = await publicRequest.get(`/comment/${productId}?type=thread&limit=${limit}&page=1`)
+        if(res.data){
+          console.log(res.data)
+          setComments(res.data.replyData)
+        }
+      } catch(err) {
+        console.log('error while fetch comments type thread',err)
+      } finally {
+        
+      }
+    }
+    getComment()
+  }, [])
+
+  //fetch reportComments 
+  useEffect (()=> {
+    const getReportComments = async () =>{
+      try {
+        const reportCommentArray = []
+        const res = await userRequest.get(`/report-comment/${user._id}?productId=${productId}`)
+        if(res.data){
+          res.data.reportComments.map((reportComment)=>{
+            reportCommentArray.push(reportComment.commentId)
+          })
+          setReportCommentsId(reportCommentArray)
+
+        }
+      } catch(err){
+        console.log('error loading reportComments',err)
+      } finally {
+        
+      }
+    }
+    getReportComments()
+  },[reloadGetReportComment])
+
+  // fetch more comments when user click on 'see more comments' button
+  const fetchMoreComment = async () => {
+      try {
+        setLoading(true)
+        const res = await publicRequest.get(`/comment/${productId}?type=thread&limit=${limit}&page=${page}`) 
+        if(res.data){
+          res.data.replyData.map((c)=>{
+            comments.push(c)
+          })  
+          console.log(res.data)
+          if(res.data.hasNext===false){
+            setHasNextComment(false)
+          }
+        }
+      } catch(err) {
+        console.log('error while fetch more comment type thread',err)
+      } finally {
+        setPage(prev => prev+1)
+        setLoading(false)
+      }
+  
+  }
+
   const handleColorClick = (p) => {
     setCurrentProduct(p)
     setColor(p.color[0])
@@ -217,8 +317,88 @@ const ProductDetail = () => {
     setNotifyChooseSize(false)
   }
 
+  const handleSendComment = async () => {
+    setLoading(true)
+    await uploadGallery()
+    try {
+      const res = await userRequest.post(`/comment`, {
+        productId: productId,
+        userId: user._id,
+        content: comment,
+        imgGallery: imageGalleryUrl,
+        avatarUrl: user.img,
+        userName: user.username,
+        type: "thread",
+        refCommentId:"",
+        refCommentUserId:"",
+        refCommentUsername:"",
+        isReplied: false
+      })
+      if (res.data){
+        setComment('')
+        setImageGallery([])
+        setImageGalleryFile([])
+        setLimitFileSizeNotify(false)
+        setLimitImageNotify(false)
+        setCommentSuccess(true)
+        setTimeout(()=> {
+          setCommentSuccess(false)
+        }, 5000)
+      }
+    } catch(err){
+      console.log('error while upload comment data to mongodb')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const uploadGallery = async () => {
+    for(let image_file of imageGalleryFile) {
+        let imageName = new Date().getTime() +"_"+ image_file.name
+        let imageRef = ref(storage, `comment-gallery/${imageName}`)
+        try{
+            await uploadBytes(imageRef, image_file)
+            const imgGallery_URL = await getDownloadURL(imageRef)
+            imageGalleryUrl.push(imgGallery_URL)
+        } catch (err){
+            console.log('error uploading file to firebase', err)
+        }
+    }
+  }
+
+  // handle choose image gallery
+  const handleImageGallery = async (e) => {
+    const files = Array.from(e.target.files)
+
+    files.map((file)=>{
+      if(file.size > 3000000){
+        setLimitFileSizeNotify(true)
+        return
+      } else {
+        if(files.length + imageGallery.length > maxImagesInput) {
+          setLimitImageNotify(true)
+          return
+        }      
+        setImageGalleryFile((prev)=>[...prev,file])
+        const imgUrls = URL.createObjectURL(file)
+        setImageGallery((prev)=>[...prev,imgUrls])
+      
+      }
+    })
+
+    
+  }
+
+  // handle delete image gallery
+  const handleRemoveImageGallery = (index) => {
+      const imgs=imageGallery.filter((img, i) => i !== index)
+      const files = imageGalleryFile.filter((img, i)=> i !==index)
+      setImageGallery(imgs)
+      setImageGalleryFile(files)
+  }
+
   return (
-  
+
     <div className={` px-4 md:px-8  xl:px-32  mb-20 ${loading?'bg-white opacity-50':''} `} >
      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
      {notifyFailure &&
@@ -231,11 +411,48 @@ const ProductDetail = () => {
             
                 <SuccessPopup  message={'Thêm thành công!'}  handleClosePopup={handleClosePopup}   /> 
              : '' }
+      {commentSuccess ? 
+            
+            <SuccessPopup  message={'Bình luận thành công!'}  handleClosePopup={handleClosePopup}   /> 
+         : '' }
       <div className='flex flex-col  xl:flex-row  mt-20  ' >
         {/* product image gallery */}
+          {/* <div className='w-full h-full xl:w-3/6 2xl:w-3/6  ' > 
+            <SwiperGallery  product_images={product?.imgGallery} />
+        
+          </div> */}
+
+        {/* product image gallery with fancybox library */}
         <div className='w-full h-full xl:w-3/6 2xl:w-3/6  ' > 
-          <SwiperGallery  product_images={product?.imgGallery} />
-       
+          <Fancybox
+            options={{
+              Carousel: {
+                infinite: false,
+              },
+            }}
+          >
+            <Carousel
+              options={{ infinite: false }}
+            >
+              {product?.imgGallery?.map((img,index)=>(
+                <div
+                  key={index}
+                  className="f-carousel__slide"
+                  data-fancybox="gallery"
+                  data-src={img}
+                  data-thumb-src={img}                
+                >
+                  <Image
+                    className='object-cover w-full '
+                    alt="image"
+                    src={img}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          </Fancybox>
         </div>
 
         {/* product short desciption */}
@@ -248,7 +465,7 @@ const ProductDetail = () => {
           <div className='font-bold' > 
             Size : {size} 
           </div>
-          {/* {product.size} */}
+          {/* product.size option */}
           {String(currentProduct?.size).length === 0  ? '' :
             <div className='  flex flex-wrap  '>
               
@@ -266,7 +483,7 @@ const ProductDetail = () => {
             </div> 
           }            
 
-          {/* color */}
+          {/* color  option */}
           <div className='font-bold' >
             Color : {color}
           </div>
@@ -275,14 +492,15 @@ const ProductDetail = () => {
               {relatedProducts?.map((product,index)=>(
               <div className='flex flex-col ml-1 mt-1' key={index}>
                 <div>   
-                  <img 
+                  <Image 
+                    width={80} height={80} 
                     onClick={()=>handleColorClick(product)}
                     
                     className={`object-cover   font-bold hover:border-gray-500 hover:border-4 transition rounded 
                       border-4  ${product.color[0]===color?'border-black border-4':'' } `}
-                     width='80px'  
+                      
                     src={product.thumbnail} alt="" >       
-                  </img>
+                  </Image>
                   </div>
                   <div className='flex justify-center font-semibold ' >
                     <p>{product.color[0]}</p>
@@ -316,15 +534,144 @@ const ProductDetail = () => {
         </div>
 
       </div>
-      <div className='border-b-2 mt-2 border-black mx-96' ></div>
+
+      <div className='border-b-4 mt-2 border-gray-300 mx-4 lg:mx-72 ' ></div>
+
       {/* Product description  */}
       <div className='mt-10' >
             <h1 className='text-4xl font-bold text-center' >  Mô tả</h1>
             <p>{currentProduct?.desc}</p>
       </div>
-        
+
+      <div className='border-b-4 mt-8 border-gray-300  mx-4 lg:mx-72  ' ></div>
+
+      {/* Comment box */}
+      <div className='h-auto flex flex-row gap-2 mt-4' >
+            {user?.img ? 
+              <Image 
+                class='rounded-full object-cover w-8 h-8  md:w-12 md:h-12 '
+                src={user?.img}
+                width={50}
+                height={50}
+                alt='avatar'
+              />
+              :
+              <Image 
+                alt='user avatar'
+                src='/icon-user.jpg'  width={50} height={50}    
+                className='rounded-full  object-cover w-8 h-8 md:w-12 md:h-12 hover:cursor-pointer' 
+              />
+            }
+
+            <div className='flex flex-col w-full  border-2 p-2 h-auto' >
+
+              <div className='flex  gap-2  '>
+
+                <textarea 
+                  onChange={(e)=>setComment(e.target.value)}
+                  value={comment}
+                  className='flex-1 bg-gray-100 p-2 rounded-md h-48 '
+                  placeholder='Bạn đang nghĩ gì ?' >
+                </textarea> 
+
+
+              </div>
+
+              
+
+              {/* display images after choose */}
+              {imageGallery.length >0 &&
+                <div className='flex flex-wrap gap-2  mt-2' >
+                  {imageGallery.map((img, index)=> (
+                      <div className='relative' key={index}>
+                        <img src={img} className='w-32 h-32 border-2 object-cover rounded-xl ' alt="" />
+                        <CloseIcon  
+                          fontSize='large'
+                          onClick={()=>handleRemoveImageGallery(index)}
+                          className='hover:text-red-500 text-gray-400 hover:cursor-pointer bg-black  rounded-md  transition absolute top-1 right-1 z-20 ' 
+                        />
+
+                      </div> 
+                  ))}
+                </div> 
+              }
+              { limitImageNotify ?
+                <span className='text-red-500 font-semibold' >
+                  Upload tối đa 3 ảnh
+                </span> : ''
+              }
+              { limitFileSizeNotify ?
+                <span className='text-red-500 font-semibold' >
+                  Vui lòng chọn ảnh nhỏ hơn 5 MB
+                </span> : ''
+              }
+
+              <div className='flex justify-end gap-4' >
+                {/* add images */}
+                <span className='text-left flex gap-2 p-2'>          
+                  <label 
+                      title='Thêm ảnh'
+                      className='hover:text-blue-500   transition  ' 
+                      htmlFor="imageGallery"
+                  >
+                        <img
+                          src='/gallery.png'
+                          alt='Thêm ảnh'
+                          className='  h-12 hover:cursor-pointer hover:bg-blue-200 px-2  rounded-lg '
+                          fontSize='large' 
+                        />
+                      <input  className='hidden' type="file" multiple accept='image/*' onChange={handleImageGallery} id='imageGallery' />
+                  </label>
+                </span>
+
+                {/* send commetn */}
+                <button 
+                    disabled={comment.trim()===''}
+                    title='Gửi bình luận'
+                    onClick={handleSendComment}
+                    className={`text-white flex gap-2 h-[50px] bg-blue-500 justify-center mt-2 items-center transition p-3 md:p-5 rounded-md
+                      ${comment.trim()===''?'bg-gray-500 hover:bg-gray-500':'hover:bg-blue-600'}  `} 
+                  >
+                    <SendIcon/>    
+                    Send
+                </button>
+              </div>
+
+            </div>
+            
+      </div>
+
+      {/* Comments of other */}
+      
+        {comments?.map((c, index)=>(
+          <Comment 
+            key={index} 
+            loading={loading}
+            setLoading={setLoading}
+            user={user}
+            comment={c}  
+            productId={productId}
+            setCommentSuccess={setCommentSuccess}
+            reportCommentsId = {reportCommentsId}
+            setReloadGetReportComment={setReloadGetReportComment}
+            reloadGetReportComment={reloadGetReportComment}
+          />
+        ))}
+    
+
+      {
+        hasNextComment && comments.length!==0  ?
+        <div 
+          onClick={fetchMoreComment}
+          className='p-4 text-lg bg-gray-200 text-black-500 mt-10 hover:bg-gray-300 hover:text-white  transition hover:cursor-pointer  flex font-semibold justify-center' >
+          Xem thêm bình luận
+        </div> : comments.length===0 ? 
+        <div className='p-4 bg-gray-200 text-xl font-semibold mt-4 rounded-lg text-center' >Không có bình luận nào ! </div> : ''
+      }
+      
     
     </div>
+ 
   )
 }
 

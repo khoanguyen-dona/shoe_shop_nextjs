@@ -222,3 +222,85 @@ export const orderData = [
     }
 
 ]
+
+// type = 'replyTo' , 'thread' 
+export const commentData = [
+    {
+        id:'1',
+        productId: '2',
+        userId: '12h4',
+        content:'Giày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngày Giày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngàyGiày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngàyGiày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngàyGiày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngày',
+        imgGallery:[],
+        avatarUrl:'https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1734232539586Giay_Pureboost_22_trang_GY4705_02_standard_hover.avif?alt=media&token=0ef21260-1200-4cc0-bb62-2759b8080fef',
+        name:'thuanthanh142',
+        createdAt:'1/2/2025, 16:49',
+        type:'thread',
+        refCommentId:'',
+        refCommentUserId:'',
+        refCommentUsername:'',
+        isReplied: true,
+    },
+    {
+        id:'2',
+        productId: '2',
+        userId: '12h4',
+        content:'Giày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngày',
+        imgGallery:[],
+        avatarUrl:'https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1734232539586Giay_Pureboost_22_trang_GY4705_02_standard_hover.avif?alt=media&token=0ef21260-1200-4cc0-bb62-2759b8080fef',
+        name:'thuanthanh142',
+        createdAt:'1/2/2025, 16:49',
+        type:'thread',
+        refCommentId:'1',
+        refCommentUserId:'12',
+        refCommentUsername:'thuanthanh142',
+        isReplied: false,
+    },
+    {
+        id:'3',
+        productId: '2',
+        userId: '12h4',
+        content:'Giày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngày',
+        imgGallery:[],
+        avatarUrl:'https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1734232539586Giay_Pureboost_22_trang_GY4705_02_standard_hover.avif?alt=media&token=0ef21260-1200-4cc0-bb62-2759b8080fef',
+        name:'xulidsa',
+        createdAt:'1/2/2025, 16:49',
+        type:'thread',
+        refCommentId:'',
+        refCommentUserId:'',
+        refCommentUsername:'',
+        isReplied: false,
+    },
+    {
+        id:'4',
+        productId: '2',
+        userId: '12h4',
+        content:'Giày siêu đẹp ,rất phù hợp cho việc chạy bộ hằng ngày',
+        imgGallery:[],
+        avatarUrl:'https://firebasestorage.googleapis.com/v0/b/adidas-shop-d0636.appspot.com/o/upload%2F1734232539586Giay_Pureboost_22_trang_GY4705_02_standard_hover.avif?alt=media&token=0ef21260-1200-4cc0-bb62-2759b8080fef',
+        name:'vangogh',
+        createdAt:'1/2/2025, 16:49',
+        type:'thread',
+        refCommentId:'',
+        refCommentUserId:'',
+        refCommentUsername:'',
+        isReplied: false,
+    }
+
+]
+// type = 'like' | 'love' | 'surprise' | 'sad' 
+export const likeData = [
+    {
+        id: '1',
+        type:'like',
+        commentId: 'a44dsa',
+        userId:'3',
+
+    }
+]
+export const reportedCommentData = [
+    {
+        id:'1',
+        commentId: '12rsd',
+        userId:'1',
+    }
+]
