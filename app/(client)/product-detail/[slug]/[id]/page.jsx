@@ -30,6 +30,8 @@ import {
 } from "firebase/storage";
 import app from '@/firebase'
 
+import Fancybox from '@/components/Fancybox';
+import Carousel from '@/components/Carousel';
 
 const ProductDetail = () => {
 
@@ -75,6 +77,7 @@ const ProductDetail = () => {
     const maxImagesInput = 3
 
     console.log(product.imgGallery)
+
   const addToWishlist = async (e) => {
     setLoading(true)
     if(user === null ){
@@ -100,9 +103,8 @@ const ProductDetail = () => {
       console.log(err)
     }
     }
-}
+  }
 
-console.log(user)
   //handle add to cart
   const addToCart = async (e) => {
     if(size===''){
@@ -277,9 +279,6 @@ console.log(user)
     getReportComments()
   },[reloadGetReportComment])
 
-
-  console.log(reportCommentsId)
-
   // fetch more comments when user click on 'see more comments' button
   const fetchMoreComment = async () => {
       try {
@@ -303,8 +302,6 @@ console.log(user)
   
   }
 
-  console.log(page)
-   
   const handleColorClick = (p) => {
     setCurrentProduct(p)
     setColor(p.color[0])
@@ -392,13 +389,6 @@ console.log(user)
     
   }
 
-  // const checkFileSize = async (files) =>{
-      
-  // }
-  
-  console.log(imageGallery)
-  console.log(imageGalleryFile)
-
   // handle delete image gallery
   const handleRemoveImageGallery = (index) => {
       const imgs=imageGallery.filter((img, i) => i !== index)
@@ -406,8 +396,6 @@ console.log(user)
       setImageGallery(imgs)
       setImageGalleryFile(files)
   }
-
- console.log(comments.length)
 
   return (
 
@@ -429,9 +417,42 @@ console.log(user)
          : '' }
       <div className='flex flex-col  xl:flex-row  mt-20  ' >
         {/* product image gallery */}
+          {/* <div className='w-full h-full xl:w-3/6 2xl:w-3/6  ' > 
+            <SwiperGallery  product_images={product?.imgGallery} />
+        
+          </div> */}
+
+        {/* product image gallery with fancybox library */}
         <div className='w-full h-full xl:w-3/6 2xl:w-3/6  ' > 
-          <SwiperGallery  product_images={product?.imgGallery} />
-       
+          <Fancybox
+            options={{
+              Carousel: {
+                infinite: false,
+              },
+            }}
+          >
+            <Carousel
+              options={{ infinite: false }}
+            >
+              {product?.imgGallery?.map((img,index)=>(
+                <div
+                  key={index}
+                  className="f-carousel__slide"
+                  data-fancybox="gallery"
+                  data-src={img}
+                  data-thumb-src={img}                
+                >
+                  <Image
+                    className='object-cover w-full '
+                    alt="image"
+                    src={img}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          </Fancybox>
         </div>
 
         {/* product short desciption */}

@@ -102,7 +102,7 @@ const Reply = ({loading, setLoading, reply, user, setCommentSuccess, productId, 
         const files = Array.from(e.target.files)
 
         files.map((file)=>{
-          if(file.size > 3000000){
+          if(file.size > 5000000){
             setLimitFileSizeNotify(true)
             return
           } else {

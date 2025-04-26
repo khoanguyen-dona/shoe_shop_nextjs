@@ -9,7 +9,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ShortcutIcon from '@mui/icons-material/Shortcut';
 import { publicRequest, userRequest } from '@/requestMethod';
-
+import Fancybox from './Fancybox';
 import ReactTimeAgoUtil from '@/utils/ReactTimeAgoUtil';
 import Reply from './Reply';
 import CommentGallery from './CommentGallery';
@@ -22,6 +22,7 @@ import {
 } from "firebase/storage";
 import app from '@/firebase'
 import { emotionsArray } from '@/constants';
+import Carousel from './Carousel';
 
 const Comment = ({loading, setLoading, comment,  user, productId, setCommentSuccess, reportCommentsId, 
   setReloadGetReportComment,reloadGetReportComment }) => {
@@ -374,11 +375,37 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                   </div>
 
                   {/* display comment imgGallery */}
-                  {comment.imgGallery.length !== 0 &&
-                    <div className='mt-2 ' > 
-                      <CommentGallery product_images={comment?.imgGallery}  />
+                    {/* {comment.imgGallery.length !== 0 &&
+                      <div className='mt-2 ' > 
+                        <CommentGallery product_images={comment?.imgGallery}  />
+                      </div>
+                    } */}
+                    {/* display comment imgGallery with fancybox library */}
+                  
+                  <Fancybox
+                    options={{
+                      Carousel: {
+                        infinite: false,
+                      },
+                    }}
+                  >
+                    <div className='flex gap-2 '>
+                    {
+                      comment?.imgGallery?.map((img,index)=>(
+                        <a key={index} data-fancybox="gallery" href={img}>
+                          <Image
+                            className='rounded-lg object-cover w-32 h-32'
+                            alt="image"
+                            src={img}
+                            width={100}
+                            height={100}
+                          />
+                        </a>
+                      ))
+                    }
                     </div>
-                  }
+                  </Fancybox>
+                 
 
                   {/* emotion that comment have */}
                   {emotions.length > 0 &&
