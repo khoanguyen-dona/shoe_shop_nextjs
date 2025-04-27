@@ -32,9 +32,10 @@ import app from '@/firebase'
 
 import Fancybox from '@/components/Fancybox';
 import Carousel from '@/components/Carousel';
+import { useRouter } from 'next/navigation';
 
 const ProductDetail = () => {
-
+    const router = useRouter()
     const storage = getStorage(app);
     const [notifyChooseSize, setNotifyChooseSize] = useState(false)
     const [notifyFailure, setNotifyFailure] = useState(false)
@@ -186,8 +187,7 @@ const ProductDetail = () => {
 
   //fetch product data by id
     useEffect(()=> {
-      const getProduct = async () => {
-      
+      const getProduct = async () => {  
         try {
           const res = await publicRequest.get(`/product/${productId}`)
           if(res.data) {  
@@ -199,45 +199,42 @@ const ProductDetail = () => {
               if(res2.data){
                 setRelatedProducts(res2.data.products)                       
               }
-    
             } catch(err){
               console.log('err while fetching colorOptions',err)
-            }
-            
+            }        
             setLoading(false)
           }
         } catch(err) {
           console.log('err while fetch product data',err)
         }
       };
-      getProduct();
-      
+      getProduct();   
     }, [])
 
   // fetch product data when click color
-    useEffect (() => {
-      if(isFirstRender){
-        setIsFirstRender(false);
-        return;
-      } 
+    // useEffect (() => {
+    //   if(isFirstRender){
+    //     setIsFirstRender(false);
+    //     return;
+    //   } 
 
-      setLoading(true)
-      const getProduct = async () => {
-        try {
-          const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
-          if(res.data){
-            setCurrentProduct(res.data.products[0])
-            setProduct(res.data.products[0])           
-          }
+    //   setLoading(true)
+    //   const getProduct = async () => {
+    //     try {
+    //       const res = await publicRequest.get(`/product/find/${product.name}?color=${color}`)
+    //       if(res.data){
+    //         setCurrentProduct(res.data.products[0])
+    //         setProduct(res.data.products[0])           
+    //       }
 
-        } catch(err){
-          console.log('err while fetching colorOptions',err)
-        } finally {
-          setLoading(false)
-        }
-      }
-      getProduct()
-    }, [reload])
+    //     } catch(err){
+    //       console.log('err while fetching colorOptions',err)
+    //     } finally {
+    //       setLoading(false)
+    //     }
+    //   }
+    //   getProduct()
+    // }, [reload])
 
   // fetch comments first time
   useEffect (() => {
@@ -303,9 +300,10 @@ const ProductDetail = () => {
   }
 
   const handleColorClick = (p) => {
-    setCurrentProduct(p)
-    setColor(p.color[0])
-    setReload(!reload)
+    // setCurrentProduct(p)
+    // setColor(p.color[0])
+    // setReload(!reload)
+    router.push(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/product-detail/${p.name.trim().split(' ').join('-')}/${p._id}`)
   }
   // close the popup
   const handleClosePopup = () => {
@@ -381,8 +379,7 @@ const ProductDetail = () => {
         }      
         setImageGalleryFile((prev)=>[...prev,file])
         const imgUrls = URL.createObjectURL(file)
-        setImageGallery((prev)=>[...prev,imgUrls])
-      
+        setImageGallery((prev)=>[...prev,imgUrls])    
       }
     })
 
@@ -490,7 +487,7 @@ const ProductDetail = () => {
           <div className='flex flex-swap  ' >       
 
               {relatedProducts?.map((product,index)=>(
-              <div className='flex flex-col ml-1 mt-1' key={index}>
+              <div className='flex flex-col ml-1 mt-1 hover:cursor-pointer' key={index}>
                 <div>   
                   <Image 
                     width={80} height={80} 
