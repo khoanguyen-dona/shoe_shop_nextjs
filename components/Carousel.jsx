@@ -28,7 +28,7 @@ function Carousel(props) {
     return () => {
       instance.destroy();
     };
-  });
+  },[props.children]);
 
   return (
     <div className="f-carousel " ref={containerRef}>

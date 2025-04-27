@@ -382,6 +382,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                     } */}
                     {/* display comment imgGallery with fancybox library */}
                   
+                  {comment?.imgGallery?.length !== 0 &&
                   <Fancybox
                     options={{
                       Carousel: {
@@ -389,12 +390,12 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                       },
                     }}
                   >
-                    <div className='flex gap-2 '>
+                    <div className='flex gap-2 mt-2'>
                     {
                       comment?.imgGallery?.map((img,index)=>(
                         <a key={index} data-fancybox="gallery" href={img}>
                           <Image
-                            className='rounded-lg object-cover w-32 h-32'
+                            className='rounded-lg object-cover w-28 h-28'
                             alt="image"
                             src={img}
                             width={100}
@@ -405,7 +406,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                     }
                     </div>
                   </Fancybox>
-                 
+                  }
 
                   {/* emotion that comment have */}
                   {emotions.length > 0 &&
