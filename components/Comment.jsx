@@ -12,7 +12,6 @@ import { publicRequest, userRequest } from '@/requestMethod';
 import Fancybox from './Fancybox';
 import ReactTimeAgoUtil from '@/utils/ReactTimeAgoUtil';
 import Reply from './Reply';
-import CommentGallery from './CommentGallery';
 import {
   getStorage,
   ref,
@@ -22,13 +21,14 @@ import {
 } from "firebase/storage";
 import app from '@/firebase'
 import { emotionsArray } from '@/constants';
-import Carousel from './Carousel';
+
+
 
 const Comment = ({loading, setLoading, comment,  user, productId, setCommentSuccess, reportCommentsId, 
-  setReloadGetReportComment,reloadGetReportComment }) => {
+  setReloadGetReportComment,reloadGetReportComment, setLoginRecommendPopup, redBackground, interaction }) => {
 
   const storage = getStorage(app);
-  
+  const [userCommenteds, setUserCommenteds] = useState([])
   const [reply, setReply] = useState(false)
   const [userComment, setUserComment] = useState('')
   const [imageGallery , setImageGallery] = useState([])
@@ -101,39 +101,45 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
 
   
   const handleSendReply = async () => {     
-    setLoading(true)
-    await uploadGallery()
-      try {
-        const res = await userRequest.post(`/comment`, {
-          productId: productId,
-          userId: user._id,
-          content: userComment,
-          imgGallery: imageGalleryUrl,
-          avatarUrl: user.img,
-          userName: user.username,
-          type: "comment",
-          refCommentId: comment._id,
-          refCommentUserId: comment.userId,
-          refCommentUsername: comment.userName,
-          isReplied: false
-        })
-        if (res.data){
-          setUserComment('')
-          setImageGallery([])
-          setImageGalleryFile([])
-          setLimitFileSizeNotify(false)
-          setLimitImageNotify(false)
-          setCommentSuccess(true)
-          setReply(false)
-          setTimeout(()=> {
-            setCommentSuccess(false)
-          }, 5000)
+    if(user===null) {
+        setLoginRecommendPopup(true)
+    } else {
+      setLoading(true)
+      await uploadGallery()
+        try {
+          const res = await userRequest.post(`/comment`, {
+            productId: productId,
+            userId: user._id,
+            content: userComment,
+            imgGallery: imageGalleryUrl,
+            avatarUrl: user.img,
+            userName: user.username,
+            type: "comment",
+            refCommentId: comment._id,
+            refCommentUserId: comment.userId,
+            refCommentUsername: comment.userName,
+            isReplied: false
+          })
+          if (res.data){
+            userCommenteds.push(res.data.comment)
+            // handleFetchReply()
+            setUserComment('')
+            setImageGallery([])
+            setImageGalleryFile([])
+            setLimitFileSizeNotify(false)
+            setLimitImageNotify(false)
+            setCommentSuccess(true)
+            setReply(false)
+            setTimeout(()=> {
+              setCommentSuccess(false)
+            }, 5000)
+          }
+        } catch(err){
+          console.log('error while send comment')
+        } finally {
+          setLoading(false)
         }
-      } catch(err){
-        console.log('error while send comment')
-      } finally {
-        setLoading(false)
-      }
+    }
   }
 
   // fetch reply data
@@ -143,7 +149,6 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
         setLoading(true)
         const res = await publicRequest.get(`/comment/refCommentId/${comment._id}?type=comment&limit=${limit}&page=${page}`)
         if( res.data) {
-          console.log(res.data)
           res.data.replyData.map((r)=>{
             replyData.push(r)
           })
@@ -238,7 +243,6 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
     getEmotions()
   },[currentEmotionsType])
 
-  console.log(emotionsOfComment)
   // 
   const handleLike = async (type) =>{
       setLoading(true)
@@ -278,15 +282,13 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
     setSadCount(tempSadCount)
     setWowCount(tempWowCount)
   }
-  console.log(likeCount)
-  console.log(emotions)
-  console.log(userEmotions)
+
   return (
   <>
     {emotionsPopup &&
       <>
 
-        <div className={`fixed w-screen h-screen bg-black opacity-70  left-0 top-0 z-20 `}>      
+        <div className={`fixed w-screen h-screen bg-black  left-0 top-0 z-20 transition opacity-70  `}>      
         </div>
 
         <div className=' flex justify-center items-center ' >
@@ -347,7 +349,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
       </>
     }
 
-    <div  className='mt-4  h-auto w-auto  ' >
+    <div  className={`mt-4  h-auto w-auto   `} >
               <div className='w-full space-x-2 h-auto  flex '  >
                 { comment.avatarUrl!=='' ? 
                   <Image 
@@ -361,10 +363,9 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                     className='rounded-full  object-cover w-8 h-8 md:w-12 md:h-12 hover:cursor-pointer' 
                   />
                 }
-                <div className='flex flex-col bg-gray-100 p-4 w-full rounded-md relative '>
+                <div className={` flex flex-col   p-4 w-full rounded-md relative ${redBackground===true?'bg-red-100':'bg-gray-100'} `}>
                   <div  className='flex gap-5 '>
                     <p className='text-blue-500  font-bold hover:cursor-pointer ' >{comment.userName}</p>
-                    {/* <p className='text-gray-500' >{moment(comment.createdAt).format("YYYY-MMM-DD, h:mm:ss A")}</p> */}
                     <p className='text-gray-500' >
                     <ReactTimeAgoUtil date={comment.createdAt} locale="vi-VN"/>
                     </p>
@@ -373,15 +374,9 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                   <div className=' h-auto mt-4  '>
                     {comment.content}
                   </div>
+          
 
-                  {/* display comment imgGallery */}
-                    {/* {comment.imgGallery.length !== 0 &&
-                      <div className='mt-2 ' > 
-                        <CommentGallery product_images={comment?.imgGallery}  />
-                      </div>
-                    } */}
-                    {/* display comment imgGallery with fancybox library */}
-                  
+                  {/* display comment imgGallery with fancybox library */}                 
                   {comment?.imgGallery?.length !== 0 &&
                   <Fancybox
                     options={{
@@ -427,8 +422,10 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                 </div>
               </div>
     
+              {interaction!==false &&
               <div  className='flex gap-5  ml-10  md:ml-12 mt-2 items-center p-2 '>
     
+                {/* popup emotions for user choose from */}
                 <div class="relative group inline-block cursor-pointer ">
                     <p onClick={()=>handleLike('like')} class={`hover:text-red-500   `}>
                       {userEmotions[0]?.type==='like' ? <span className='text-red-500 font-semibold' >
@@ -448,7 +445,6 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                       </span> : 'Thích' }
                     </p>
                     
-                    {/* popup emotions for user choose from */}
                     <div class="flex absolute gap-2 left-20 -top-12 -translate-x-1/2 mt-2 w-max px-3 py-1 bg-white shadow-lg  text-white text-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10">
                       <img title='Thích' onClick={()=>handleLike('like')} src='/icon-like.svg' className='w-6 h-6 hover:scale-150 transition  ' />
                       <img title='Yêu' onClick={()=>handleLike('love')} src='/icon-love.svg' className='w-6 h-6 hover:scale-150 transition  ' />
@@ -459,7 +455,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                 </div>
     
                 
-    
+                {/*  reply */}
                 <p 
                   className='hover:cursor-pointer hover:text-red-500 ' 
                   onClick={()=>setReply(!reply)}
@@ -467,6 +463,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                   Trả lời
                 </p>
     
+                {/* report comment */}
                 <span title='báo xấu' >
                   <FlagIcon 
                       onClick={handleReportComment}
@@ -474,7 +471,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                 </span>
     
               </div>
-              
+               }             
               {/* Comment box */}
               {reply &&
                 <div className='h-auto flex flex-row gap-2 mt-4  ml-10 md:ml-16 mb-6   ' >
@@ -576,7 +573,7 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
               {  comment.isReplied  &&         
                   <span 
                     onClick={handleFetchReply}        
-                    className='text-sm text-blue-500  ml-10 md:ml-20  hover:cursor-pointer hover:bg-blue-100  rounded-full p-2    ' 
+                    className='text-sm text-blue-500   ml-10 md:ml-20  hover:cursor-pointer hover:bg-blue-100  rounded-full p-2    ' 
                   >
                       <ShortcutIcon className='scale-y-[-1] mr-2' />
                       xem phản hồi                    
@@ -584,6 +581,30 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
                   </span> 
               }
     </div>
+    
+    {/* display data info after user've commented */}
+    { userCommenteds && 
+      userCommenteds?.map((com,index)=>(
+        <Reply 
+            key={index}  
+            reply={com}  
+            user={user}
+            loading={loading}
+            setLoading={setLoading}
+            setCommentSuccess={setCommentSuccess}
+            productId={productId}
+            comment={comment}
+            reloadGetReportComment={reloadGetReportComment}
+            setReloadGetReportComment={setReloadGetReportComment}
+            reportCommentsId={reportCommentsId}
+            setLoginRecommendPopup={setLoginRecommendPopup}
+            handleFetchReply={handleFetchReply}
+            redBackground={true}
+            interaction={false}
+        /> 
+      ))
+
+    }
     
     {/*  reply data  */}
     <div className='mt-4' >
@@ -601,7 +622,8 @@ const Comment = ({loading, setLoading, comment,  user, productId, setCommentSucc
             reloadGetReportComment={reloadGetReportComment}
             setReloadGetReportComment={setReloadGetReportComment}
             reportCommentsId={reportCommentsId}
-            
+            setLoginRecommendPopup={setLoginRecommendPopup}
+            handleFetchReply={handleFetchReply}
         /> 
       ))}
     </div>
