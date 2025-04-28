@@ -151,7 +151,7 @@ const Orders = () => {
       <p className='font-bold text-3xl mt-20' >Orders</p>
       <div className='flex flex-col' >
       <DataGrid
-        
+        className='w-full xl:w-5/6'
         rows={orders}
         disableSelectionOnClick
         columns={columns}
