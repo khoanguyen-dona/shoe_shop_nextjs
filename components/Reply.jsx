@@ -21,14 +21,14 @@ import app from '@/firebase'
 import { emotionsArray } from '@/constants';
 import Fancybox from '@/components/Fancybox';
 import Carousel from '@/components/Carousel';
-
+import Comment from './Comment';
 const Reply = ({loading, setLoading, reply, user, setCommentSuccess, productId, comment, reloadGetReportComment, setReloadGetReportComment
-    , reportCommentsId
- }) => {
+    , reportCommentsId, setLoginRecommendPopup, handleFetchReply, redBackground, interaction}) => {
 
     const storage = getStorage(app);
     const [replyBox, setReplyBox] = useState(false)
     const [userComment, setUserComment] = useState('')
+    const [userCommenteds, setUserCommenteds] = useState([])
     const [imageGallery , setImageGallery] = useState([])
     const [imageGalleryFile, setImageGalleryFile] = useState([])
     const [limitImageNotify, setLimitImageNotify] = useState(false)
@@ -64,40 +64,46 @@ const Reply = ({loading, setLoading, reply, user, setCommentSuccess, productId, 
     }
 
     const handleSendReply = async () => {
-      setLoading(true)
-      await uploadGallery()
-          try {
-            const res = await userRequest.post(`/comment`, {
-              productId: productId,
-              userId: user._id,
-              content: userComment,
-              imgGallery: imageGalleryUrl ,
-              avatarUrl: user.img,
-              userName: user.username,
-              type: "comment",
-              refCommentId: comment._id,
-              refCommentUserId: comment.userId,
-              refCommentUsername: reply.userName,
-              isReplied: false
-            })
-            if (res.data){
-              setUserComment('')
-              setImageGallery([])
-              setImageGalleryFile([])
-              setLimitFileSizeNotify(false)
-              setLimitImageNotify(false)
-              setCommentSuccess(true)
-              setReplyBox(false)
-              setTimeout(()=> {
-                setCommentSuccess(false)
-              }, 5000)
+      if( user===null){
+        setLoginRecommendPopup(true)
+      } else {
+        setLoading(true)
+        await uploadGallery()
+            try {
+              const res = await userRequest.post(`/comment`, {
+                productId: productId,
+                userId: user._id,
+                content: userComment,
+                imgGallery: imageGalleryUrl ,
+                avatarUrl: user.img,
+                userName: user.username,
+                type: "comment",
+                refCommentId: comment._id,
+                refCommentUserId: reply.userId,
+                refCommentUsername: reply.userName,
+                isReplied: false
+              })
+              if (res.data){
+                // handleFetchReply()
+                userCommenteds.push(res.data.comment)
+                setUserComment('')
+                setImageGallery([])
+                setImageGalleryFile([])
+                setLimitFileSizeNotify(false)
+                setLimitImageNotify(false)
+                setCommentSuccess(true)
+                setReplyBox(false)
+                setTimeout(()=> {
+                  setCommentSuccess(false)
+                }, 5000)
+              }
+            } catch(err){
+              console.log('error while send comment')
+            } finally {
+              setLoading(false)
             }
-          } catch(err){
-            console.log('error while send comment')
-          } finally {
-            setLoading(false)
-          }
       }
+    }
 
     // handle choose image gallery
     const handleImageGallery = (e) => {
@@ -243,8 +249,6 @@ const Reply = ({loading, setLoading, reply, user, setCommentSuccess, productId, 
     setWowCount(tempWowCount)
   }
 
-
-console.log(reply)
   return (
   <>
     {/* Popup emotions details */}
@@ -327,10 +331,9 @@ console.log(reply)
                 className='rounded-full  object-cover w-8 h-8 md:w-12 md:h-12 hover:cursor-pointer' 
                 />
             }
-            <div className='flex flex-col bg-gray-100 p-4 w-full rounded-md relative'>
+            <div className={`flex flex-col p-4 w-full rounded-md relative ${redBackground===true?'bg-red-100 ':'bg-gray-100 '} `}>
                 <div  className='flex gap-5 '>
                     <p className='text-blue-500 font-bold hover:cursor-pointer ' >{reply.userName}</p>
-                    {/* <p className='text-gray-500' >{moment(comment.createdAt).format("YYYY-MMM-DD, h:mm:ss A")}</p> */}
                     <p className='text-gray-500' >
                     <ReactTimeAgoUtil date={reply.createdAt} locale="vi-VN"/>
                     </p>
@@ -344,11 +347,6 @@ console.log(reply)
                 </div>
 
                 {/* display comment imgGallery */}
-                {/* {reply.imgGallery.length !== 0 &&
-                  <div className='mt-2 ' > 
-                    <CommentGallery product_images={reply?.imgGallery}  />
-                  </div>
-                } */}
                   {reply?.imgGallery.length !==0 &&
                   <Fancybox
                     options={{
@@ -381,11 +379,6 @@ console.log(reply)
                       title='Cảm xúc'
                       className='absolute flex items-center justify-center -bottom-4 right-5 shadow-md w-auto  hover:cursor-pointer bg-white    hover:text-red-500 rounded-full  px-2 py-1   z-10 ' 
                     >
-                      {/* {emotionsOfComment.includes('like') ? <img onClick={()=>{}} src='/icon-like.svg' className='w-6 h-6 '/> : ''}
-                      {emotionsOfComment.includes('love') ? <img onClick={()=>{}} src='/icon-love.svg' className='w-6 h-6  '/> : ''}
-                      {emotionsOfComment.includes('fun') ? <img onClick={()=>{}} src='/icon-fun.svg' className='w-6 h-6  '/>  : ''}  
-                      {emotionsOfComment.includes('sad') ? <img onClick={()=>{}} src='/icon-sad.svg' className='w-6 h-6  '/>  : ''} 
-                      {emotionsOfComment.includes('wow') ? <img onClick={()=>{}} src='/icon-wow.svg' className='w-6 h-6  '/>  : ''}     */}
                       {
                         emotionsArray.map((emoType,index)=>(
                           emotionsOfComment.includes(emoType) && <img key={index} src={`/icon-${emoType}.svg`} className='w-6 h-6  '/>
@@ -399,53 +392,55 @@ console.log(reply)
 
         </div>
 
-        <div  className='flex  gap-5 ml-10  md:ml-12 mt-2 items-center p-2 '>
+        {interaction!==false &&
+          <div  className='flex  gap-5 ml-10  md:ml-12 mt-2 items-center p-2 '>
+              {/* emotion Popup to choose  */}
+              <div class="relative group inline-block cursor-pointer ">
+                      <p onClick={()=>handleLike('like')} class={`hover:text-red-500   `}>
+                        {userEmotions[0]?.type==='like' ? <span className='text-red-500 font-semibold' >
+                          Thích 
+                        </span> :
+                        userEmotions[0]?.type==='love' ? <span className='text-red-500 font-semibold' >
+                          Yêu 
+                        </span> :
+                        userEmotions[0]?.type==='fun' ? <span className='text-red-500 font-semibold' >
+                          Vui
+                        </span> :
+                        userEmotions[0]?.type==='sad' ? <span className='text-red-500 font-semibold' >
+                          Buồn 
+                        </span> :
+                        userEmotions[0]?.type==='wow' ? <span className='text-red-500 font-semibold' >
+                          Wow
+                        </span> : 'Thích' }
+                      </p>
 
-            <div class="relative group inline-block cursor-pointer ">
-                    <p onClick={()=>handleLike('like')} class={`hover:text-red-500   `}>
-                      {userEmotions[0]?.type==='like' ? <span className='text-red-500 font-semibold' >
-                        Thích 
-                      </span> :
-                       userEmotions[0]?.type==='love' ? <span className='text-red-500 font-semibold' >
-                        Yêu 
-                      </span> :
-                      userEmotions[0]?.type==='fun' ? <span className='text-red-500 font-semibold' >
-                        Vui
-                      </span> :
-                      userEmotions[0]?.type==='sad' ? <span className='text-red-500 font-semibold' >
-                        Buồn 
-                      </span> :
-                      userEmotions[0]?.type==='wow' ? <span className='text-red-500 font-semibold' >
-                        Wow
-                      </span> : 'Thích' }
-                    </p>
+                  <div class="flex absolute gap-2 left-20 -top-12 -translate-x-1/2 mt-2 w-max px-3 py-1 bg-white shadow-lg  text-white text-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                      <img title='Thích' onClick={()=>handleLike('like')} src='/icon-like.svg' className='w-6 h-6 hover:scale-150 transition ' />
+                      <img title='Yêu' onClick={()=>handleLike('love')} src='/icon-love.svg' className='w-6 h-6 hover:scale-150 transition  ' />
+                      <img title='Vui' onClick={()=>handleLike('fun')} src='/icon-fun.svg' className='w-6 h-6 hover:scale-150 transition ' />
+                      <img title='Buồn' onClick={()=>handleLike('sad')} src='/icon-sad.svg'  className='w-6 h-6 hover:scale-150 transition '/>
+                      <img title='Wow' onClick={()=>handleLike('wow')} src='/icon-wow.svg'  className='w-6 h-6 hover:scale-150 transition '/>
+                  </div>
+              </div>
 
-                <div class="flex absolute gap-2 left-20 -top-12 -translate-x-1/2 mt-2 w-max px-3 py-1 bg-white shadow-lg  text-white text-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                    <img title='Thích' onClick={()=>handleLike('like')} src='/icon-like.svg' className='w-6 h-6 hover:scale-150 transition ' />
-                    <img title='Yêu' onClick={()=>handleLike('love')} src='/icon-love.svg' className='w-6 h-6 hover:scale-150 transition  ' />
-                    <img title='Vui' onClick={()=>handleLike('fun')} src='/icon-fun.svg' className='w-6 h-6 hover:scale-150 transition ' />
-                    <img title='Buồn' onClick={()=>handleLike('sad')} src='/icon-sad.svg'  className='w-6 h-6 hover:scale-150 transition '/>
-                    <img title='Wow' onClick={()=>handleLike('wow')} src='/icon-wow.svg'  className='w-6 h-6 hover:scale-150 transition '/>
-                </div>
-            </div>
+            
+              {/* reply */}
+              <p 
+                  className='hover:cursor-pointer hover:text-red-500 ' 
+                  onClick={()=>setReplyBox(!replyBox)}
+              >    
+                  Trả lời
+              </p>
+              
+              {/* report comment */}
+              <span title='báo xấu' >
+                  <FlagIcon 
+                      onClick={handleReportComment}
+                      className={`text-gray-400 hover:text-red-500 hover:cursor-pointer transition ${reportCommentsId.includes(reply._id)? 'text-red-500':''}  `} />
+              </span>
 
-           
-
-            <p 
-                className='hover:cursor-pointer hover:text-red-500 ' 
-                onClick={()=>setReplyBox(!replyBox)}
-            >    
-                Trả lời
-            </p>
-
-            <span title='báo xấu' >
-                <FlagIcon 
-                    onClick={handleReportComment}
-                    className={`text-gray-400 hover:text-red-500 hover:cursor-pointer transition ${reportCommentsId.includes(reply._id)? 'text-red-500':''}  `} />
-            </span>
-
-        </div>
-          
+          </div>
+        }  
         {/* reply box */}
         {replyBox &&
                 <div className='h-auto flex flex-row gap-2 ml-6 md:ml-12  p-4 mr-4 ' >
@@ -540,6 +535,27 @@ console.log(reply)
                         </div>
                         
                 </div>
+        }
+
+        {/* display when user've jsut commented */}
+        {userCommenteds && 
+          userCommenteds.map((c,index)=>(
+            <Comment 
+              key={index} 
+              loading={loading}
+              setLoading={setLoading}
+              user={user}
+              comment={c}  
+              productId={productId}
+              setCommentSuccess={setCommentSuccess}
+              reportCommentsId = {reportCommentsId}
+              setReloadGetReportComment={setReloadGetReportComment}
+              reloadGetReportComment={reloadGetReportComment}
+              setLoginRecommendPopup={setLoginRecommendPopup}
+              redBackground={true}
+              interaction={false}
+            />
+          ))
         }
      
     </div>

@@ -7,14 +7,9 @@ import { useRouter } from 'next/navigation'
 
 const page = () => {
 
- 
-
-
- 
   return (
- 
-    <p></p>
-    
+    <>
+    </>
   )
 
  
