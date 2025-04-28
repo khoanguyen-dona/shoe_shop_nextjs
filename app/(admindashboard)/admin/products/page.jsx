@@ -224,8 +224,9 @@ const Products = () => {
       {notifySuccess ?  
                 <SuccessPopup  message={'Delete product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
             : '' }
+     
       <DataGrid
-        
+        className='w-full xl:w-5/6'
         rows={products}
         disableSelectionOnClick
         columns={columns}
@@ -235,10 +236,12 @@ const Products = () => {
         sx={{fontSize:'20px'}}
         initialState={{
           pagination: {
-            paginationModel: { pageSize: 20, page: 0 },
+            paginationModel: { pageSize: 20 },
+            // paginationModel: { pageSize: 20, page: 0 },
           },
         }}
-      />  
+      /> 
+     
 
               
       </div>

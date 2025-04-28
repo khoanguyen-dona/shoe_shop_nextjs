@@ -280,7 +280,7 @@ const Attribute = () => {
         </div>
 
         <DataGrid
-          className='mt-10'
+          className='mt-10 w-full xl:w-5/6'
           rows={attributes}
           disableSelectionOnClick
           columns={columns}
