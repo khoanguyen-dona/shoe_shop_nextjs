@@ -142,14 +142,14 @@ const ProductLine = () => {
                         <EditIcon 
                             onClick={()=>handleClickEditProductLine(params.row.name, params.row._id)}
                             
-                            fontSize='large' className='text-blue-500 hover:text-blue-800  '  />  
+                            fontSize='large' className='text-blue-500 hover:text-blue-800 hover:cursor-pointer  '  />  
                     </span>
            
                
                     <span  title='Xóa'  >
                         <DeleteIcon 
                             onClick={()=>handleDeleteProductLine(params.row._id)} 
-                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                            fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer'   />
                     </span>
             
               </span> 

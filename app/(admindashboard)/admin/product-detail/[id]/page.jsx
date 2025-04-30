@@ -9,21 +9,22 @@ import { useState, useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
- import {
+import RichTextEditor from '@/app/(admindashboard)/component/RichTextEditor'
+import {
     getStorage,
     ref,
     deleteObject,
     uploadBytesResumable,
     uploadBytes,
     getDownloadURL,
-  } from "firebase/storage";
+} from "firebase/storage";
 import app from '@/firebase'
 
 const ProductDetail = () => {
 
-   
     const router = useRouter()
     const storage = getStorage(app);
+    const [quillImage, setQuillImage] = useState()
     const [notifySuccess, setNotifySuccess]= useState(false)
     const [loading, setLoading] = useState(true)
     const product_id = useParams().id
@@ -70,6 +71,12 @@ const ProductDetail = () => {
         color.push(item)
     })
 
+    // add image to desc when choose image in RichtextEditor
+    useEffect(()=>{
+            quillImage && setDesc((prev)=>prev+`<img  src="${quillImage}"/>`)
+        }, [quillImage])
+
+    //fetching data
     useEffect (() => {
         var cat =''
         var size =''
@@ -100,10 +107,6 @@ const ProductDetail = () => {
         getProduct();
 }, [])
    
-
-
-   
-
     // handle choose thumbnail
     const handleThumbnail = (e) => {
         const file = e.target.files[0]
@@ -281,17 +284,22 @@ const ProductDetail = () => {
     const handleSubmit = async (e) => {         
         e.preventDefault()
         setLoading(true)
-        if ( imageGalleryFile.length !== 0) {
-            await handleUploadImageGallery()
+        try{
+
+            if ( imageGalleryFile.length !== 0) {
+                await handleUploadImageGallery()
+            } 
+            await handleUploadThumbnail()    
+            
+        } catch(err){
+            console.log('err while update',err)
+        } finally{
+            setLoading(false)
+            router.refresh()
+            setTimeout(()=>{
+                setNotifySuccess(false)
+            }, 3000)
         }
-               
-        await handleUploadThumbnail()
-        
-        setLoading(false)
-        router.refresh()
-        setTimeout(()=>{
-            setNotifySuccess(false)
-        }, 3000)
     }
 
   return (
@@ -347,15 +355,17 @@ const ProductDetail = () => {
                 <p className='text-red-500 text-sm' >Lưu ý mỗi màu cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>
             </div>
 
-            <div>
-                <p className='text-sm text-gray-500' >Mô tả sản phẩm</p>
-                <textarea  className='border-2 p-2 w-full lg:w-4/5  ' rows='9'  type="text" 
-                    onChange={(e)=>setDesc(e.target.value)}  value={desc} />
-         
+            <div className='flex flex-col gap-2'>
+                <p  className='text-sm  text-gray-500' >Mô tả sản phẩm</p>
+                <RichTextEditor
+                    desc={desc} 
+                    setDesc={setDesc} 
+                    setQuillImage={setQuillImage}  
+                    setLoading={setLoading}                   
+                />
             </div>
             
-           
-
+        
           <div className='space-y-2 flex flex-col ' >
             <p className='font-bold' >Trạng thái sản phẩm</p>
             <select value={inStock} className={`rounded-lg p-2 border-2 w-32 ${String(inStock)==='true'?'text-green-500':'text-red-500'} `} 
