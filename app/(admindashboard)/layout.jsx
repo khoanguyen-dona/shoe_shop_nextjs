@@ -4,7 +4,7 @@ import './admincss.css'
 import {Inter} from 'next/font/google';
 const inter = Inter({subsets: ['latin']});
 import Admin from "./component/Admin";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import {store, persistor} from '../../redux/store'
 import { useRouter } from "next/navigation";
 

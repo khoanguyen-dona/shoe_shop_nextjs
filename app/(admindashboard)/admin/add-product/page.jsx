@@ -1,33 +1,30 @@
 'use client'
 
 import { publicRequest, userRequest } from '@/requestMethod'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
 import SelectPopup from '../../component/SelectPopup'
-import DoneIcon from '@mui/icons-material/Done';
- import {
+import {
     getStorage,
     ref,
     uploadBytes,
     getDownloadURL,
-  } from "firebase/storage";
+} from "firebase/storage";
 import app from '@/firebase'
-import { useSelector } from 'react-redux'
+import RichTextEditor from '../../component/RichTextEditor'
 const AddProduct = () => {
-    const router = useRouter()
-    const currentUser = useSelector((state)=>state.user.currentUser)
-   
+    const storage = getStorage(app)
+    const [quillImage, setQuillImage] = useState()
     const [notifySuccess, setNotifySuccess] = useState(false)
     const [loading, setLoading] = useState(false)
     const [productName, setProductName] = useState('')
     const [productLine, setProductLine] = useState('')
     const [price, setPrice] = useState('')
     const [desc, setDesc] = useState('')
-
+    
     const [formCategory, setFormCategory] = useState('')
     var category = []
 
@@ -67,6 +64,10 @@ const AddProduct = () => {
     const [subCategories, setSubCategories] = useState([])
     var subCatArray = []
 
+    useEffect(()=>{
+        quillImage && setDesc((prev)=>prev+`<img  src="${quillImage}"/>`)
+    }, [quillImage])
+
     // fetching productLines
     useEffect(() => {
         setLoading(true)
@@ -79,8 +80,7 @@ const AddProduct = () => {
                         productLines.push(item.name)
                     })
                     setProductLinesSuggest(productLines)
-               
-                                             
+                                                          
                     setLoading(false)
                 }
             } catch(err){
@@ -121,6 +121,7 @@ const AddProduct = () => {
         }
         getCategories()
     }, [])
+
     // fetching attrs
     useEffect(() => {
         setLoading(true)
@@ -144,7 +145,6 @@ const AddProduct = () => {
         getAttributes()
     }, [])
 
-    
 
     // handle from string to array
     formCategory.split(',').map((item)=> {
@@ -197,9 +197,6 @@ const AddProduct = () => {
 
     // upload image gallery to firebase then push to imageGalleryUrl[]
     const handleUploadImageGallery = async () => {
-
-        const storage = getStorage(app);
-
         for(let image of imageGalleryFile) {
             let imageName = new Date().getTime() + image.name
             let imageRef = ref(storage, `upload/${imageName}`)
@@ -215,7 +212,6 @@ const AddProduct = () => {
 
     // upload thumbnail to firebase , take the thumbnail url  then create product. 
     const handleUploadThumbnail = async () => {
-        const storage = getStorage(app)
         let imageName = new Date().getTime() + thumbnailFile.name
         let imageRef = ref(storage, `upload/${imageName}`)
             try{
@@ -255,9 +251,7 @@ const AddProduct = () => {
                 setNotifySuccess(true)
                 setTimeout(()=>{
                     setNotifySuccess(false)
-                }, 3000)
-        
-                
+                }, 3000)              
             }
         }catch(err) {
             console.log('error handle create product',err)
@@ -300,7 +294,6 @@ const AddProduct = () => {
     }
 
     const handleChooseCategory = async (category) => {
-        
         if(categoryChoose.includes(category)){
               setCategoryChoose( categoryChoose.filter((cat) => cat !== category) )
               let catArray = String(categoryChoose.filter((cat) => cat !== category))
@@ -312,8 +305,7 @@ const AddProduct = () => {
         }   
     }
 
-     
-
+   
   return  (    
     <div className={`mt-20  flex flex-col   ${loading?'bg-white opacity-50':''} `} onClick={handleClickOutside} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
@@ -406,14 +398,20 @@ const AddProduct = () => {
                 <p className='text-red-500 text-sm' >Lưu ý mỗi Color cách nhau một dấu ',' Ví dụ : black|white|blue ...</p>
             </div>
 
-            <div>
-                <p className='text-sm text-gray-500' >Mô tả sản phẩm</p>
-                <textarea  className='border-2 p-2 w-full lg:w-4/5' rows='9' type="text" 
-                    onChange={(e)=>setDesc(e.target.value)}  value={desc} spellCheck="false" />
-                
+
+            <div className='flex flex-col gap-2'>
+                <p  className='text-sm  text-gray-500' >Mô tả sản phẩm</p>
+                <RichTextEditor
+                    desc={desc} 
+                    setDesc={setDesc} 
+                    setQuillImage={setQuillImage}  
+                    setLoading={setLoading}                   
+                />
             </div>
 
-            <div>
+            
+
+            <div className='' >
                 <p className='font-bold  mt-4 mb-2' >Ảnh thumbnail </p>
                 <label className='hover:text-white  border-[1px] font-semibold hover:bg-black p-2 transition border-black ' 
                         htmlFor="thumbnail"

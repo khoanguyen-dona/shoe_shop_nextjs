@@ -88,13 +88,13 @@ const Users = () => {
               <span >
                 <a onClick={()=>handleNavigate(`/admin/user-detail/${params.row._id}`)}   >
                     <span title='Edit' >
-                        <EditIcon fontSize='large' className='text-blue-500 hover:text-black  '  />  
+                        <EditIcon fontSize='large' className='text-blue-500 hover:text-black hover:cursor-pointer '  />  
                     </span>
                 </a>
                     <span  title='Xóa'  >
                         <DeleteIcon  
                             onClick={()=>handleDeleteUser(params.row._id)}
-                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                            fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer '   />
                     </span>
                 
               </span> 

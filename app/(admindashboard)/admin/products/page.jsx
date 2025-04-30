@@ -148,14 +148,14 @@ const Products = () => {
                         <EditIcon 
                             onClick={()=>setLoading(true)}
                             
-                            fontSize='large' className='text-blue-500 hover:text-blue-800  '  />  
+                            fontSize='large' className='text-blue-500 hover:text-blue-800 hover:cursor-pointer '  />  
                     </span>
                 </a>
                 <a>
                     <span  title='Xóa'  >
                         <DeleteIcon 
                             onClick={()=>handleDeleteProduct(params.row._id)} 
-                            fontSize='large'  className='text-red-500 hover:text-red-800'   />
+                            fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer'   />
                     </span>
                 </a>
               </span> 
@@ -215,7 +215,7 @@ const Products = () => {
       <p className='font-bold text-3xl mt-20' >Products</p>
       <a  
           onClick={()=>handleNavigate('/admin/add-product')} className='my-2 p-2  text-center text-xl rounded hover:bg-green-800 transition w-[220px]  bg-green-500
-           text-white font-bold' disabled={loading}>
+           text-white font-bold hover:cursor-pointer ' disabled={loading}>
             <AddIcon fontSize='large' className='mb-1' />
             Thêm sản phẩm
       </a>
