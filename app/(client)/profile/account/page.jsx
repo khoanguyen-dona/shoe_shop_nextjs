@@ -27,7 +27,7 @@ const profileAccount = () => {
     const storage = getStorage(app);
     const dispatch= useDispatch()
     const user = useSelector((state)=>state.user?.currentUser)
-
+  
     const [username, setUsername]= useState(user?.username)
     const [email, setEmail]= useState(user?.email)
     const [password, setPassword]= useState('')
@@ -94,7 +94,7 @@ const profileAccount = () => {
         
         if(file !==''){
             let imageName = new Date().getTime() + file.name
-            let imageRef = ref(storage, `upload/avatar/${imageName}`)
+            let imageRef = ref(storage, `avatar/${imageName}`)
             try{
                 await uploadBytes(imageRef, file)
                 const downloadURL = await getDownloadURL(imageRef)
@@ -128,7 +128,7 @@ const profileAccount = () => {
                 const res = await userRequest.put(`/user/${user._id}`,{
                     username: username,
                     email: email,
-                    isAdmin: false,
+                    isAdmin: user.isAdmin,
                     img: downloadURL
                 })
                 

@@ -2,7 +2,6 @@
 import React from 'react'
 import { useParams } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
-
 import Image from 'next/image';
 import { useState  } from 'react';
 import { useEffect } from 'react';
@@ -19,12 +18,11 @@ import SuccessPopup from '@/components/Popup/SuccessPopup';
 import FailurePopup from '@/components/Popup/FailurePopup';
 import SwiperGallery from '@/components/SwiperGallery';
 import Comment from '@/components/Comment';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.bubble.css';
 import CommentBox from '@/components/CommentBox';
 import Fancybox from '@/components/Fancybox';
 import Carousel from '@/components/Carousel';
 import { useRouter } from 'next/navigation';
+import JoditViewer from '@/components/JoditViewer';
 
 const ProductDetail = () => {
     const router = useRouter()
@@ -292,6 +290,7 @@ const ProductDetail = () => {
     setNotifyChooseSize(false)
   }
 
+
   return (
     <>
       {/* if user not logged in , this will popup to recommend they go register  */}
@@ -380,7 +379,7 @@ const ProductDetail = () => {
           <div className='w-full  xl:w-2/5 2xl:w-3/6 xl:px-8   py-5  space-y-4' >
             <div className='text-4xl font-bold' > {product?.name}</div>
             <div className='text-2xl font-bold' > {FormatCurrency(product?.price)} đ </div>
-            <div> <ReactQuill className='mt-10' value={currentProduct?.desc.split(/\s+/).slice(0, 100).join(' ')} readOnly={true} theme={'bubble'} />...</div>
+            <JoditViewer data={currentProduct?.desc.split(/\s+/).slice(0, 100).join(' ')}  />
             <hr className='border-2 border-gray-300' />
             {/* size */}
             <div className='font-bold' > 
@@ -458,19 +457,14 @@ const ProductDetail = () => {
 
         <div className='border-b-4 mt-2 border-gray-300 mx-4 lg:mx-72 ' ></div>
 
-        
-        <ReactQuill className='mt-10' value={currentProduct?.desc} readOnly={true} theme={'bubble'} />
-
-        <div className='border-b-4 mt-8 border-gray-300  mx-4 lg:mx-72  ' ></div>
-
+        <JoditViewer data={currentProduct?.desc}  />
+      
         {/* Comment box */}
         <CommentBox user={user} productId={productId} setCommentSuccess={setCommentSuccess} commentSuccess={commentSuccess} loading={loading} setLoading={setLoading}
                     handleClosePopup={handleClosePopup} setLoginRecommendPopup={setLoginRecommendPopup} reload={reload} 
                     setReload={setReload} reportCommentsId={reportCommentsId} setReloadGetReportComment={setReloadGetReportComment}
                     reloadGetReportComment={reloadGetReportComment} />
-        
-        
-      
+           
         {/* Comments of other */}
 
           {comments?.map((c, index)=>(

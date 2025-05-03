@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
 import RichTextEditor from '@/app/(admindashboard)/component/RichTextEditor'
+import Jodit from '@/app/(admindashboard)/component/Jodit'
 import {
     getStorage,
     ref,
@@ -24,7 +25,7 @@ const ProductDetail = () => {
 
     const router = useRouter()
     const storage = getStorage(app);
-    const [quillImage, setQuillImage] = useState()
+    const [descImage, setDescImage] = useState()
     const [notifySuccess, setNotifySuccess]= useState(false)
     const [loading, setLoading] = useState(true)
     const product_id = useParams().id
@@ -53,7 +54,7 @@ const ProductDetail = () => {
 
     const [inStock, setInStock] = useState('')
 
-    const [desc, setDesc] = useState('')
+    const [desc, setDesc] = useState()
 
      // handle from string to array
     String(formCategory).split('|').map((item)=> {
@@ -73,8 +74,8 @@ const ProductDetail = () => {
 
     // add image to desc when choose image in RichtextEditor
     useEffect(()=>{
-            quillImage && setDesc((prev)=>prev+`<img  src="${quillImage}"/>`)
-        }, [quillImage])
+            descImage && setDesc((prev)=>prev+`<img  src="${descImage}"/>`)
+        }, [descImage])
 
     //fetching data
     useEffect (() => {
@@ -244,7 +245,7 @@ const ProductDetail = () => {
                 const res = await userRequest.put(`/product/${product_id}`, {
                     name: productName,
                     productLine: productLine,
-                    desc: desc ,
+                    desc: desc,
                     thumbnail: thumbnail_URL  ,
                     imgGallery: imageGalleryUrl ,  
                     categories: category ,
@@ -355,17 +356,17 @@ const ProductDetail = () => {
                 <p className='text-red-500 text-sm' >Lưu ý mỗi màu cách nhau một dấu '|' Ví dụ : black|white|blue ...</p>
             </div>
 
-            <div className='flex flex-col gap-2'>
+            <div>
                 <p  className='text-sm  text-gray-500' >Mô tả sản phẩm</p>
-                <RichTextEditor
+                <Jodit
                     desc={desc} 
                     setDesc={setDesc} 
-                    setQuillImage={setQuillImage}  
-                    setLoading={setLoading}                   
+                    setDescImage={setDescImage}  
+                    setLoading={setLoading}               
                 />
             </div>
             
-        
+            
           <div className='space-y-2 flex flex-col ' >
             <p className='font-bold' >Trạng thái sản phẩm</p>
             <select value={inStock} className={`rounded-lg p-2 border-2 w-32 ${String(inStock)==='true'?'text-green-500':'text-red-500'} `} 
