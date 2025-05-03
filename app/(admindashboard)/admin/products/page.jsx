@@ -139,7 +139,7 @@ const Products = () => {
     { field: "action", headerName: 'Hành động', width:150 ,
       renderCell: (params)=>{
         return(
-          <span>
+          <>
             <span className='p-2 rounded   '  >
             
               <span >
@@ -162,7 +162,7 @@ const Products = () => {
               
             </span>  
               
-          </span>
+          </>
         )
       }
     },
@@ -224,13 +224,14 @@ const Products = () => {
       {notifySuccess ?  
                 <SuccessPopup  message={'Delete product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
             : '' }
-     
+
       <DataGrid
         className='w-full xl:w-5/6'
         rows={products}
         disableSelectionOnClick
         columns={columns}
         getRowId={(row) => row._id}
+        // free version of MUI only allowed limit of 100
         pageSizeOptions={[20, 40, 50, 100]}
         // checkboxSelection
         sx={{fontSize:'20px'}}

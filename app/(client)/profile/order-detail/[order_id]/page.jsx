@@ -37,11 +37,11 @@ const OrderDetail = () => {
             <p className='font-bold text-2xl mt-10 text-center' >Sản phẩm </p>
             <div className='flex flex-col justify-center' >
             {products?.map((product, index) => 
-                <div key={index} className='flex border-2 p-1 mb-2  ' >
-                    <div className='w-[150px]  md:w-[250px]' >
-                        <img  className='object-cover h-[150px] md:h-[250px]  w-[150px] md:w-[250px] ' src={product.thumbnail} alt="" />
+                <div key={index} className='flex flext-row border-2 p-4 mb-2 gap-2 ' >
+                    <div className='w-auto ' >
+                        <img  className='object-cover w-[250px]     ' src={product.thumbnail} alt="" />
                     </div>
-                    <div className=' w-full  p-4 text-left  ' >
+                    <div className=' w-full text-left  ' >
                         <div>
                             <p className='font-semibold' >{product.name} </p>
                         </div>

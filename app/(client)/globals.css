@@ -67,5 +67,7 @@ body {
   .swiper-button-prev:hover ,.swiper-button-next:hover {
     color:black;
   }
-  
+  .jodit-container{
+    border: none !important;
+  }
 }

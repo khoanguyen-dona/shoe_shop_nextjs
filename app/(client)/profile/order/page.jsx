@@ -17,6 +17,7 @@ const profileOrder = () => {
   
 
   useEffect(() => {
+      setLoading(true)
       const getOrders = async () =>{
         try{
           const res = await userRequest.get(`/orders/${user._id}`) 
@@ -25,6 +26,8 @@ const profileOrder = () => {
           }
         }catch(err) {
           console.log(err)
+        } finally {
+          setLoading(false)
         }
       }
   
