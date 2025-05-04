@@ -34,7 +34,7 @@ const Shoe = () => {
 
     const [categoryList, setCategoryList] = useState([])
     const [subCategories, setSubCategories] = useState([])
-    
+    const initialCategory=['Giày']
 
     // fetching categories
     useEffect(() => {
@@ -128,7 +128,7 @@ const Shoe = () => {
       {/* filter popup */} 
       <Filter size={size} color={color} size_data={size_data} categoryList={categoryList} subCategories={subCategories} category={category} 
         filter={filter} price={price} setPrice={setPrice}  setCategory={setCategory} handleFilterClick={handleFilterClick} setPage={setPage} 
-        setColor={setColor} setSize={setSize} 
+        setColor={setColor} setSize={setSize} initialCategory={initialCategory}
       />
            
     </div>
