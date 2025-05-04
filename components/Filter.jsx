@@ -5,7 +5,7 @@ import { FormatCurrency } from '@/utils/FormatCurrency';
 import DoneIcon from '@mui/icons-material/Done';
 
 export const Filter = ({ handleFilterClick , size_data, categoryList, subCategories, category, filter,  size, color, price, setPrice,
-     setCategory, setPage, setColor, setSize}) => {
+     setCategory, setPage, setColor, setSize, initialCategory}) => {
 
 
     const handlePrice = (e) => {
@@ -16,7 +16,7 @@ export const Filter = ({ handleFilterClick , size_data, categoryList, subCategor
         setPage(1)
         setColor('')
         setSize('')
-        setCategory(['Áo','Quần'])
+        setCategory(initialCategory)
         setPrice([0,20000000])
     }
         

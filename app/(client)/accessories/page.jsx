@@ -33,7 +33,7 @@ const Accessories = () => {
 
   const [categoryList, setCategoryList] = useState([])
   const [subCategories, setSubCategories] = useState([])
-
+  const initialCategory = ['Phụ kiện']
   // fetching categories
   useEffect(() => {
     var categories = []
@@ -119,7 +119,7 @@ const Accessories = () => {
       
       {/* filter popup */} 
       <Filter size={size} color={color} size_data={size_data} categoryList={categoryList} subCategories={subCategories} category={category} filter={filter} price={price}
-              setPrice={setPrice}  setCategory={setCategory} handleFilterClick={handleFilterClick} setPage={setPage} setColor={setColor} setSize={setSize} 
+              setPrice={setPrice}  setCategory={setCategory} handleFilterClick={handleFilterClick} setPage={setPage} setColor={setColor} setSize={setSize} initialCategory={initialCategory}
       />
      
     </div>
