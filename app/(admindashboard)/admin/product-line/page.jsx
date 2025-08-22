@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation'
 import FailurePopup from '@/components/Popup/FailurePopup';
+import ConfirmBox from '../../component/ConfirmBox';
 
 const ProductLine = () => {
 
@@ -24,6 +25,19 @@ const ProductLine = () => {
   const [reload, setReload] = useState(false)
   const [editProductLineWindow, setEditProductLineWindow] = useState(false)  
 
+  const [openConfirmBox, setOpenConfirmBox] = useState(false)
+  const [idChosen, setIdChosen] = useState('')
+
+  // open confirm box
+  const handleOpenConfirmBox = async (id) => {
+    setOpenConfirmBox(true)
+    setIdChosen(id)
+  }
+
+  // close confirm box
+  const handleCloseConfirmBox = () => {
+    setOpenConfirmBox(false)
+  }
 
   // close the popup
   const handleClosePopup = () => {
@@ -66,6 +80,7 @@ const ProductLine = () => {
           name: productLine
         })
         if(res.data){
+          setProductLine('')
           setReload(!reload)
           setNotifySuccess(true)
               setTimeout(()=> {
@@ -84,6 +99,7 @@ const ProductLine = () => {
       const res = await userRequest.delete(`/product-line/${productLineId}`)
       if(res.data){
         setReload(!reload)
+        handleCloseConfirmBox()
         setNotifySuccess(true)
             setTimeout(()=> {
             setNotifySuccess(false)
@@ -148,7 +164,7 @@ const ProductLine = () => {
                
                     <span  title='Xóa'  >
                         <DeleteIcon 
-                            onClick={()=>handleDeleteProductLine(params.row._id)} 
+                            onClick={()=>handleOpenConfirmBox(params.row._id)} 
                             fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer'   />
                     </span>
             
@@ -165,6 +181,16 @@ const ProductLine = () => {
   ]
 
   return (
+
+  <>
+    {openConfirmBox &&
+      <ConfirmBox 
+        handleClose={handleCloseConfirmBox} 
+        handleYes={()=>handleDeleteProductLine(idChosen)} 
+        handleNo={handleCloseConfirmBox}
+        content={'Bạn có chắc muốn xóa đơn hàng này'}
+      />
+    }  
  
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
@@ -201,6 +227,7 @@ const ProductLine = () => {
         <div className='text-3xl font-bold' >Product Line</div>
         <div className='flex mt-4 w-full ' >
           <input 
+            value={productLine}
             onChange={handleProductLineInput}  
             className='w-4/5  lg:w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" 
           />
@@ -212,7 +239,7 @@ const ProductLine = () => {
         </div>
 
         <DataGrid
-          className='mt-10 w-full xl:w-5/6'
+          className='mt-10 w-full '
           rows={productLines}
           disableSelectionOnClick
           columns={columns}
@@ -229,6 +256,8 @@ const ProductLine = () => {
 
     </div>
    
+  </>
+
   )
 }
 

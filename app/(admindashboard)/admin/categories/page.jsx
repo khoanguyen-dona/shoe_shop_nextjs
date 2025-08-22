@@ -157,7 +157,7 @@ const Categories = () => {
         </div>
 
         <DataGrid
-          className='mt-10 w-full xl:w-5/6'
+          className='mt-10 w-full '
           rows={categories}
           disableSelectionOnClick
           columns={columns}

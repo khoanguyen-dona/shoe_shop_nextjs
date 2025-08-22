@@ -9,7 +9,6 @@ import { useState, useEffect } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
 import Loader from '@/components/Loader'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
-import RichTextEditor from '@/app/(admindashboard)/component/RichTextEditor'
 import Jodit from '@/app/(admindashboard)/component/Jodit'
 import {
     getStorage,

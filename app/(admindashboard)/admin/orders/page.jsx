@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SuccessPopup from '@/components/Popup/SuccessPopup';
 import { useRouter } from 'next/navigation'
+import ConfirmBox from '../../component/ConfirmBox';
 
 const Orders = () => {
 
@@ -20,6 +21,9 @@ const Orders = () => {
   const [loading, setLoading] = useState(true)
   const [orders, setOrders]= useState('')
   const [orderId, setOrderId] = useState('')
+  const [openConfirmBox, setOpenConfirmBox] = useState(false)
+  const [orderIdChosen, setOrderIdChosen] = useState('')
+
 
   useEffect(() => {
     const getOrders = async () =>{
@@ -37,13 +41,15 @@ const Orders = () => {
   getOrders();
 }, [orderId])
 
-  const handleDeleteOrder = async (order_id) => {
+ 
+  const handleDeleteOrder = async (orderIdChosen) => {
     setLoading(true)
     try {
-      const res = await userRequest.delete(`/admin/order/${order_id}`)
+      const res = await userRequest.delete(`/admin/order/${orderIdChosen}`)
       if(res.status===200){ 
-        setOrderId(order_id)
+        setOrderId(orderIdChosen)
         setLoading(false)
+        handleCloseConfirmBox()
         setNotifySuccess(true)
         setTimeout(()=> {
           setNotifySuccess(false)
@@ -52,13 +58,24 @@ const Orders = () => {
     } catch(err) {
       console.log('err while delete order',err)
     }
-    
+  }
+
+  // open confirm box
+  const handleOpenConfirmBox = async (order_id) => {
+    setOpenConfirmBox(true)
+    setOrderIdChosen(order_id)
+  }
+
+  // close confirm box
+  const handleCloseConfirmBox = () => {
+    setOpenConfirmBox(false)
   }
 
   // close the popup
   const handleClosePopup = () => {
     setNotifySuccess(false)
 }
+  
   
   const handleNavigate = (url) => {
     setLoading(true)
@@ -121,7 +138,7 @@ const Orders = () => {
                 <a>
                     <span  title='Xóa'  >
                         <DeleteIcon 
-                            onClick={()=>handleDeleteOrder(params.row._id)} 
+                            onClick={()=>handleOpenConfirmBox(params.row._id)}
                             fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer'   />
                     </span>
                 </a>
@@ -142,33 +159,43 @@ const Orders = () => {
 
 
   return (
+    <>
+      {openConfirmBox &&
+        <ConfirmBox 
+          handleClose={handleCloseConfirmBox} 
+          handleYes={()=>handleDeleteOrder(orderIdChosen)} 
+          handleNo={handleCloseConfirmBox}
+          content={'Bạn có chắc muốn xóa đơn hàng này'}
+        />
+      }
    
-    <div className={` flex flex-col  ${loading?'bg-white opacity-50':''}   `} >
-      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-      {notifySuccess ? 
-                <SuccessPopup  message={'Delete order Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            : '' }
-      <p className='font-bold text-3xl mt-20' >Orders</p>
-      <div className='flex flex-col' >
-      <DataGrid
-        className='w-full xl:w-5/6'
-        rows={orders}
-        disableSelectionOnClick
-        columns={columns}
-        getRowId={(row) => row._id}
-        pageSizeOptions={[20, 40, 50, 100]}
-        // checkboxSelection
-        sx={{fontSize:'20px'}}
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 20, page: 0 },
-          },
-        }}
-      />  
+      <div className={` flex flex-col  ${loading?'bg-white opacity-50':''}   `} >
+        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+        {notifySuccess ? 
+                  <SuccessPopup  message={'Delete order Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+              : '' }
+        <p className='font-bold text-3xl mt-20' >Orders</p>
+        <div className='flex flex-col' >
+        <DataGrid
+          className='w-full '
+          rows={orders}
+          disableSelectionOnClick
+          columns={columns}
+          getRowId={(row) => row._id}
+          pageSizeOptions={[20, 40, 50, 100]}
+          // checkboxSelection
+          sx={{fontSize:'20px'}}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 20, page: 0 },
+            },
+          }}
+        />  
 
-              
+                
+        </div>
       </div>
-    </div>
+    </>
     
   )
 }

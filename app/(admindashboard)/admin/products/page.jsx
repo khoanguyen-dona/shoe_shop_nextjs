@@ -6,7 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Loader from '@/components/Loader';
 import { FormatCurrency } from '@/utils/FormatCurrency';
 import moment from 'moment';
-
+import ConfirmBox from '../../component/ConfirmBox';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -34,6 +34,21 @@ const Products = () => {
   const [reload, setReload] = useState(false)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(9999)
+
+  const [openConfirmBox, setOpenConfirmBox] = useState(false)
+  const [productIdChosen, setProductIdChosen] = useState('')
+
+   // open confirm box
+  const handleOpenConfirmBox = async (product_id) => {
+    setOpenConfirmBox(true)
+    setProductIdChosen(product_id)
+  }
+
+  // close confirm box
+  const handleCloseConfirmBox = () => {
+    setOpenConfirmBox(false)
+  }
+
    // close the popup
    const handleClosePopup = () => {
     setNotifySuccess(false)
@@ -91,6 +106,7 @@ const Products = () => {
       console.log('delete product error',err)
     }
     setLoading(false)
+    handleCloseConfirmBox()
     setReload(!reload)
     setNotifySuccess(true)
     setTimeout(()=> {
@@ -154,7 +170,7 @@ const Products = () => {
                 <a>
                     <span  title='Xóa'  >
                         <DeleteIcon 
-                            onClick={()=>handleDeleteProduct(params.row._id)} 
+                            onClick={()=>handleOpenConfirmBox(params.row._id)} 
                             fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer'   />
                     </span>
                 </a>
@@ -210,43 +226,56 @@ const Products = () => {
 
   return (
 
-    <div className={`flex flex-col ${loading ?'bg-white opacity-50':''}  `} >
-      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-      <p className='font-bold text-3xl mt-20' >Products</p>
-      <a  
-          onClick={()=>handleNavigate('/admin/add-product')} className='my-2 p-2  text-center text-xl rounded hover:bg-green-800 transition w-[220px]  bg-green-500
-           text-white font-bold hover:cursor-pointer ' disabled={loading}>
-            <AddIcon fontSize='large' className='mb-1' />
-            Thêm sản phẩm
-      </a>
-      <div className='flex flex-col' >
+    <>
+      {openConfirmBox &&
+        <ConfirmBox 
+          handleClose={handleCloseConfirmBox} 
+          handleYes={()=>handleDeleteProduct(productIdChosen)} 
+          handleNo={handleCloseConfirmBox}
+          content={'Bạn có chắc muốn xóa sản phẩm này'}
+        />
+      }
+
+
+      <div className={`flex flex-col ${loading ?'bg-white opacity-50':''}  `} >
+        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+        <p className='font-bold text-3xl mt-20' >Products</p>
+        <a  
+            onClick={()=>handleNavigate('/admin/add-product')} className='my-2 p-2  text-center text-xl rounded hover:bg-green-800 transition w-[220px]  bg-green-500
+            text-white font-bold hover:cursor-pointer ' disabled={loading}>
+              <AddIcon fontSize='large' className='mb-1' />
+              Thêm sản phẩm
+        </a>
+        <div className='flex flex-col' >
+        
+        {notifySuccess ?  
+                  <SuccessPopup  message={'Delete product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+              : '' }
+
+        <DataGrid
+          className='w-full '
+          rows={products}
+          disableSelectionOnClick
+          columns={columns}
+          getRowId={(row) => row._id}
+          // free version of MUI only allowed limit of 100
+          pageSizeOptions={[20, 40, 50, 100]}
+          // checkboxSelection
+          sx={{fontSize:'20px'}}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 20 },
+              // paginationModel: { pageSize: 20, page: 0 },
+            },
+          }}
+        /> 
       
-      {notifySuccess ?  
-                <SuccessPopup  message={'Delete product Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-            : '' }
 
-      <DataGrid
-        className='w-full xl:w-5/6'
-        rows={products}
-        disableSelectionOnClick
-        columns={columns}
-        getRowId={(row) => row._id}
-        // free version of MUI only allowed limit of 100
-        pageSizeOptions={[20, 40, 50, 100]}
-        // checkboxSelection
-        sx={{fontSize:'20px'}}
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 20 },
-            // paginationModel: { pageSize: 20, page: 0 },
-          },
-        }}
-      /> 
-     
-
-              
+                
+        </div>
       </div>
-    </div>
+    
+    </>
 
   )
 }

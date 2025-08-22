@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 //layout.jsx
 const getStoredValue = () => {
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && typeof window.location !== 'undefined') {
     return localStorage.getItem("persist:root");
   }
   return null; 
@@ -34,7 +34,7 @@ const layout = ({ children }) => {
                   <Admin/>
                 </div>  
                 <SideBar  />                        
-                <div className='w-full lg:ml-[200px]   p-4 mt-24   '  >{children}</div>      
+                <div className='w-full lg:w-5/6 lg:ml-[200px]   p-4 mt-24   '  >{children}</div>      
             </div> 
            
           </>

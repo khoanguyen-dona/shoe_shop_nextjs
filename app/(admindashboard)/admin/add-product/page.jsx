@@ -14,7 +14,7 @@ import {
     getDownloadURL,
 } from "firebase/storage";
 import app from '@/firebase'
-import RichTextEditor from '../../component/RichTextEditor'
+import Jodit from '../../component/Jodit';
 const AddProduct = () => {
     const storage = getStorage(app)
     const [quillImage, setQuillImage] = useState()
@@ -401,7 +401,7 @@ const AddProduct = () => {
 
             <div className='flex flex-col gap-2'>
                 <p  className='text-sm  text-gray-500' >Mô tả sản phẩm</p>
-                <RichTextEditor
+                <Jodit
                     desc={desc} 
                     setDesc={setDesc} 
                     setQuillImage={setQuillImage}  
