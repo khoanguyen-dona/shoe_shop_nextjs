@@ -12,6 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation'
 import { AirlineSeatReclineNormalRounded } from '@mui/icons-material';
+import ConfirmBox from '../../component/ConfirmBox';
 
 const Users = () => {
 
@@ -22,6 +23,23 @@ const Users = () => {
   const [users, setUsers]= useState('')
   const [userId, setUserId] = useState('')
   const [reload, setReload] = useState(false)
+
+  const [openConfirmBox, setOpenConfirmBox] = useState(false)
+  const [userIdChosen, setUserIdChosen] = useState('')
+
+
+   // open confirm box
+  const handleOpenConfirmBox = async (userId) => {
+    setOpenConfirmBox(true)
+    setUserIdChosen(userId)
+  }
+
+  // close confirm box
+  const handleCloseConfirmBox = () => {
+    setOpenConfirmBox(false)
+  }
+
+
   const handleClosePopup = () => {
     setNotifySuccess(false)
 }
@@ -48,6 +66,7 @@ const Users = () => {
         const res = await userRequest.delete(`/user/${userId}`)
         if(res.data){
           setReload(!reload)
+          handleCloseConfirmBox()
           setNotifySuccess(true)
           setTimeout(()=> {
             setNotifySuccess(false)
@@ -93,7 +112,7 @@ const Users = () => {
                 </a>
                     <span  title='Xóa'  >
                         <DeleteIcon  
-                            onClick={()=>handleDeleteUser(params.row._id)}
+                            onClick={()=>handleOpenConfirmBox(params.row._id)}
                             fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer '   />
                     </span>
                 
@@ -138,35 +157,47 @@ const Users = () => {
 
 
   return (
+    <>
+          {openConfirmBox &&
+            <ConfirmBox 
+              handleClose={handleCloseConfirmBox} 
+              handleYes={()=>handleDeleteUser(userIdChosen)} 
+              handleNo={handleCloseConfirmBox}
+              content={'Bạn có chắc muốn xóa user này'}
+            />
+          }
+
    
-    <div className={`flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
-    
-      {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-      {notifySuccess ?  
-                <SuccessPopup  message={'Delete user Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-          : '' }
+      <div className={`flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
+      
+        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+        {notifySuccess ?  
+                  <SuccessPopup  message={'Delete user Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            : '' }
 
-      <p className='font-bold text-3xl mt-20' >Users</p>
-      <div className='flex flex-col' >
-      <DataGrid
-        className='w-full '
-        rows={users}
-        // disableSelectionOnClick
-        columns={columns}
-        getRowId={(row) => row._id}
-        pageSizeOptions={[20, 40, 50, 100]}
-        // checkboxSelection
-        sx={{fontSize:'20px'}}
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 20, page: 0 },
-          },
-        }}
-      />  
+        <p className='font-bold text-3xl mt-20' >Users</p>
+        <div className='flex flex-col' >
+        <DataGrid
+          className='w-full '
+          rows={users}
+          // disableSelectionOnClick
+          columns={columns}
+          getRowId={(row) => row._id}
+          pageSizeOptions={[20, 40, 50, 100]}
+          // checkboxSelection
+          sx={{fontSize:'20px'}}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 20, page: 0 },
+            },
+          }}
+        />  
 
-              
+                
+        </div>
       </div>
-    </div>
+    
+    </>
     
   )
 }

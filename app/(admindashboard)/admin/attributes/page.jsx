@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
 import FailurePopup from '@/components/Popup/FailurePopup';
+import ConfirmBox from '../../component/ConfirmBox';
 
 const Attribute = () => {
   const router = useRouter()
@@ -25,6 +26,42 @@ const Attribute = () => {
 
   const [newAttribute, setNewAttribute] = useState('')
   const [newAttributeItem, setNewAttributeItem] = useState('')
+
+  const [openConfirmBox1, setOpenConfirmBox1] = useState(false)
+  const [openConfirmBox2, setOpenConfirmBox2] = useState(false)
+
+  const [aIdChosen, setAIdChosen] = useState('')
+  const [aNameChosen, setANameChosen] = useState('')
+  const [aItemArray, setAItemArray] = useState([])
+  const [item, setItem] = useState('')
+
+  // open confirm box  use for attribute
+  // const handleOpenConfirmBox = async (attribute_id) => {
+  //   setOpenConfirmBox(true)
+  //   setAttributeIdChosen(attribute_id)
+  // }
+
+  const handleOpenConfirmBox1 = async (attribute_id) => {
+    setOpenConfirmBox1(true)
+    setAIdChosen(attribute_id)
+  }
+
+  // use for attbute item
+  const handleOpenConfirmBox2 = async (attribute_id, attribute_name, attributeItem_array, item) => {
+    setOpenConfirmBox2(true)
+    setAIdChosen(attribute_id)
+    setANameChosen(attribute_name)
+    setAItemArray(attributeItem_array)
+    setItem(item)
+  }
+
+  // close confirm box
+  const handleCloseConfirmBox = () => {
+    setOpenConfirmBox1(false)
+    setOpenConfirmBox2(false)
+
+  }
+
   // close the popup
   const handleClosePopup = () => {
     setNotifySuccess(false)
@@ -87,6 +124,7 @@ const Attribute = () => {
       const res = await userRequest.delete(`/attribute/${attributeId}`)
       if(res.data){  
         setReload(!reload)
+        handleCloseConfirmBox()
         setNotifySuccess(true)
         setTimeout(()=>{
           setNotifySuccess(false)
@@ -144,19 +182,19 @@ const Attribute = () => {
     }
   }
 
-  const handleDeleteAttributeItem = async (id, name, itemArray, item) => {
+  const handleDeleteAttributeItem = async (attributeId, attributeName, itemArray, item) => {
     setLoading(true)
     try {
-      console.log('-->')
       let newItemArray = [] 
       newItemArray = itemArray.filter((i) => i!==item)
     
-      const res = await userRequest.put(`attribute/${id}`,{
-        name: name,
+      const res = await userRequest.put(`attribute/${attributeId}`,{
+        name: attributeName,
         item: newItemArray
       })
       if(res.data){
         setReload(!reload)
+        handleCloseConfirmBox()
         setNotifySuccess(true)
         setTimeout(()=>{
           setNotifySuccess(false)
@@ -188,7 +226,7 @@ const Attribute = () => {
             
                     <span  title='Xóa'  >
                         <DeleteIcon 
-                            onClick={()=>handleDeleteAttribute(params.row._id)} 
+                            onClick={()=>handleOpenConfirmBox1(params.row._id)} 
                             fontSize='large'  className='text-red-500 hover:text-red-800  hover:cursor-pointer'   />
                     </span>
                
@@ -211,7 +249,7 @@ const Attribute = () => {
                   {i} 
                   <span title='Xóa'>
                     <CloseIcon  className='text-red-500 hover:text-red-800  hover:cursor-pointer mb-1' fontSize='medium' 
-                    onClick={()=>handleDeleteAttributeItem(params.row._id, params.row.name, params.row.item, i)} />
+                    onClick={()=>handleOpenConfirmBox2(params.row._id, params.row.name, params.row.item, i)} />
                   </span>
                 </span>        
             )}
@@ -225,6 +263,25 @@ const Attribute = () => {
   
 
   return (
+
+  <>
+    {openConfirmBox1 &&
+      <ConfirmBox 
+        handleClose={handleCloseConfirmBox} 
+        handleYes={()=>handleDeleteAttribute(aIdChosen)} 
+        handleNo={handleCloseConfirmBox}
+        content={'Bạn có chắc muốn xóa attribute này'}
+      />
+    }
+
+    {openConfirmBox2 &&
+      <ConfirmBox 
+        handleClose={handleCloseConfirmBox} 
+        handleYes={()=>handleDeleteAttributeItem(aIdChosen, aNameChosen, aItemArray, item)} 
+        handleNo={handleCloseConfirmBox}
+        content={'Bạn có chắc muốn xóa attribute item này'}
+      />
+    }
 
     <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
         {editAttributeWindow ?
@@ -296,6 +353,9 @@ const Attribute = () => {
         />  
 
     </div>
+
+  </>
+
   )
 }
 

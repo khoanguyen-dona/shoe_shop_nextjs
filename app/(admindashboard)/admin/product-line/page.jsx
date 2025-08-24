@@ -188,7 +188,7 @@ const ProductLine = () => {
         handleClose={handleCloseConfirmBox} 
         handleYes={()=>handleDeleteProductLine(idChosen)} 
         handleNo={handleCloseConfirmBox}
-        content={'Bạn có chắc muốn xóa đơn hàng này'}
+        content={'Bạn có chắc muốn xóa product line này'}
       />
     }  
  

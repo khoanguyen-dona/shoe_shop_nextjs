@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
 import FailurePopup from '@/components/Popup/FailurePopup';
+import ConfirmBox from '../../component/ConfirmBox';
 
 const Categories = () => {
   const [notifyFailure, setNotifyFailure] = useState(false)
@@ -18,6 +19,21 @@ const Categories = () => {
   const [categories, setCategories] = useState('')
   const [category, setCategory] = useState('')
   const [reload, setReload] = useState(false)
+
+  const [openConfirmBox, setOpenConfirmBox] = useState(false)
+  const [categoryIdChosen, setCategoryIdChosen] = useState('')
+ 
+
+    // open confirm box
+  const handleOpenConfirmBox = async (category_id) => {
+    setOpenConfirmBox(true)
+    setCategoryIdChosen(category_id)
+  }
+
+  // close confirm box
+  const handleCloseConfirmBox = () => {
+    setOpenConfirmBox(false)
+  }
 
   // close the popup
   const handleClosePopup = () => {
@@ -62,6 +78,7 @@ const Categories = () => {
         })
         if(res.data){
           setReload(!reload)
+          setCategory('')
           setLoading(false)
           setNotifySuccess(true)
           setTimeout(()=> {
@@ -74,13 +91,14 @@ const Categories = () => {
     }
   }
 
-  const handleDeleteCategory = async (categoryId) => {
+  const handleDeleteCategory = async (id) => {
     setLoading(true)
     try {
-      const res = await userRequest.delete(`/category/${categoryId}`)
+      const res = await userRequest.delete(`/category/${id}`)
       if(res.data){
         setReload(!reload)
         setLoading(false)
+        handleCloseConfirmBox()
         setNotifySuccess(true)
         setTimeout(()=>{
           setNotifySuccess(false)
@@ -117,7 +135,7 @@ const Categories = () => {
                 <a>
                     <span  title='Xóa'  >
                         <DeleteIcon 
-                            onClick={()=>handleDeleteCategory(params.row._id)} 
+                            onClick={()=>handleOpenConfirmBox(params.row._id)} 
                             fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer'   />
                     </span>
                 </a>
@@ -134,45 +152,57 @@ const Categories = () => {
   ]
 
   return (
+     <>
+      {openConfirmBox &&
+        <ConfirmBox 
+          handleClose={handleCloseConfirmBox} 
+          handleYes={()=>handleDeleteCategory(categoryIdChosen)} 
+          handleNo={handleCloseConfirmBox}
+          content={'Bạn có chắc muốn xóa category này'}
+        />
+      }
 
-    <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
-        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-        {notifySuccess ? 
-                <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-             : '' 
-        }
-        {notifyFailure &&
-                <FailurePopup  message={'Categories trống'} handleClosePopup = {handleCloseFailurePopup} />
-        }
-        <div className='text-3xl font-bold' >Categories</div>
-        <div className='flex mt-4' >
-          <input 
-            onChange={handleCategoryInput}  
-            className='w-4/5 lg:w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
-          <button 
-            onClick = {handleAddCategory}
-            className='rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition' >
-            Thêm
-          </button>
-        </div>
+      <div className= {` mt-20 flex flex-col   ${loading?'bg-white opacity-50':''}   `} >
+          {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+          {notifySuccess ? 
+                  <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+              : '' 
+          }
+          {notifyFailure &&
+                  <FailurePopup  message={'Categories trống'} handleClosePopup = {handleCloseFailurePopup} />
+          }
+          <div className='text-3xl font-bold' >Categories</div>
+          <div className='flex mt-4' >
+            <input 
+              onChange={handleCategoryInput}  
+              value={category}
+              className='w-4/5 lg:w-3/5  rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            <button 
+              onClick = {handleAddCategory}          
+              className='rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition' >
+              Thêm
+            </button>
+          </div>
 
-        <DataGrid
-          className='mt-10 w-full '
-          rows={categories}
-          disableSelectionOnClick
-          columns={columns}
-          getRowId={(row) => row._id}
-          pageSizeOptions={[20, 40, 50, 100]}
-          // checkboxSelection
-          sx={{fontSize:'20px'}}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 20, page: 0 },
-            },
-          }}
-        />  
+          <DataGrid
+            className='mt-10 w-full '
+            rows={categories}
+            disableSelectionOnClick
+            columns={columns}
+            getRowId={(row) => row._id}
+            pageSizeOptions={[20, 40, 50, 100]}
+            // checkboxSelection
+            sx={{fontSize:'20px'}}
+            initialState={{
+              pagination: {
+                paginationModel: { pageSize: 20, page: 0 },
+              },
+            }}
+          />  
 
-    </div>
+      </div>
+
+    </>
 
   )
 }

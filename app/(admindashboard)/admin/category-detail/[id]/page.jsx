@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation'
 import SuccessPopup from '@/components/Popup/SuccessPopup'
 import CloseIcon from '@mui/icons-material/Close';
 import FailurePopup from '@/components/Popup/FailurePopup'
+import ConfirmBox from '@/app/(admindashboard)/component/ConfirmBox'
 
 const CategoryDetail = () => {
 
@@ -31,6 +32,21 @@ const CategoryDetail = () => {
 
     const [editCatWindow, setEditCatWindow] = useState(false)
     const [newCategory, setNewCategory] = useState('')
+
+    const [openConfirmBox, setOpenConfirmBox] = useState(false)
+    const [subCatIdChosen, setSubCatIdChosen] = useState('')
+
+     // open confirm box
+    const handleOpenConfirmBox = async (subCat_id) => {
+        setOpenConfirmBox(true)
+        setSubCatIdChosen(subCat_id)
+    }
+
+    // close confirm box
+    const handleCloseConfirmBox = () => {
+        setOpenConfirmBox(false)
+    }
+
     //get category
     useEffect(()=> {
         const getCategory = async () => {
@@ -93,7 +109,7 @@ const CategoryDetail = () => {
                     name: input
                 })
                 if(res.data) {
-            
+                    setInput('')
                     setReload(!reload)
                     setNotifySuccess(true)
                     setTimeout(()=>{
@@ -113,6 +129,7 @@ const CategoryDetail = () => {
             const res = await userRequest.delete(`/sub-category/${categoryId}`)
             if(res.data) {
                 setReload(!reload)
+                handleCloseConfirmBox()
                 setNotifySuccess(true)
                 setTimeout(()=>{
                     setNotifySuccess(false)
@@ -193,7 +210,7 @@ const CategoryDetail = () => {
                 
                         <span  title='Xóa'  >
                             <DeleteIcon 
-                                onClick={()=>handleDeleteSubCategory(params.row._id)} 
+                                onClick={()=>handleOpenConfirmBox(params.row._id)} 
                                 fontSize='large'  className='text-red-500 hover:text-red-800 hover:cursor-pointer  '   />
                         </span>
                   
@@ -210,91 +227,103 @@ const CategoryDetail = () => {
       ]
 
   return (
+    <>
+      {openConfirmBox &&
+        <ConfirmBox 
+          handleClose={handleCloseConfirmBox} 
+          handleYes={()=>handleDeleteSubCategory(subCatIdChosen)} 
+          handleNo={handleCloseConfirmBox}
+          content={'Bạn có chắc muốn xóa sub-category này'}
+        />
+      }
  
-    <div className={` mt-20 flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
-        {editSubCatWindow ?
-            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-auto h-auto bg-white shadow-2xl  left-10 lg:left-72 top-72 border-2 rounded-md  '  >
-                <div className='flex flex-col justify-center' >
-                    <div className='flex justify-between' >
-                        <div className='font-bold text-2xl' >Edit sub-category</div>
-                        <CloseIcon className='hover:cursor-pointer hover:text-gray-300 transition' onClick={()=>setEditSubCatWindow(false)} fontSize='large' />
-                    </div>
-                    <input type="text" onChange={(e)=>setNewSubCategory(e.target.value)} 
-                        value={newSubCategory}
-                        className='w-full border-2 mt-4 p-4 rounded-md text-2xl' />
-                    <div className='text-center' >   
-                        <button
-                            onClick={handleUpdateSubCategory} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-2/4 lg:w-1/3  rounded-md transition' >
-                            Update
-                        </button>
+        <div className={` mt-20 flex flex-col  ${loading?'bg-white opacity-50':''}    `} >
+            {editSubCatWindow ?
+                <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-auto h-auto bg-white shadow-2xl  left-10 lg:left-72 top-72 border-2 rounded-md  '  >
+                    <div className='flex flex-col justify-center' >
+                        <div className='flex justify-between' >
+                            <div className='font-bold text-2xl' >Edit sub-category</div>
+                            <CloseIcon className='hover:cursor-pointer hover:text-gray-300 transition' onClick={()=>setEditSubCatWindow(false)} fontSize='large' />
+                        </div>
+                        <input type="text" onChange={(e)=>setNewSubCategory(e.target.value)} 
+                            value={newSubCategory}
+                            className='w-full border-2 mt-4 p-4 rounded-md text-2xl' />
+                        <div className='text-center' >   
+                            <button
+                                onClick={handleUpdateSubCategory} 
+                                className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-2/4 lg:w-1/3  rounded-md transition' >
+                                Update
+                            </button>
+                        </div>  
                     </div>  
-                 </div>  
-              
-            </div> : ''
-        }
-        {editCatWindow ?
-            <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-72 top-72 border-2 rounded-md  '  >
-                <div className='flex flex-col justify-center' >
-                    <div className='flex justify-between' >
-                        <div className='font-bold text-2xl' >Edit category</div>
-                        <CloseIcon className='hover:cursor-pointer text-black hover:text-gray-300 transition' onClick={()=>setEditCatWindow(false)} fontSize='large' />
-                    </div>
-                    <input type="text" onChange={(e)=>setNewCategory(e.target.value)} 
-                        value={newCategory}
-                        className='w-full border-2 mt-4 p-4 rounded-md text-2xl' />
-                    <div className='text-center' >   
-                        <button
-                            onClick={handleUpdateCategory} 
-                            className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/2 lg:w-1/3  rounded-md transition' >
-                            Update
-                        </button>
+                
+                </div> : ''
+            }
+            {editCatWindow ?
+                <div className='fixed p-4 z-50 flex flex-col w-4/5  lg:w-3/5 h-auto bg-white shadow-2xl  left-10 lg:left-72 top-72 border-2 rounded-md  '  >
+                    <div className='flex flex-col justify-center' >
+                        <div className='flex justify-between' >
+                            <div className='font-bold text-2xl' >Edit category</div>
+                            <CloseIcon className='hover:cursor-pointer text-black hover:text-gray-300 transition' onClick={()=>setEditCatWindow(false)} fontSize='large' />
+                        </div>
+                        <input type="text" onChange={(e)=>setNewCategory(e.target.value)} 
+                            value={newCategory}
+                            className='w-full border-2 mt-4 p-4 rounded-md text-2xl' />
+                        <div className='text-center' >   
+                            <button
+                                onClick={handleUpdateCategory} 
+                                className='mt-4 p-4 bg-blue-500 text-white font-bold text-2xl hover:bg-blue-800 w-1/2 lg:w-1/3  rounded-md transition' >
+                                Update
+                            </button>
+                        </div>  
                     </div>  
-                 </div>  
-              
-            </div> : ''
-        }
-        {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
-        {notifySuccess ? 
-                <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
-           : ''
-        }
-        {notifyFailure &&
-                <FailurePopup  message={'Sub-category trống'} handleClosePopup = {handleCloseFailurePopup} />
-        }
-        <div className='text-3xl font-bold' >
-            Category : {category} 
-            <EditIcon fontSize='large' onClick={handleEditCategoryClick} className='text-blue-500 ml-2 hover:text-blue-800 hover:cursor-pointer' />
-        </div>
-        <div className='text-xl font-semibold mt-10' >Thêm sub-category</div>
-        <div className='flex mt-2' >
-          <input 
-            onChange={handleInput}  
-            className='w-4/5 lg:w-3/5 rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
-          <button 
-            onClick = {handleAddSubCategory}
-            className={` rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition `} >
-            Thêm
-          </button>
-        </div>
-        <div className='mt-10 font-semibold text-xl' >Sub-category</div>
-        <DataGrid
-          className='mt-2'
-          rows={subCategory}
-          disableSelectionOnClick
-          columns={columns}
-          getRowId={(row) => row._id}
-          pageSizeOptions={[20, 40, 50, 100]}
-          // checkboxSelection
-          sx={{fontSize:'20px'}}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 20, page: 0 },
-            },
-          }}
-        />  
+                
+                </div> : ''
+            }
+            {loading ?  <div className='flex justify-center  ' >  <Loader  color={'inherit'} />  </div> : ''}
+            {notifySuccess ? 
+                    <SuccessPopup  message={'Update Successfully!'}  handleClosePopup={handleClosePopup}   /> 
+            : ''
+            }
+            {notifyFailure &&
+                    <FailurePopup  message={'Sub-category trống'} handleClosePopup = {handleCloseFailurePopup} />
+            }
+            <div className='text-3xl font-bold' >
+                Category : {category} 
+                <EditIcon fontSize='large' onClick={handleEditCategoryClick} className='text-blue-500 ml-2 hover:text-blue-800 hover:cursor-pointer' />
+            </div>
+            <div className='text-xl font-semibold mt-10' >Thêm sub-category</div>
+            <div className='flex mt-2' >
+            <input 
+                value={input}
+                onChange={handleInput}  
+                className='w-4/5 lg:w-3/5 rounded-l-md border-2 border-gray-300 p-2 text-2xl '  type="text" />
+            <button 
+                onClick = {handleAddSubCategory}
+                className={` rounded-r-md   w-1/5 bg-green-500 font-bold p-2 text-white text-xl hover:bg-green-800 transition `} >
+                Thêm
+            </button>
+            </div>
+            <div className='mt-10 font-semibold text-xl' >Sub-category</div>
+            <DataGrid
+            className='mt-2'
+            rows={subCategory}
+            disableSelectionOnClick
+            columns={columns}
+            getRowId={(row) => row._id}
+            pageSizeOptions={[20, 40, 50, 100]}
+            // checkboxSelection
+            sx={{fontSize:'20px'}}
+            initialState={{
+                pagination: {
+                paginationModel: { pageSize: 20, page: 0 },
+                },
+            }}
+            />  
 
-    </div>
+        </div>
+    
+    </>
    
   )
 }
